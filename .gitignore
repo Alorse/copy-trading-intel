@@ -5,3 +5,4 @@ data/copytrade.sqlite
 analysis/ohlc/
 analysis/*.csv
 __pycache__/
+.venv/
