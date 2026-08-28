@@ -6,7 +6,8 @@
 ## Objetivo
 
 Mantener actualizado, con una corrida manual 1–2 veces al mes, un listado de los mejores
-lead-traders de copy-trading (Binance principal, Phemex secundario) mediante un pipeline
+lead-traders de copy-trading (Binance principal; **Phemex se archiva pero NO se rankea en v1**
+— ver Alcance Phemex) mediante un pipeline
 repetible que: scrapea data fresca, la analiza con el motor estadístico ya auditado,
 detecta traders que inflan sus números, mide quién mejora/empeora entre corridas, y
 publica un roster machine-readable + un reporte humano. El mirror-bot (VPS) consume el
@@ -41,7 +42,16 @@ analysis/
 
 - La DB es **derivada**: se puede reconstruir por completo re-ingiriendo `data/snapshots/`.
 - Ingest idempotente: clave por `(snapshot_date, exchange)`; re-correr un ingest reemplaza ese snapshot, nunca duplica.
-- El universo de traders es la **unión histórica** de todos los snapshots (se sigue a individuos en el tiempo, no solo al top-600 vigente).
+- El universo de traders es la **unión histórica** de todos los snapshots (se sigue a individuos en el tiempo, no solo al top-600 vigente). **Implementación:** `scrape` recibe los `trader_id` históricos conocidos (distinct de la DB) y baja el historial también de los que ya no aparecen en la lista viva — así el de-copy ve decaer a un trader justo cuando sale del ranking.
+
+### Alcance Phemex (v1)
+
+Phemex se **scrapea, aplana e ingiere** (archivo histórico + spike de abiertas), pero
+`metrics/detect/trend/rank/report` operan **solo sobre Binance** en v1. Razones: el lado real
+de Phemex vive en `pos_side` (`Long/Short/Merged` — 453 filas `Merged` inclasificables) y su
+`side` es `Buy/Sell`, así que rankearlo exige un mapeo propio que se pospone. El `ingest` de
+Phemex ya almacena `side` mapeado desde `pos_side` para que un análisis futuro no herede el
+signo invertido.
 
 ### Esquema SQLite
 
@@ -50,7 +60,7 @@ analysis/
 | `snapshots` | corrida × exchange | `snapshot_date, exchange, n_traders, n_positions, notes` |
 | `positions` | 1 trade | `snapshot_date, exchange, trader_id, nick, symbol, side, opened_ms, closed_ms, notional, leverage, margin, closing_pnl, price_return, alpha, dur_h, partial` |
 | `open_positions` | 1 posición abierta (si el spike funciona) | `snapshot_date, exchange, trader_id, symbol, side, notional, unrealized_pnl` |
-| `trader_metrics` | trader × snapshot | `snapshot_date, exchange, trader_id, nick, n, alpha, t_stat, payoff, wr, conc_top3, ruin, mdd, lev_med, lev_p90, marg_med, dur_med, months_active, trend_bonus, score, tier, weight, flags` (flags = JSON array) |
+| `trader_metrics` | trader × snapshot | `snapshot_date, exchange, trader_id, nick, n, alpha, t_stat, payoff, wr, conc_top1, ruin, mdd, lev_med, lev_p90, marg_med, dur_med, months_active, trend_bonus, score, tier, weight, flags` (flags = JSON array) |
 
 Tendencia: window functions de SQLite (`LAG ... OVER (PARTITION BY trader_id ORDER BY snapshot_date)`).
 Stats pesadas (t-stat, medianas, benchmark por celda) se calculan en Python (como hoy en `top5_final.py`), no en SQL.
@@ -86,9 +96,9 @@ Cada criterio emite un flag por trader × snapshot. Umbrales calibrados con los 
 
 | flag | señal | caso de referencia |
 |---|---|---|
-| `loss_hider` | WR cerrado >92% con n≥20, o cero perdedoras con n≥20, o (payoff <0.5 y mdd >35%) | GGbond哦 (98.5% wr, mdd 50.5%), Una躺平记_ (0 perdedoras/174) |
+| `loss_hider` | WR cerrado >92% con n≥20, o cero perdedoras con n≥20 (sin condición de wr — un break-even no exime), o (payoff <0.5 y mdd >35) | GGbond哦 (98.5% wr, mdd 50.5), Una躺平记_ (0 perdedoras/174) |
 | `open_loss_divergence` | *(si hay data de abiertas)* unrealized muy negativo vs realized | detección directa del anterior |
-| `lottery` | top-3 trades >30% del PnL total | 龟兔赛跑985 (96.9% en 1 trade a 145x) |
+| `lottery` | el MEJOR trade (top-1) >30% del PnL total — el umbral auditado de `top5_final.py`. (Top-3>30 fue descartado en revisión adversarial: descalificaba a 5 de los 6 supervivientes auditados, 梭哈 top-3=59.4% pero top-1=26.1%.) | 龟兔赛跑985 (96.9% en 1 trade a 145x) |
 | `roi_artifact` | ROI de portada alto con alpha ≤0 o t<2 | VickyKaushal (+5,436% ROI, alpha −0.72%) |
 | `ruin_risk` | lev p90 >25x, o peor pérdida × lev mediano < −500% del margen | 牛熊摆渡人 (−1173%) |
 | `not_copyable` | marg mediano <$50 o duración mediana <30 min | Scalper King ($50), 秋高看山势 ($41) |
@@ -99,11 +109,15 @@ Cada criterio emite un flag por trader × snapshot. Umbrales calibrados con los 
 
 | flag | señal |
 |---|---|
-| `alpha_decay` | alpha H2<H1 intra-snapshot, o alpha ↓ en 2 snapshots seguidos |
+| `alpha_decay` | alpha H2<H1 intra-snapshot, o alpha del snapshot actual < alpha del snapshot previo (lo aplica `trend`) |
 | `inactive` | sin cierres en 30 días |
 | `style_drift` | lev mediano o marg mediano cambia >2× vs snapshot previo |
 | `regime_onesided` | alpha positivo solo en un sub-régimen de la ventana |
-| `mdd_high` | mdd 35–60% |
+| `mdd_high` | mdd 35–60 |
+
+⚠️ **Escala de mdd (Binance): PORCENTUAL, no fraccional** — mediana ~30.15, máx ~102.7
+(GGbond哦=50.5, 牛熊摆渡人=74.85). Es la "Trampa 5" de `SKILL.v3.md`; los umbrales 35/60 son
+en esa escala. Un test de regresión debe assertar la escala (mediana del snapshot ∈ [10,60]).
 
 ### Regla de de-copy (vive en `trend`)
 Dos snapshots consecutivos con alpha negativo → fuera del roster, sin importar otros flags.
@@ -128,6 +142,13 @@ sobreviven los descalificantes; el resto va a W.
 | X — Excluido | flag descalificante | 0%, motivo registrado |
 
 Pesos redondeados a 5%.
+
+Casos borde: si el roster es **todo tier B** (típico de la corrida #1), el cap del 10% se
+respeta igual y el remanente queda **sin asignar** (la suma puede ser <1.0; el reporte lo
+dice) — jamás se vuelca el exceso sobre un solo trader. Solo entran al roster scores >0.
+El criterio "n>300" para tier A aplica únicamente cuando el pipeline tiene un solo snapshot
+(primera corrida); después, tier A exige ≥2 snapshots visto. `insufficient` como único flag
+descalificante va a tier **W** (no X): W = novatos/prometedores, X = fraudes.
 
 ## Formatos de salida
 
@@ -158,18 +179,23 @@ Altas/bajas por tier, Δweight por titular, flags nuevos sobre titulares, y un b
 Skill personal en `~/.claude/skills/copy-trading-refresh/SKILL.md`. Runbook para el agente:
 
 1. `cd ~/Projects/trading/copy-trading-intel`
-2. `python3 pipeline.py scrape` — si falla a mitad, re-correr (resumable). Validación post-scrape: n_traders y n_posiciones dentro de ±50% del snapshot previo; si no, **parar y reportar**, no analizar data parcial.
-3. `python3 pipeline.py analyze`
+2. `python3 pipeline.py scrape` — si falla a mitad, re-correr (resumable). Un trader cuyo historial falló por red NO se marca como hecho (se reintenta en el resume).
+3. `python3 pipeline.py analyze` — valida **ANTES de ingerir** (desde los CSV): snapshot dir existente y no vacío, y n_traders/n_posiciones dentro de ±50% del snapshot previo (un exchange con snapshot previo que hoy no trae CSV también falla). Si la validación falla → exit 2 **sin tocar la DB**; reportar a the operator, `--force` solo con su aprobación. `analyze` NUNCA escribe `analysis/roster.json` (el latest).
 4. Leer `analysis/runs/<hoy>/diff.json`.
-5. **Gate**: `material == true` → lanzar consejo (skill `adversarial-review`: Fable, Kimi, GLM; cada uno recibe diff + CSVs + pregunta concreta, con mandato de refutar y re-derivar números). `material == false` → publicar directo.
+5. **Gate**: `material == true` → lanzar consejo (skill `adversarial-review`: Fable, Kimi, GLM; cada uno recibe diff + CSVs + pregunta concreta, con mandato de refutar y re-derivar números). `material == false` → publicar directo (paso 7).
 6. Merge de veredictos del consejo al `TOP_*.md` (columna confirma/objeta). Si el consejo objeta una promoción a tier A, **no publicar** ese cambio sin decisión de the operator.
-7. Presentar a the operator: tabla, ▲▼, altas/bajas, objeciones del consejo si las hubo.
+7. **Publicar**: `python3 pipeline.py publish --date <hoy>` — copia el roster de la corrida a `analysis/roster.json`. Es el ÚNICO paso que toca el latest, y solo se ejecuta tras pasar el gate (o tras la decisión de the operator si hubo objeciones).
+8. Presentar a the operator: tabla, ▲▼, altas/bajas, objeciones del consejo si las hubo.
 
 ### Cambio material (dispara consejo) — cualquiera de:
 - Alta o baja en tier A.
+- **Cualquier titular (A o B) que sale del roster** (cae a W/X o desaparece del universo).
 - Flag descalificante nuevo sobre un titular del roster.
-- Peso de un titular se mueve >10 puntos.
+- Peso de un titular se mueve >10 puntos (una salida cuenta como prev→0).
 - Primera corrida contra un universo nuevo (p. ej. nuevo exchange).
+
+El matching titular↔corrida se hace por **`portfolio_id`** (estable), nunca por nick
+(renombrable).
 
 ## Spike incluido en la implementación
 
