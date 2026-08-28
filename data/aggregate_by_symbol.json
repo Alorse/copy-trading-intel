@@ -1,0 +1,2138 @@
+{
+ "BTCUSDT": {
+  "n": 2147,
+  "pnl": -173093.79,
+  "wins": 1005,
+  "vol": 83917445.32
+ },
+ "WIFUSDT": {
+  "n": 5,
+  "pnl": -2327.46,
+  "wins": 2,
+  "vol": 12275.39
+ },
+ "u1000PEPEUSDT": {
+  "n": 91,
+  "pnl": -24249.09,
+  "wins": 27,
+  "vol": 681969.1
+ },
+ "ARBUSDT": {
+  "n": 25,
+  "pnl": -4893.42,
+  "wins": 11,
+  "vol": 332374.28
+ },
+ "HBARUSDT": {
+  "n": 38,
+  "pnl": -369.2,
+  "wins": 18,
+  "vol": 71654.99
+ },
+ "ZEREBROUSDT": {
+  "n": 19,
+  "pnl": 5009.85,
+  "wins": 7,
+  "vol": 399454.63
+ },
+ "SOLUSDT": {
+  "n": 641,
+  "pnl": -78847.23,
+  "wins": 347,
+  "vol": 23524423.01
+ },
+ "XRPUSDT": {
+  "n": 299,
+  "pnl": 38063.15,
+  "wins": 128,
+  "vol": 2934825.21
+ },
+ "XLMUSDT": {
+  "n": 25,
+  "pnl": 1471.63,
+  "wins": 12,
+  "vol": 70382.2
+ },
+ "SUIUSDT": {
+  "n": 144,
+  "pnl": 62201.0,
+  "wins": 65,
+  "vol": 4512028.72
+ },
+ "ADAUSDT": {
+  "n": 155,
+  "pnl": 1832.68,
+  "wins": 61,
+  "vol": 543768.13
+ },
+ "ETHUSDT": {
+  "n": 768,
+  "pnl": -24520.1,
+  "wins": 357,
+  "vol": 6985309.69
+ },
+ "ETHUSDC": {
+  "n": 5,
+  "pnl": -341.66,
+  "wins": 0,
+  "vol": 9905.14
+ },
+ "BTCUSDC": {
+  "n": 70,
+  "pnl": -22579.17,
+  "wins": 32,
+  "vol": 10596009.1
+ },
+ "SOLUSDC": {
+  "n": 1,
+  "pnl": -5.53,
+  "wins": 0,
+  "vol": 653.89
+ },
+ "ENAUSDT": {
+  "n": 45,
+  "pnl": -664.95,
+  "wins": 21,
+  "vol": 131122.76
+ },
+ "AVAXUSDT": {
+  "n": 65,
+  "pnl": 816.63,
+  "wins": 35,
+  "vol": 265083.81
+ },
+ "INJUSDT": {
+  "n": 19,
+  "pnl": -1002.26,
+  "wins": 6,
+  "vol": 24201.88
+ },
+ "LINKUSDT": {
+  "n": 96,
+  "pnl": -9390.66,
+  "wins": 52,
+  "vol": 485763.56
+ },
+ "TUTUSDT": {
+  "n": 30,
+  "pnl": -14906.29,
+  "wins": 16,
+  "vol": 52425.35
+ },
+ "OPUSDT": {
+  "n": 7,
+  "pnl": 4.8,
+  "wins": 3,
+  "vol": 3939.31
+ },
+ "BNBUSDT": {
+  "n": 132,
+  "pnl": -6097.3,
+  "wins": 65,
+  "vol": 223744.39
+ },
+ "ETHFIUSDT": {
+  "n": 1,
+  "pnl": 1.13,
+  "wins": 1,
+  "vol": 307.93
+ },
+ "TRUMPUSDT": {
+  "n": 61,
+  "pnl": -2372.09,
+  "wins": 34,
+  "vol": 327667.53
+ },
+ "LTCUSDT": {
+  "n": 37,
+  "pnl": -1439.91,
+  "wins": 13,
+  "vol": 88633.23
+ },
+ "YFIUSDT": {
+  "n": 3,
+  "pnl": -3274.84,
+  "wins": 1,
+  "vol": 16921.44
+ },
+ "BCHUSDT": {
+  "n": 44,
+  "pnl": -3415.59,
+  "wins": 22,
+  "vol": 326827.15
+ },
+ "WLDUSDT": {
+  "n": 54,
+  "pnl": 689.02,
+  "wins": 29,
+  "vol": 70833.79
+ },
+ "PUMPUSDT": {
+  "n": 48,
+  "pnl": -2547.43,
+  "wins": 21,
+  "vol": 178231.2
+ },
+ "DOGEUSDT": {
+  "n": 152,
+  "pnl": -6587.65,
+  "wins": 72,
+  "vol": 443841.94
+ },
+ "AAVEUSDT": {
+  "n": 53,
+  "pnl": -414.59,
+  "wins": 24,
+  "vol": 35553.4
+ },
+ "ONDOUSDT": {
+  "n": 60,
+  "pnl": 22613.72,
+  "wins": 18,
+  "vol": 3986304.23
+ },
+ "UNIUSDT": {
+  "n": 19,
+  "pnl": -124.37,
+  "wins": 10,
+  "vol": 73072.24
+ },
+ "AEROUSDT": {
+  "n": 2,
+  "pnl": -0.03,
+  "wins": 1,
+  "vol": 2436.65
+ },
+ "HYPEUSDT": {
+  "n": 108,
+  "pnl": -9293.9,
+  "wins": 54,
+  "vol": 524520.16
+ },
+ "ZECUSDT": {
+  "n": 193,
+  "pnl": -19196.82,
+  "wins": 89,
+  "vol": 2932234.65
+ },
+ "FARTCOINUSDT": {
+  "n": 61,
+  "pnl": -6961.7,
+  "wins": 27,
+  "vol": 173435.96
+ },
+ "ATOMUSDT": {
+  "n": 26,
+  "pnl": -1722.46,
+  "wins": 9,
+  "vol": 185219.63
+ },
+ "NAS100USDT": {
+  "n": 6,
+  "pnl": -22.95,
+  "wins": 3,
+  "vol": 12794.52
+ },
+ "SNDKUSDT": {
+  "n": 24,
+  "pnl": 1032.94,
+  "wins": 13,
+  "vol": 26484.72
+ },
+ "XTIUSDT": {
+  "n": 31,
+  "pnl": 4571.04,
+  "wins": 15,
+  "vol": 346909.49
+ },
+ "SPCXUSDT": {
+  "n": 23,
+  "pnl": -223.55,
+  "wins": 11,
+  "vol": 63567.93
+ },
+ "GUNUSDT": {
+  "n": 2,
+  "pnl": -3.86,
+  "wins": 0,
+  "vol": 521.68
+ },
+ "ALGOUSDT": {
+  "n": 23,
+  "pnl": -769.67,
+  "wins": 7,
+  "vol": 59077.18
+ },
+ "XAUUSDT": {
+  "n": 81,
+  "pnl": -334.97,
+  "wins": 36,
+  "vol": 355314.27
+ },
+ "CHIPUSDT": {
+  "n": 1,
+  "pnl": -19.93,
+  "wins": 0,
+  "vol": 964.21
+ },
+ "u1000SHIBUSDT": {
+  "n": 32,
+  "pnl": -25835.08,
+  "wins": 12,
+  "vol": 83682.18
+ },
+ "LITUSDT": {
+  "n": 40,
+  "pnl": 123.98,
+  "wins": 17,
+  "vol": 37198.75
+ },
+ "CRVUSDT": {
+  "n": 15,
+  "pnl": -8658.7,
+  "wins": 4,
+  "vol": 72690.82
+ },
+ "XPLUSDT": {
+  "n": 11,
+  "pnl": -2219.2,
+  "wins": 2,
+  "vol": 28019.95
+ },
+ "MUBARAKUSDT": {
+  "n": 7,
+  "pnl": 894.89,
+  "wins": 5,
+  "vol": 11112.78
+ },
+ "HEIUSDT": {
+  "n": 10,
+  "pnl": 223.58,
+  "wins": 3,
+  "vol": 4262.96
+ },
+ "LABUSDT": {
+  "n": 24,
+  "pnl": -710.87,
+  "wins": 12,
+  "vol": 26192.7
+ },
+ "ARKUSDT": {
+  "n": 1,
+  "pnl": -105.34,
+  "wins": 0,
+  "vol": 3114.7
+ },
+ "u1000RATSUSDT": {
+  "n": 7,
+  "pnl": -450.98,
+  "wins": 1,
+  "vol": 11242.64
+ },
+ "DEXEUSDT": {
+  "n": 3,
+  "pnl": 151.34,
+  "wins": 2,
+  "vol": 4017.36
+ },
+ "BELUSDT": {
+  "n": 2,
+  "pnl": -12.26,
+  "wins": 0,
+  "vol": 1008.68
+ },
+ "u1000BONKUSDT": {
+  "n": 44,
+  "pnl": -2208.52,
+  "wins": 13,
+  "vol": 201144.8
+ },
+ "TAOUSDT": {
+  "n": 70,
+  "pnl": 10067.71,
+  "wins": 41,
+  "vol": 785596.66
+ },
+ "JUPUSDT": {
+  "n": 15,
+  "pnl": -351.42,
+  "wins": 5,
+  "vol": 20335.99
+ },
+ "BRETTUSDT": {
+  "n": 3,
+  "pnl": -847.05,
+  "wins": 1,
+  "vol": 1039.81
+ },
+ "PENGUUSDT": {
+  "n": 49,
+  "pnl": -6372.31,
+  "wins": 11,
+  "vol": 481989.44
+ },
+ "NOTUSDT": {
+  "n": 1,
+  "pnl": -23.57,
+  "wins": 0,
+  "vol": 4268.8
+ },
+ "API3USDT": {
+  "n": 3,
+  "pnl": -30.22,
+  "wins": 0,
+  "vol": 2445.2
+ },
+ "TLMUSDT": {
+  "n": 3,
+  "pnl": -226.8,
+  "wins": 0,
+  "vol": 3550.97
+ },
+ "GOATUSDT": {
+  "n": 2,
+  "pnl": -16.3,
+  "wins": 0,
+  "vol": 3943.27
+ },
+ "AVAAIUSDT": {
+  "n": 1,
+  "pnl": -231.18,
+  "wins": 0,
+  "vol": 1355.21
+ },
+ "GPSUSDT": {
+  "n": 3,
+  "pnl": -5.94,
+  "wins": 1,
+  "vol": 4259.53
+ },
+ "CCUSDT": {
+  "n": 36,
+  "pnl": -36173.07,
+  "wins": 11,
+  "vol": 566897.77
+ },
+ "DOTUSDT": {
+  "n": 20,
+  "pnl": -2512.03,
+  "wins": 9,
+  "vol": 57795.3
+ },
+ "MONUSDT": {
+  "n": 2,
+  "pnl": -2004.88,
+  "wins": 0,
+  "vol": 27065.15
+ },
+ "DRIFTUSDT": {
+  "n": 3,
+  "pnl": -1046.52,
+  "wins": 0,
+  "vol": 33675.34
+ },
+ "XBRUSDT": {
+  "n": 54,
+  "pnl": 8497.28,
+  "wins": 47,
+  "vol": 129677.97
+ },
+ "XAGUSDT": {
+  "n": 19,
+  "pnl": -6729.17,
+  "wins": 11,
+  "vol": 371883.23
+ },
+ "SAGAUSDT": {
+  "n": 5,
+  "pnl": 315.52,
+  "wins": 2,
+  "vol": 6586.76
+ },
+ "AI16ZUSDT": {
+  "n": 2,
+  "pnl": -172.03,
+  "wins": 1,
+  "vol": 284.54
+ },
+ "NEARUSDT": {
+  "n": 50,
+  "pnl": -339.67,
+  "wins": 27,
+  "vol": 68592.26
+ },
+ "STXUSDT": {
+  "n": 4,
+  "pnl": -399.7,
+  "wins": 1,
+  "vol": 4691.63
+ },
+ "TERUSDT": {
+  "n": 1,
+  "pnl": 1.51,
+  "wins": 1,
+  "vol": 139.14
+ },
+ "RECALLUSDT": {
+  "n": 4,
+  "pnl": 56.7,
+  "wins": 1,
+  "vol": 2478.09
+ },
+ "HEMIUSDT": {
+  "n": 4,
+  "pnl": 3186.01,
+  "wins": 2,
+  "vol": 53592.78
+ },
+ "JSTUSDT": {
+  "n": 6,
+  "pnl": 3.44,
+  "wins": 2,
+  "vol": 2668.21
+ },
+ "EDENUSDT": {
+  "n": 3,
+  "pnl": -3834.52,
+  "wins": 0,
+  "vol": 13465.62
+ },
+ "CTRUSDT": {
+  "n": 1,
+  "pnl": -20.35,
+  "wins": 0,
+  "vol": 834.29
+ },
+ "EDUUSDT": {
+  "n": 2,
+  "pnl": -46.93,
+  "wins": 1,
+  "vol": 1330.03
+ },
+ "TURTLEUSDT": {
+  "n": 1,
+  "pnl": -40.2,
+  "wins": 0,
+  "vol": 1440.5
+ },
+ "PEOPLEUSDT": {
+  "n": 2,
+  "pnl": -30.61,
+  "wins": 1,
+  "vol": 1015.5
+ },
+ "ENSOUSDT": {
+  "n": 4,
+  "pnl": 57.2,
+  "wins": 3,
+  "vol": 1073.98
+ },
+ "KAITOUSDT": {
+  "n": 2,
+  "pnl": -1089.66,
+  "wins": 1,
+  "vol": 29616.94
+ },
+ "LDOUSDT": {
+  "n": 4,
+  "pnl": -265.09,
+  "wins": 1,
+  "vol": 1193.05
+ },
+ "PTUSDT": {
+  "n": 6,
+  "pnl": -5.56,
+  "wins": 2,
+  "vol": 1553.49
+ },
+ "USELESSUSDT": {
+  "n": 3,
+  "pnl": -25.77,
+  "wins": 1,
+  "vol": 1809.05
+ },
+ "1INCHUSDT": {
+  "n": 2,
+  "pnl": -150.32,
+  "wins": 1,
+  "vol": 2865.63
+ },
+ "RAREUSDT": {
+  "n": 2,
+  "pnl": -139.42,
+  "wins": 1,
+  "vol": 1904.13
+ },
+ "CHZUSDT": {
+  "n": 3,
+  "pnl": -103.1,
+  "wins": 0,
+  "vol": 2050.34
+ },
+ "ZROUSDT": {
+  "n": 6,
+  "pnl": 234.84,
+  "wins": 5,
+  "vol": 3467.26
+ },
+ "LSKUSDT": {
+  "n": 2,
+  "pnl": -270.11,
+  "wins": 0,
+  "vol": 4736.89
+ },
+ "ACHUSDT": {
+  "n": 2,
+  "pnl": 3779.21,
+  "wins": 2,
+  "vol": 26065.12
+ },
+ "POLUSDT": {
+  "n": 3,
+  "pnl": -1585.68,
+  "wins": 1,
+  "vol": 5567.73
+ },
+ "DUSKUSDT": {
+  "n": 3,
+  "pnl": 254.33,
+  "wins": 3,
+  "vol": 4261.89
+ },
+ "ACEUSDT": {
+  "n": 5,
+  "pnl": -11154.87,
+  "wins": 0,
+  "vol": 66441.03
+ },
+ "MINAUSDT": {
+  "n": 2,
+  "pnl": -159.31,
+  "wins": 0,
+  "vol": 1239.69
+ },
+ "BATUSDT": {
+  "n": 1,
+  "pnl": 14.83,
+  "wins": 1,
+  "vol": 1015.03
+ },
+ "PARTIUSDT": {
+  "n": 2,
+  "pnl": -130.62,
+  "wins": 1,
+  "vol": 3880.54
+ },
+ "VICUSDT": {
+  "n": 1,
+  "pnl": -30.13,
+  "wins": 0,
+  "vol": 972.29
+ },
+ "ZENUSDT": {
+  "n": 5,
+  "pnl": 85.18,
+  "wins": 4,
+  "vol": 8036.26
+ },
+ "VVVUSDT": {
+  "n": 32,
+  "pnl": -545.08,
+  "wins": 13,
+  "vol": 48601.13
+ },
+ "ORDIUSDT": {
+  "n": 9,
+  "pnl": -1624.47,
+  "wins": 3,
+  "vol": 9509.69
+ },
+ "PENDLEUSDT": {
+  "n": 4,
+  "pnl": 1342.79,
+  "wins": 1,
+  "vol": 7931.68
+ },
+ "RENDERUSDT": {
+  "n": 18,
+  "pnl": -2808.91,
+  "wins": 8,
+  "vol": 26641.42
+ },
+ "GIGGLEUSDT": {
+  "n": 4,
+  "pnl": -150.15,
+  "wins": 0,
+  "vol": 2481.17
+ },
+ "PUMPBTCUSDT": {
+  "n": 2,
+  "pnl": -18.04,
+  "wins": 0,
+  "vol": 468.51
+ },
+ "UBUSDT": {
+  "n": 2,
+  "pnl": -180.19,
+  "wins": 0,
+  "vol": 2211.97
+ },
+ "HUSDT": {
+  "n": 3,
+  "pnl": 402.23,
+  "wins": 2,
+  "vol": 2816.72
+ },
+ "PORTALUSDT": {
+  "n": 3,
+  "pnl": 218.8,
+  "wins": 1,
+  "vol": 2197.08
+ },
+ "EPICUSDT": {
+  "n": 1,
+  "pnl": -110.62,
+  "wins": 0,
+  "vol": 2281.5
+ },
+ "TONUSDT": {
+  "n": 8,
+  "pnl": -1345.8,
+  "wins": 2,
+  "vol": 23690.95
+ },
+ "FIDAUSDT": {
+  "n": 6,
+  "pnl": -663.71,
+  "wins": 3,
+  "vol": 7193.44
+ },
+ "RONUSDT": {
+  "n": 1,
+  "pnl": 89.57,
+  "wins": 1,
+  "vol": 1261.45
+ },
+ "CGPTUSDT": {
+  "n": 1,
+  "pnl": 583.15,
+  "wins": 1,
+  "vol": 1639.28
+ },
+ "BANANAS31USDT": {
+  "n": 2,
+  "pnl": -80.93,
+  "wins": 1,
+  "vol": 1720.11
+ },
+ "SP500USDT": {
+  "n": 9,
+  "pnl": -900.63,
+  "wins": 0,
+  "vol": 22808.95
+ },
+ "ASTERUSDT": {
+  "n": 12,
+  "pnl": -348.06,
+  "wins": 5,
+  "vol": 8593.69
+ },
+ "CUSDT": {
+  "n": 1,
+  "pnl": -477.29,
+  "wins": 0,
+  "vol": 3947.95
+ },
+ "HIPPOUSDT": {
+  "n": 3,
+  "pnl": -121.32,
+  "wins": 1,
+  "vol": 1791.46
+ },
+ "ARKMUSDT": {
+  "n": 3,
+  "pnl": 6.75,
+  "wins": 2,
+  "vol": 2183.71
+ },
+ "FETUSDT": {
+  "n": 14,
+  "pnl": -4556.39,
+  "wins": 5,
+  "vol": 12592.43
+ },
+ "VETUSDT": {
+  "n": 4,
+  "pnl": -1032.35,
+  "wins": 1,
+  "vol": 4896.05
+ },
+ "ZILUSDT": {
+  "n": 1,
+  "pnl": -130.37,
+  "wins": 0,
+  "vol": 812.01
+ },
+ "BOMEUSDT": {
+  "n": 1,
+  "pnl": 94.59,
+  "wins": 1,
+  "vol": 542.57
+ },
+ "BEAMUSDT": {
+  "n": 5,
+  "pnl": 155.36,
+  "wins": 5,
+  "vol": 8310.73
+ },
+ "ZORAUSDT": {
+  "n": 4,
+  "pnl": 102.18,
+  "wins": 4,
+  "vol": 13278.91
+ },
+ "NVDAUSDT": {
+  "n": 2,
+  "pnl": 5.14,
+  "wins": 2,
+  "vol": 4317.22
+ },
+ "KASUSDT": {
+  "n": 11,
+  "pnl": -204.39,
+  "wins": 6,
+  "vol": 8871.33
+ },
+ "MUXUSDT": {
+  "n": 8,
+  "pnl": -12.67,
+  "wins": 4,
+  "vol": 28370.08
+ },
+ "FILUSDT": {
+  "n": 13,
+  "pnl": 128.85,
+  "wins": 10,
+  "vol": 109390.41
+ },
+ "ETCUSDT": {
+  "n": 6,
+  "pnl": 656.82,
+  "wins": 3,
+  "vol": 5860.66
+ },
+ "TIAUSDT": {
+  "n": 16,
+  "pnl": -4716.58,
+  "wins": 9,
+  "vol": 19315.38
+ },
+ "APTUSDT": {
+  "n": 23,
+  "pnl": -488.51,
+  "wins": 10,
+  "vol": 31240.35
+ },
+ "SUSHIUSDT": {
+  "n": 4,
+  "pnl": -358.54,
+  "wins": 2,
+  "vol": 1032.9
+ },
+ "NEOUSDT": {
+  "n": 1,
+  "pnl": -93.35,
+  "wins": 0,
+  "vol": 1060.92
+ },
+ "MANAUSDT": {
+  "n": 4,
+  "pnl": -70.06,
+  "wins": 1,
+  "vol": 1648.13
+ },
+ "ALCHUSDT": {
+  "n": 2,
+  "pnl": -1915.59,
+  "wins": 0,
+  "vol": 2643.63
+ },
+ "JASMYUSDT": {
+  "n": 9,
+  "pnl": -496.3,
+  "wins": 2,
+  "vol": 29349.71
+ },
+ "COOKIEUSDT": {
+  "n": 2,
+  "pnl": 8693.3,
+  "wins": 1,
+  "vol": 193448.89
+ },
+ "XTZUSDT": {
+  "n": 2,
+  "pnl": -1352.18,
+  "wins": 0,
+  "vol": 3429.89
+ },
+ "SHELLUSDT": {
+  "n": 3,
+  "pnl": 431.19,
+  "wins": 2,
+  "vol": 34452.42
+ },
+ "FLOWUSDT": {
+  "n": 3,
+  "pnl": -646.6,
+  "wins": 1,
+  "vol": 1303.65
+ },
+ "GMTUSDT": {
+  "n": 1,
+  "pnl": -432.77,
+  "wins": 0,
+  "vol": 806.11
+ },
+ "SANDUSDT": {
+  "n": 2,
+  "pnl": -581.45,
+  "wins": 1,
+  "vol": 1857.55
+ },
+ "GALAUSDT": {
+  "n": 1,
+  "pnl": -1348.52,
+  "wins": 0,
+  "vol": 1050.0
+ },
+ "QTUMUSDT": {
+  "n": 1,
+  "pnl": -84.86,
+  "wins": 0,
+  "vol": 769.86
+ },
+ "GMXUSDT": {
+  "n": 4,
+  "pnl": -138.89,
+  "wins": 2,
+  "vol": 1225.2
+ },
+ "GRTUSDT": {
+  "n": 4,
+  "pnl": -10567.83,
+  "wins": 0,
+  "vol": 94150.33
+ },
+ "DYDXUSDT": {
+  "n": 5,
+  "pnl": -486.19,
+  "wins": 2,
+  "vol": 4281.45
+ },
+ "MTLUSDT": {
+  "n": 1,
+  "pnl": 31.99,
+  "wins": 1,
+  "vol": 835.91
+ },
+ "AXSUSDT": {
+  "n": 6,
+  "pnl": -7.05,
+  "wins": 4,
+  "vol": 3377.61
+ },
+ "BMTUSDT": {
+  "n": 8,
+  "pnl": -15685.55,
+  "wins": 4,
+  "vol": 36283.74
+ },
+ "COTIUSDT": {
+  "n": 9,
+  "pnl": -6428.29,
+  "wins": 2,
+  "vol": 57106.51
+ },
+ "ONTUSDT": {
+  "n": 1,
+  "pnl": -39.99,
+  "wins": 0,
+  "vol": 812.08
+ },
+ "AZTECUSDT": {
+  "n": 5,
+  "pnl": 209.5,
+  "wins": 3,
+  "vol": 3084.04
+ },
+ "GUAUSDT": {
+  "n": 2,
+  "pnl": -131.67,
+  "wins": 0,
+  "vol": 4399.06
+ },
+ "PAXGUSDT": {
+  "n": 5,
+  "pnl": -149.07,
+  "wins": 1,
+  "vol": 150748.81
+ },
+ "NILUSDT": {
+  "n": 2,
+  "pnl": 32.97,
+  "wins": 1,
+  "vol": 758.82
+ },
+ "BANUSDT": {
+  "n": 1,
+  "pnl": -12.82,
+  "wins": 0,
+  "vol": 668.2
+ },
+ "BEATUSDT": {
+  "n": 2,
+  "pnl": 55.21,
+  "wins": 1,
+  "vol": 199.92
+ },
+ "POPCATUSDT": {
+  "n": 19,
+  "pnl": -551331.48,
+  "wins": 8,
+  "vol": 54182630.35
+ },
+ "STRKUSDT": {
+  "n": 2,
+  "pnl": -749.28,
+  "wins": 1,
+  "vol": 18444.35
+ },
+ "AIAUSDT": {
+  "n": 6,
+  "pnl": 1209.89,
+  "wins": 3,
+  "vol": 34677.23
+ },
+ "COAIUSDT": {
+  "n": 11,
+  "pnl": 798.4,
+  "wins": 6,
+  "vol": 212471.81
+ },
+ "HIGHUSDT": {
+  "n": 2,
+  "pnl": -19.39,
+  "wins": 0,
+  "vol": 1294.57
+ },
+ "CRCLUSDT": {
+  "n": 9,
+  "pnl": 47.29,
+  "wins": 4,
+  "vol": 12105.43
+ },
+ "SIRENUSDT": {
+  "n": 18,
+  "pnl": -720.88,
+  "wins": 13,
+  "vol": 8121.61
+ },
+ "BERAUSDT": {
+  "n": 3,
+  "pnl": 1632.07,
+  "wins": 1,
+  "vol": 28531.21
+ },
+ "INXUSDT": {
+  "n": 1,
+  "pnl": 0.08,
+  "wins": 1,
+  "vol": 4.93
+ },
+ "SPORTFUNUSDT": {
+  "n": 1,
+  "pnl": 1.07,
+  "wins": 1,
+  "vol": 8.91
+ },
+ "ACUUSDT": {
+  "n": 1,
+  "pnl": 0.05,
+  "wins": 1,
+  "vol": 4.22
+ },
+ "FIGHTUSDT": {
+  "n": 1,
+  "pnl": 0.0,
+  "wins": 1,
+  "vol": 0.1
+ },
+ "GWEIUSDT": {
+  "n": 1,
+  "pnl": -0.01,
+  "wins": 0,
+  "vol": 4.28
+ },
+ "ESPUSDT": {
+  "n": 4,
+  "pnl": 73.94,
+  "wins": 2,
+  "vol": 17240.71
+ },
+ "ALLOUSDT": {
+  "n": 1,
+  "pnl": 0.17,
+  "wins": 1,
+  "vol": 10.7
+ },
+ "JCTUSDT": {
+  "n": 6,
+  "pnl": 1.12,
+  "wins": 3,
+  "vol": 21.46
+ },
+ "STABLEUSDT": {
+  "n": 1,
+  "pnl": 1.18,
+  "wins": 1,
+  "vol": 10.67
+ },
+ "FOLKSUSDT": {
+  "n": 1,
+  "pnl": -2.54,
+  "wins": 0,
+  "vol": 15.2
+ },
+ "UAIUSDT": {
+  "n": 3,
+  "pnl": 0.38,
+  "wins": 2,
+  "vol": 154.0
+ },
+ "TRUSTUSDT": {
+  "n": 2,
+  "pnl": -4.94,
+  "wins": 1,
+  "vol": 59.49
+ },
+ "YBUSDT": {
+  "n": 1,
+  "pnl": 0.19,
+  "wins": 1,
+  "vol": 12.49
+ },
+ "PIGGYUSDT": {
+  "n": 1,
+  "pnl": -2.56,
+  "wins": 0,
+  "vol": 15.08
+ },
+ "RVVUSDT": {
+  "n": 1,
+  "pnl": 0.37,
+  "wins": 1,
+  "vol": 12.17
+ },
+ "ZBTUSDT": {
+  "n": 2,
+  "pnl": 10.05,
+  "wins": 2,
+  "vol": 91.41
+ },
+ "ATUSDT": {
+  "n": 2,
+  "pnl": 3.11,
+  "wins": 2,
+  "vol": 34.45
+ },
+ "COMMONUSDT": {
+  "n": 2,
+  "pnl": 0.43,
+  "wins": 1,
+  "vol": 13.09
+ },
+ "CLOUSDT": {
+  "n": 2,
+  "pnl": 3.32,
+  "wins": 2,
+  "vol": 23.1
+ },
+ "KITEUSDT": {
+  "n": 1,
+  "pnl": 0.67,
+  "wins": 1,
+  "vol": 11.79
+ },
+ "MEGAUSDT": {
+  "n": 1,
+  "pnl": 0.69,
+  "wins": 1,
+  "vol": 24.5
+ },
+ "MMTUSDT": {
+  "n": 2,
+  "pnl": 14.91,
+  "wins": 1,
+  "vol": 392.01
+ },
+ "42USDT": {
+  "n": 1,
+  "pnl": 0.03,
+  "wins": 1,
+  "vol": 0.96
+ },
+ "BLESSUSDT": {
+  "n": 3,
+  "pnl": -287.68,
+  "wins": 1,
+  "vol": 999.52
+ },
+ "XPINUSDT": {
+  "n": 1,
+  "pnl": 0.01,
+  "wins": 1,
+  "vol": 0.99
+ },
+ "SAROSUSDT": {
+  "n": 1,
+  "pnl": 1.23,
+  "wins": 1,
+  "vol": 585.79
+ },
+ "MELANIAUSDT": {
+  "n": 3,
+  "pnl": -7.61,
+  "wins": 1,
+  "vol": 150.69
+ },
+ "RIVERUSDT": {
+  "n": 10,
+  "pnl": -293.27,
+  "wins": 5,
+  "vol": 8203.83
+ },
+ "JELLYJELLYUSDT": {
+  "n": 1,
+  "pnl": -0.0,
+  "wins": 0,
+  "vol": 0.93
+ },
+ "CAKEUSDT": {
+  "n": 2,
+  "pnl": 12.48,
+  "wins": 1,
+  "vol": 1085.82
+ },
+ "ZBCNUSDT": {
+  "n": 1,
+  "pnl": -17.48,
+  "wins": 0,
+  "vol": 217.46
+ },
+ "MYXUSDT": {
+  "n": 5,
+  "pnl": -256.37,
+  "wins": 1,
+  "vol": 2677.45
+ },
+ "SOMIUSDT": {
+  "n": 2,
+  "pnl": -101.32,
+  "wins": 1,
+  "vol": 1472.38
+ },
+ "PTBUSDT": {
+  "n": 3,
+  "pnl": 83.24,
+  "wins": 2,
+  "vol": 1770.18
+ },
+ "PYTHUSDT": {
+  "n": 6,
+  "pnl": 8.8,
+  "wins": 5,
+  "vol": 1778.92
+ },
+ "SPXUSDT": {
+  "n": 9,
+  "pnl": -3925.84,
+  "wins": 2,
+  "vol": 19894.51
+ },
+ "KDAUSDT": {
+  "n": 1,
+  "pnl": 111.92,
+  "wins": 1,
+  "vol": 225.75
+ },
+ "NEIROUSDT": {
+  "n": 7,
+  "pnl": -2975.26,
+  "wins": 0,
+  "vol": 32106.94
+ },
+ "WLFIUSDT": {
+  "n": 6,
+  "pnl": -25.59,
+  "wins": 4,
+  "vol": 623.75
+ },
+ "WUSDT": {
+  "n": 1,
+  "pnl": 143.79,
+  "wins": 1,
+  "vol": 1124.8
+ },
+ "SUPERUSDT": {
+  "n": 2,
+  "pnl": 80.75,
+  "wins": 1,
+  "vol": 4105.99
+ },
+ "VINEUSDT": {
+  "n": 2,
+  "pnl": -146.25,
+  "wins": 0,
+  "vol": 2268.42
+ },
+ "QQQUSDT": {
+  "n": 3,
+  "pnl": -401.32,
+  "wins": 1,
+  "vol": 8012.46
+ },
+ "SPYXUSDT": {
+  "n": 3,
+  "pnl": -540.8,
+  "wins": 0,
+  "vol": 8809.97
+ },
+ "MKRUSDT": {
+  "n": 1,
+  "pnl": 1369.95,
+  "wins": 1,
+  "vol": 3414.2
+ },
+ "ICPUSDT": {
+  "n": 4,
+  "pnl": -5773.9,
+  "wins": 0,
+  "vol": 26417.99
+ },
+ "SEIUSDT": {
+  "n": 6,
+  "pnl": -780.87,
+  "wins": 2,
+  "vol": 22469.16
+ },
+ "DEGENUSDT": {
+  "n": 2,
+  "pnl": -437.15,
+  "wins": 0,
+  "vol": 610.67
+ },
+ "AVGOUSDT": {
+  "n": 1,
+  "pnl": 13.61,
+  "wins": 1,
+  "vol": 2656.47
+ },
+ "BILLUSDT": {
+  "n": 1,
+  "pnl": 3.51,
+  "wins": 1,
+  "vol": 372.43
+ },
+ "BIOUSDT": {
+  "n": 4,
+  "pnl": -90.15,
+  "wins": 1,
+  "vol": 2825.32
+ },
+ "WCTUSDT": {
+  "n": 2,
+  "pnl": 0.04,
+  "wins": 1,
+  "vol": 139.6
+ },
+ "BSBUSDT": {
+  "n": 6,
+  "pnl": -1.13,
+  "wins": 2,
+  "vol": 5905.94
+ },
+ "TROLLUSDT": {
+  "n": 1,
+  "pnl": -10.06,
+  "wins": 0,
+  "vol": 385.6
+ },
+ "2ZUSDT": {
+  "n": 1,
+  "pnl": 0.43,
+  "wins": 1,
+  "vol": 22.05
+ },
+ "SYRUPUSDT": {
+  "n": 1,
+  "pnl": 332.89,
+  "wins": 1,
+  "vol": 3189.76
+ },
+ "SUSDT": {
+  "n": 1,
+  "pnl": -27.76,
+  "wins": 0,
+  "vol": 1.35
+ },
+ "MASKUSDT": {
+  "n": 1,
+  "pnl": -19.67,
+  "wins": 0,
+  "vol": 6.7
+ },
+ "BLURUSDT": {
+  "n": 1,
+  "pnl": 0.02,
+  "wins": 1,
+  "vol": 84.89
+ },
+ "EGLDUSDT": {
+  "n": 3,
+  "pnl": -124.81,
+  "wins": 2,
+  "vol": 1357.96
+ },
+ "EDGEXUSDT": {
+  "n": 7,
+  "pnl": -606.6,
+  "wins": 2,
+  "vol": 3054.12
+ },
+ "DEGOUSDT": {
+  "n": 1,
+  "pnl": 3.43,
+  "wins": 1,
+  "vol": 41.74
+ },
+ "SIGNUSDT": {
+  "n": 1,
+  "pnl": 0.27,
+  "wins": 1,
+  "vol": 42.74
+ },
+ "PIXELUSDT": {
+  "n": 1,
+  "pnl": -0.82,
+  "wins": 0,
+  "vol": 86.9
+ },
+ "TRIAUSDT": {
+  "n": 2,
+  "pnl": 0.64,
+  "wins": 2,
+  "vol": 87.6
+ },
+ "COINUSDT": {
+  "n": 9,
+  "pnl": -369.6,
+  "wins": 2,
+  "vol": 49059.98
+ },
+ "ORCAUSDT": {
+  "n": 1,
+  "pnl": 2.15,
+  "wins": 1,
+  "vol": 23.3
+ },
+ "MORPHOUSDT": {
+  "n": 10,
+  "pnl": -37.66,
+  "wins": 3,
+  "vol": 8003.04
+ },
+ "LUNCUSDT": {
+  "n": 1,
+  "pnl": 13.69,
+  "wins": 1,
+  "vol": 212.08
+ },
+ "USUSDT": {
+  "n": 2,
+  "pnl": -213.67,
+  "wins": 0,
+  "vol": 5118.16
+ },
+ "RUNEUSDT": {
+  "n": 4,
+  "pnl": -121.13,
+  "wins": 2,
+  "vol": 1521.2
+ },
+ "TRXUSDT": {
+  "n": 7,
+  "pnl": 128.8,
+  "wins": 4,
+  "vol": 9547.04
+ },
+ "JTOUSDT": {
+  "n": 1,
+  "pnl": 0.06,
+  "wins": 1,
+  "vol": 156.49
+ },
+ "ARUSDT": {
+  "n": 1,
+  "pnl": -3.96,
+  "wins": 0,
+  "vol": 60.41
+ },
+ "BASUSDT": {
+  "n": 1,
+  "pnl": -112.02,
+  "wins": 0,
+  "vol": 1063.82
+ },
+ "CAMPUSDT": {
+  "n": 1,
+  "pnl": 62.04,
+  "wins": 1,
+  "vol": 959.12
+ },
+ "KGENUSDT": {
+  "n": 2,
+  "pnl": 51.91,
+  "wins": 1,
+  "vol": 902.1
+ },
+ "APEUSDT": {
+  "n": 4,
+  "pnl": 1302.48,
+  "wins": 3,
+  "vol": 5519.37
+ },
+ "u1000FLOKIUSDT": {
+  "n": 4,
+  "pnl": 6588.14,
+  "wins": 3,
+  "vol": 16972.39
+ },
+ "VIRTUALUSDT": {
+  "n": 13,
+  "pnl": -4162.01,
+  "wins": 6,
+  "vol": 141076.99
+ },
+ "AIXBTUSDT": {
+  "n": 1,
+  "pnl": 2.28,
+  "wins": 1,
+  "vol": 502.48
+ },
+ "IMXUSDT": {
+  "n": 9,
+  "pnl": -96.64,
+  "wins": 6,
+  "vol": 5120.68
+ },
+ "VTHOUSDT": {
+  "n": 1,
+  "pnl": -57.83,
+  "wins": 0,
+  "vol": 587.49
+ },
+ "BIGTIMEUSDT": {
+  "n": 1,
+  "pnl": 34.57,
+  "wins": 1,
+  "vol": 592.8
+ },
+ "STGUSDT": {
+  "n": 2,
+  "pnl": 31.03,
+  "wins": 2,
+  "vol": 738.03
+ },
+ "SYNUSDT": {
+  "n": 1,
+  "pnl": -8.84,
+  "wins": 0,
+  "vol": 769.77
+ },
+ "CKBUSDT": {
+  "n": 2,
+  "pnl": 6.56,
+  "wins": 2,
+  "vol": 1613.93
+ },
+ "MIRAUSDT": {
+  "n": 3,
+  "pnl": -855.08,
+  "wins": 1,
+  "vol": 2976.35
+ },
+ "BANKUSDT": {
+  "n": 3,
+  "pnl": 7.18,
+  "wins": 2,
+  "vol": 2327.06
+ },
+ "SKHYNIXUSDT": {
+  "n": 7,
+  "pnl": 208.1,
+  "wins": 6,
+  "vol": 4428.54
+ },
+ "FHEUSDT": {
+  "n": 7,
+  "pnl": -192.23,
+  "wins": 0,
+  "vol": 5870.49
+ },
+ "HANAUSDT": {
+  "n": 1,
+  "pnl": -9.87,
+  "wins": 0,
+  "vol": 24.92
+ },
+ "IPUSDT": {
+  "n": 4,
+  "pnl": -350.55,
+  "wins": 1,
+  "vol": 2350.77
+ },
+ "BUSDT": {
+  "n": 2,
+  "pnl": 2.37,
+  "wins": 2,
+  "vol": 240.79
+ },
+ "TRADOORUSDT": {
+  "n": 4,
+  "pnl": -319.78,
+  "wins": 3,
+  "vol": 1997.01
+ },
+ "ZKPUSDT": {
+  "n": 1,
+  "pnl": 1.89,
+  "wins": 1,
+  "vol": 12.89
+ },
+ "BROCCOLIUSDT": {
+  "n": 2,
+  "pnl": -2.89,
+  "wins": 1,
+  "vol": 23.42
+ },
+ "LIGHTUSDT": {
+  "n": 4,
+  "pnl": -49.37,
+  "wins": 3,
+  "vol": 679.44
+ },
+ "AUCTIONUSDT": {
+  "n": 1,
+  "pnl": 16.3,
+  "wins": 1,
+  "vol": 162.89
+ },
+ "ZRXUSDT": {
+  "n": 2,
+  "pnl": -4.44,
+  "wins": 1,
+  "vol": 736.37
+ },
+ "HOODUSDT": {
+  "n": 6,
+  "pnl": 27.52,
+  "wins": 4,
+  "vol": 6376.94
+ },
+ "MSTRUSDT": {
+  "n": 2,
+  "pnl": -675.57,
+  "wins": 1,
+  "vol": 7290.02
+ },
+ "HYPERUSDT": {
+  "n": 2,
+  "pnl": 1699.71,
+  "wins": 2,
+  "vol": 15480.64
+ },
+ "MOODENGUSDT": {
+  "n": 7,
+  "pnl": -138.68,
+  "wins": 2,
+  "vol": 5376.67
+ },
+ "XRPUSDC": {
+  "n": 38,
+  "pnl": -1.65,
+  "wins": 2,
+  "vol": 343.38
+ },
+ "MAGICUSDT": {
+  "n": 1,
+  "pnl": -647.13,
+  "wins": 0,
+  "vol": 50687.58
+ },
+ "CLANKERUSDT": {
+  "n": 1,
+  "pnl": -23.36,
+  "wins": 0,
+  "vol": 72.4
+ },
+ "GENIUSUSDT": {
+  "n": 1,
+  "pnl": -30.12,
+  "wins": 0,
+  "vol": 630.5
+ },
+ "ARPAUSDT": {
+  "n": 1,
+  "pnl": -5.89,
+  "wins": 0,
+  "vol": 231.45
+ },
+ "QUSDT": {
+  "n": 6,
+  "pnl": -24.72,
+  "wins": 1,
+  "vol": 3468.49
+ },
+ "SAFEUSDT": {
+  "n": 1,
+  "pnl": 41.73,
+  "wins": 1,
+  "vol": 166.86
+ },
+ "STEEMUSDT": {
+  "n": 1,
+  "pnl": -4.91,
+  "wins": 0,
+  "vol": 59.84
+ },
+ "PROMPTUSDT": {
+  "n": 1,
+  "pnl": -0.44,
+  "wins": 0,
+  "vol": 5.48
+ },
+ "OGNUSDT": {
+  "n": 2,
+  "pnl": 799.01,
+  "wins": 2,
+  "vol": 21943.44
+ },
+ "WETUSDT": {
+  "n": 2,
+  "pnl": -11.98,
+  "wins": 1,
+  "vol": 163.78
+ },
+ "ZKUSDT": {
+  "n": 1,
+  "pnl": 1.36,
+  "wins": 1,
+  "vol": 11.83
+ },
+ "GRIFFAINUSDT": {
+  "n": 1,
+  "pnl": 2.25,
+  "wins": 1,
+  "vol": 13.7
+ },
+ "EVAAUSDT": {
+  "n": 2,
+  "pnl": -3.96,
+  "wins": 0,
+  "vol": 73.27
+ },
+ "DEEPUSDT": {
+  "n": 1,
+  "pnl": -7.77,
+  "wins": 0,
+  "vol": 30.57
+ },
+ "SXTUSDT": {
+  "n": 1,
+  "pnl": -8.06,
+  "wins": 0,
+  "vol": 197.94
+ },
+ "ESPORTSUSDT": {
+  "n": 1,
+  "pnl": -24.08,
+  "wins": 0,
+  "vol": 173.74
+ },
+ "BREVUSDT": {
+  "n": 1,
+  "pnl": -115.02,
+  "wins": 0,
+  "vol": 1699.81
+ },
+ "GOOGLUSDT": {
+  "n": 2,
+  "pnl": -0.92,
+  "wins": 0,
+  "vol": 165.53
+ },
+ "MEMEUSDT": {
+  "n": 1,
+  "pnl": 3930.52,
+  "wins": 1,
+  "vol": 24371.12
+ },
+ "OPENAIUSDT": {
+  "n": 1,
+  "pnl": -7.28,
+  "wins": 0,
+  "vol": 86.68
+ },
+ "NIGHTUSDT": {
+  "n": 5,
+  "pnl": 78.45,
+  "wins": 4,
+  "vol": 14918.25
+ },
+ "DASHUSDT": {
+  "n": 4,
+  "pnl": 1892.76,
+  "wins": 3,
+  "vol": 32588.91
+ },
+ "TRBUSDT": {
+  "n": 2,
+  "pnl": -1113.33,
+  "wins": 1,
+  "vol": 31157.96
+ },
+ "WOOUSDT": {
+  "n": 6,
+  "pnl": -8.92,
+  "wins": 5,
+  "vol": 1674.68
+ },
+ "GRASSUSDT": {
+  "n": 12,
+  "pnl": -32.15,
+  "wins": 6,
+  "vol": 6945.37
+ },
+ "FFUSDT": {
+  "n": 1,
+  "pnl": -0.21,
+  "wins": 0,
+  "vol": 0.08
+ },
+ "REUSDT": {
+  "n": 4,
+  "pnl": 4.94,
+  "wins": 1,
+  "vol": 759.08
+ },
+ "HFTUSDT": {
+  "n": 10,
+  "pnl": 109.92,
+  "wins": 4,
+  "vol": 3377.49
+ },
+ "DIAUSDT": {
+  "n": 6,
+  "pnl": -3272.04,
+  "wins": 1,
+  "vol": 39893.82
+ },
+ "PIEVERSEUSDT": {
+  "n": 3,
+  "pnl": -2.09,
+  "wins": 0,
+  "vol": 555.35
+ },
+ "SPACEUSDT": {
+  "n": 1,
+  "pnl": -9.57,
+  "wins": 0,
+  "vol": 250.46
+ },
+ "LAYERUSDT": {
+  "n": 3,
+  "pnl": -153.11,
+  "wins": 0,
+  "vol": 822.65
+ },
+ "IOTXUSDT": {
+  "n": 2,
+  "pnl": 16.91,
+  "wins": 1,
+  "vol": 413.81
+ },
+ "INTCUSDT": {
+  "n": 3,
+  "pnl": 0.3,
+  "wins": 2,
+  "vol": 618.63
+ },
+ "METAUSDT": {
+  "n": 6,
+  "pnl": -93.71,
+  "wins": 4,
+  "vol": 9886.39
+ },
+ "AMDUSDT": {
+  "n": 3,
+  "pnl": -5.23,
+  "wins": 2,
+  "vol": 904.84
+ },
+ "CFXUSDT": {
+  "n": 6,
+  "pnl": -562.34,
+  "wins": 2,
+  "vol": 29985.68
+ },
+ "KMNOUSDT": {
+  "n": 1,
+  "pnl": 651.06,
+  "wins": 1,
+  "vol": 16273.51
+ },
+ "REZUSDT": {
+  "n": 1,
+  "pnl": 207.13,
+  "wins": 1,
+  "vol": 27465.17
+ },
+ "HOMEUSDT": {
+  "n": 1,
+  "pnl": -120.02,
+  "wins": 0,
+  "vol": 14311.65
+ },
+ "AEVOUSDT": {
+  "n": 1,
+  "pnl": 2578.88,
+  "wins": 1,
+  "vol": 15394.19
+ },
+ "ALPINEUSDT": {
+  "n": 1,
+  "pnl": 2208.18,
+  "wins": 1,
+  "vol": 26569.01
+ },
+ "SKLUSDT": {
+  "n": 1,
+  "pnl": 312.89,
+  "wins": 1,
+  "vol": 29743.92
+ },
+ "THEUSDT": {
+  "n": 1,
+  "pnl": -2242.07,
+  "wins": 0,
+  "vol": 42045.48
+ },
+ "MAVUSDT": {
+  "n": 1,
+  "pnl": 2804.95,
+  "wins": 1,
+  "vol": 22301.4
+ },
+ "PIPPINUSDT": {
+  "n": 13,
+  "pnl": -243.38,
+  "wins": 7,
+  "vol": 17461.8
+ },
+ "OMUSDT": {
+  "n": 1,
+  "pnl": -1875.89,
+  "wins": 0,
+  "vol": 37.38
+ },
+ "SKYUSDT": {
+  "n": 1,
+  "pnl": -50.65,
+  "wins": 0,
+  "vol": 702.23
+ },
+ "MSFTUSDT": {
+  "n": 1,
+  "pnl": 15.39,
+  "wins": 1,
+  "vol": 684.16
+ },
+ "NVOUSDT": {
+  "n": 1,
+  "pnl": 3.24,
+  "wins": 1,
+  "vol": 195.96
+ },
+ "CATXUSDT": {
+  "n": 3,
+  "pnl": -12.14,
+  "wins": 0,
+  "vol": 1073.2
+ },
+ "DRAMUSDT": {
+  "n": 9,
+  "pnl": -116.27,
+  "wins": 5,
+  "vol": 7964.29
+ },
+ "SOXLUSDT": {
+  "n": 1,
+  "pnl": 38.65,
+  "wins": 1,
+  "vol": 737.97
+ },
+ "MANTAUSDT": {
+  "n": 1,
+  "pnl": -249.97,
+  "wins": 0,
+  "vol": 162.44
+ },
+ "ZETAUSDT": {
+  "n": 1,
+  "pnl": -245.07,
+  "wins": 0,
+  "vol": 105.18
+ },
+ "ILVUSDT": {
+  "n": 1,
+  "pnl": -380.4,
+  "wins": 0,
+  "vol": 290.88
+ },
+ "ICXUSDT": {
+  "n": 1,
+  "pnl": -71.7,
+  "wins": 0,
+  "vol": 425.85
+ },
+ "AVNTUSDT": {
+  "n": 1,
+  "pnl": -62.83,
+  "wins": 0,
+  "vol": 27.13
+ },
+ "THETAUSDT": {
+  "n": 1,
+  "pnl": -242.89,
+  "wins": 0,
+  "vol": 58.69
+ },
+ "ICNTUSDT": {
+  "n": 1,
+  "pnl": -18.2,
+  "wins": 0,
+  "vol": 508.34
+ },
+ "u1000000MOGUSDT": {
+  "n": 2,
+  "pnl": -60.61,
+  "wins": 0,
+  "vol": 3151.66
+ },
+ "CSCOUSDT": {
+  "n": 1,
+  "pnl": 127.2,
+  "wins": 1,
+  "vol": 9243.4
+ },
+ "BMNRUSDT": {
+  "n": 1,
+  "pnl": 1097.44,
+  "wins": 1,
+  "vol": 6663.82
+ },
+ "WDCUSDT": {
+  "n": 1,
+  "pnl": -98.13,
+  "wins": 0,
+  "vol": 982.21
+ },
+ "AMZNUSDT": {
+  "n": 1,
+  "pnl": -328.85,
+  "wins": 0,
+  "vol": 7742.44
+ },
+ "BABAUSDT": {
+  "n": 1,
+  "pnl": -676.22,
+  "wins": 0,
+  "vol": 7942.35
+ },
+ "CBRSUSDT": {
+  "n": 1,
+  "pnl": -14.09,
+  "wins": 0,
+  "vol": 222.83
+ },
+ "MRVLUSDT": {
+  "n": 1,
+  "pnl": -3.16,
+  "wins": 0,
+  "vol": 12661.41
+ },
+ "TSLAUSDT": {
+  "n": 1,
+  "pnl": -509.84,
+  "wins": 0,
+  "vol": 4490.15
+ },
+ "C98USDT": {
+  "n": 3,
+  "pnl": -34.81,
+  "wins": 1,
+  "vol": 3110.28
+ },
+ "FLUXUSDT": {
+  "n": 1,
+  "pnl": -22.06,
+  "wins": 0,
+  "vol": 530.58
+ },
+ "CATIUSDT": {
+  "n": 6,
+  "pnl": -151.2,
+  "wins": 1,
+  "vol": 10061.06
+ },
+ "SAHARAUSDT": {
+  "n": 1,
+  "pnl": -255.77,
+  "wins": 0,
+  "vol": 420.39
+ },
+ "ARIAUSDT": {
+  "n": 2,
+  "pnl": -605.54,
+  "wins": 0,
+  "vol": 2666.12
+ },
+ "CYSUSDT": {
+  "n": 2,
+  "pnl": -23.05,
+  "wins": 0,
+  "vol": 1688.58
+ },
+ "BANANAUSDT": {
+  "n": 2,
+  "pnl": 5.48,
+  "wins": 1,
+  "vol": 2869.6
+ },
+ "POWERUSDT": {
+  "n": 1,
+  "pnl": -40.78,
+  "wins": 0,
+  "vol": 1187.88
+ }
+}

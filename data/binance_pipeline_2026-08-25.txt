@@ -1,0 +1,115 @@
+=== 1. DERROTERO ===
+portfolios con historial: 594
+posiciones cerradas: 108616
+rango: 2024-12-06 -> 2026-08-25
+n_pos por portfolio: mediana=73 max=2000 (cap API 2000)
+leverage usado: mediana=10x p90=51x max=150x
+margen: 6% isolated / 94% cross
+
+=== 2. MEJOR PAR POR PORTFOLIO (top 25 por PnL del par) ===
+nick                    par               n        pnl    wr  pnl_total
+道亦有道 1994               SOXLUSDT         48   174920.4  0.90   706773.7
+风雪哥                     ETHUSDT           8   133961.9  0.50   238339.1
+知危                      SOXLUSDT         36   105256.8  1.00   192109.9
+闭眼一梭哈                   BTCUSDT          33   101429.8  0.52   175629.6
+淦汇                      HYPEUSDT         18    88679.5  1.00    88709.7
+geddong                 AKEUSDT          25    73760.9  0.40   204492.0
+蓝晓颜                     BTCUSDT          11    68871.9  0.64    98471.2
+妮妮爱炒币                   BTCUSDT          10    67277.8  0.60    72727.7
+贪婪crazy                 BTCUSDT          10    64043.2  0.90   132337.2
+福宝好好                    BTCUSDT          16    61474.7  0.56   -75730.4
+佛系捞金大队长                 SOXLUSDT        128    60163.7  0.95   100881.9
+皮卡丘量化                   PTBUSDT           9    56461.7  0.22    31559.6
+GGbond哦                 SKHYNIXUSDT      18    50103.1  1.00   157203.4
+八方来财88588               ETHUSDT          23    41181.6  0.91   131300.7
+美味健康好生活                 BTCUSDT          21    37812.8  0.90    19726.0
+心如铁石                    ETHUSDT          11    31314.0  0.64     -953.5
+比特皇鲍威尔                  ETHUSDT          11    24843.2  0.91    63197.7
+HK大叔D                   EVAAUSDT         10    24693.8  0.80   195659.4
+胡经理                     BTCUSDT          10    22533.6  1.00    53042.0
+AB Alpha G              ETHUSDT          21    22323.2  0.29    52001.4
+1000万u之路目前盈利七万多u        SNDKUSDT         61    20165.1  0.95    64758.1
+米虫0520                  SKHYNIXUSDT      24    18799.7  0.88    26541.8
+相对论                     SPCXUSDT         10    18728.5  0.90    25715.0
+重返地球京津冀                 SKHYNIXUSDT       9    18118.9  0.89    28180.0
+陆观潮                     BTCUSDT          47    17031.6  0.30   -20554.3
+
+pares mas frecuentes como mejor par: {'BTCUSDT': 91, 'ETHUSDT': 76, 'SNDKUSDT': 26, 'SKHYNIXUSDT': 15, 'MUUSDT': 15, 'HYPEUSDT': 13, 'SOXLUSDT': 10, 'AKEUSDT': 10, 'SOLUSDT': 9, 'ZECUSDT': 9}
+
+=== 3. PnL NETO POR PAR (todas las posiciones) ===
+par                   n     pnl_net     wr
+BTCUSDT            7204   1177926.3   0.56
+SOXLUSDT           1216    410843.0   0.68
+KORUUSDT            883    391351.4   0.71
+SKHYNIXUSDT        2350    380304.6   0.68
+ETHUSDT            6964    299432.4   0.61
+SNDKUSDT           3655    219931.9   0.69
+XAGUSDT             419    149811.6   0.57
+MUUSDT             1969    148776.2   0.72
+SPCXUSDT           1557    135187.0   0.69
+1000PEPEUSDT        450    128414.7   0.55
+TUTUSDT            1214    108984.7   0.74
+SAMSUNGUSDT         245    108443.6   0.82
+   ...
+MSTRUSDT            241    -19661.4   0.67
+ESPORTSUSDT         807    -22143.1   0.65
+DAMUSDT              12    -22172.3   0.75
+TACUSDT             315    -24048.2   0.69
+EWYUSDT             163    -25718.1   0.69
+SOLUSDT            2150    -32229.1   0.61
+
+=== 4. XRPUSDT DEEP DIVE ===
+n=760 pnl=-3966.2 | Long: n=441 pnl=-11965.7 | Short: n=319 pnl=6726.7
+wr=0.59 | dur ganadores med=7.1h vs perdedores med=12.9h
+avg_win=98.1 avg_loss=-157.6 ratio=1.61
+
+buckets duracion:
+  <1h     n= 169 pnl=   -1944.5 wr=0.65
+  1-4h    n= 124 pnl=    3948.9 wr=0.65
+  4-12h   n= 127 pnl=    1350.2 wr=0.59
+  12-24h  n=  84 pnl=    5007.8 wr=0.56
+  1-3d    n= 124 pnl=  -14846.6 wr=0.44
+  3-7d    n=  64 pnl=    -979.6 wr=0.61
+  >7d     n=  68 pnl=    2224.8 wr=0.62
+
+por leverage:
+  <=5x    n= 107 pnl=    1366.0
+  6-20x   n= 372 pnl=   -6418.9
+  21-50x  n= 100 pnl=    -231.8
+  >50x    n= 181 pnl=      45.7
+
+hora apertura (Bogota) pnl neto:
+  00:00    -2273.3
+  01:00    -1352.9
+  02:00    -1623.8
+  03:00     2954.4
+  04:00     -287.1
+  05:00     1689.7
+  06:00     3291.8
+  07:00     1003.5
+  08:00     -807.8
+  09:00     2216.0
+  10:00     1868.1
+  11:00    -1283.4
+  12:00     -308.8
+  13:00    -2415.7
+  14:00     -733.4
+  15:00      148.2
+  16:00    -1956.6
+  17:00    -3025.2
+  18:00     -523.2
+  19:00    -9715.7
+  20:00     2593.5
+  21:00     -906.8
+  22:00     5545.6
+  23:00      663.8
+
+top traders XRP:
+  电脑玩家                      n=   4 pnl=    2726.3
+  青衣与白叟                     n=   1 pnl=    2316.6
+  Feed-Creator-4bc0690bb    n=   1 pnl=    1037.1
+  S Strategy                n=  32 pnl=    1010.4
+  交易员赤木                     n=   3 pnl=     988.9
+  FiverLTD                  n=   5 pnl=     790.6
+  Q8pure                    n=   1 pnl=     764.8
+  辞职学炒股                     n=   4 pnl=     670.0

@@ -1,0 +1,7874 @@
+[
+ {
+  "userId": 5016387,
+  "nick": "PhemexRwoVXg",
+  "total_positions": 50,
+  "total_pnl": 42660.58,
+  "n_symbols": 8,
+  "best_symbol": "SUIUSDT",
+  "best_n": 9,
+  "best_pnl": 59300.87,
+  "best_winrate": 0.556,
+  "best_share_pnl": 1.39,
+  "best_avg_dur_h": 656.4,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 9,
+    "pnl": 59300.87
+   },
+   "ONDOUSDT": {
+    "n": 6,
+    "pnl": 26664.93
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 1289.45
+   },
+   "XTIUSDT": {
+    "n": 4,
+    "pnl": 873.3
+   },
+   "COINUSDT": {
+    "n": 1,
+    "pnl": -5.58
+   },
+   "VIRTUALUSDT": {
+    "n": 6,
+    "pnl": -3787.71
+   },
+   "LINKUSDT": {
+    "n": 6,
+    "pnl": -6417.39
+   },
+   "CCUSDT": {
+    "n": 17,
+    "pnl": -35257.28
+   }
+  }
+ },
+ {
+  "userId": 5054150,
+  "nick": "PhemexlcRAIXjPGj",
+  "total_positions": 50,
+  "total_pnl": 40265.14,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": 40265.14,
+  "best_winrate": 0.4,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 19.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": 40265.14
+   }
+  }
+ },
+ {
+  "userId": 4803093,
+  "nick": "DugEFresh",
+  "total_positions": 50,
+  "total_pnl": 33790.02,
+  "n_symbols": 11,
+  "best_symbol": "XRPUSDT",
+  "best_n": 38,
+  "best_pnl": 34739.0,
+  "best_winrate": 0.368,
+  "best_share_pnl": 1.028,
+  "best_avg_dur_h": 20.1,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 38,
+    "pnl": 34739.0
+   },
+   "u1000PEPEUSDT": {
+    "n": 2,
+    "pnl": 5.0
+   },
+   "GOATUSDT": {
+    "n": 1,
+    "pnl": -10.93
+   },
+   "NOTUSDT": {
+    "n": 1,
+    "pnl": -23.57
+   },
+   "API3USDT": {
+    "n": 1,
+    "pnl": -28.19
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": -32.98
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": -60.65
+   },
+   "GPSUSDT": {
+    "n": 1,
+    "pnl": -88.75
+   },
+   "TLMUSDT": {
+    "n": 2,
+    "pnl": -209.94
+   },
+   "AVAAIUSDT": {
+    "n": 1,
+    "pnl": -231.18
+   },
+   "u1000SHIBUSDT": {
+    "n": 1,
+    "pnl": -267.81
+   }
+  }
+ },
+ {
+  "userId": 4799287,
+  "nick": "PhemexlhXNeQbZaCiWb",
+  "total_positions": 50,
+  "total_pnl": 3205.02,
+  "n_symbols": 6,
+  "best_symbol": "TAOUSDT",
+  "best_n": 11,
+  "best_pnl": 10182.45,
+  "best_winrate": 0.455,
+  "best_share_pnl": 3.177,
+  "best_avg_dur_h": 12.6,
+  "symbols": {
+   "TAOUSDT": {
+    "n": 11,
+    "pnl": 10182.45
+   },
+   "SOLUSDT": {
+    "n": 9,
+    "pnl": 939.63
+   },
+   "FILUSDT": {
+    "n": 2,
+    "pnl": -802.35
+   },
+   "BTCUSDT": {
+    "n": 14,
+    "pnl": -1084.01
+   },
+   "ZECUSDT": {
+    "n": 5,
+    "pnl": -2982.67
+   },
+   "ETHUSDT": {
+    "n": 9,
+    "pnl": -3048.04
+   }
+  }
+ },
+ {
+  "userId": 769171,
+  "nick": "DoctorElephant",
+  "total_positions": 13,
+  "total_pnl": 14830.73,
+  "n_symbols": 7,
+  "best_symbol": "BTCUSDT",
+  "best_n": 7,
+  "best_pnl": 8008.23,
+  "best_winrate": 0.286,
+  "best_share_pnl": 0.54,
+  "best_avg_dur_h": 96.0,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 8216.53
+   },
+   "BTCUSDT": {
+    "n": 7,
+    "pnl": 8008.23
+   },
+   "SEIUSDT": {
+    "n": 1,
+    "pnl": 341.41
+   },
+   "u1000PEPEUSDT": {
+    "n": 1,
+    "pnl": -308.82
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -354.7
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -498.1
+   },
+   "CRVUSDT": {
+    "n": 1,
+    "pnl": -573.82
+   }
+  }
+ },
+ {
+  "userId": 2795038,
+  "nick": "TraderHobby",
+  "total_positions": 50,
+  "total_pnl": -28165.92,
+  "n_symbols": 23,
+  "best_symbol": "ETHUSDT",
+  "best_n": 16,
+  "best_pnl": 3931.69,
+  "best_winrate": 0.562,
+  "best_share_pnl": -0.14,
+  "best_avg_dur_h": 45.6,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 16,
+    "pnl": 3931.69
+   },
+   "ACHUSDT": {
+    "n": 1,
+    "pnl": 3726.51
+   },
+   "MAVUSDT": {
+    "n": 1,
+    "pnl": 2804.95
+   },
+   "AEVOUSDT": {
+    "n": 1,
+    "pnl": 2578.88
+   },
+   "SHELLUSDT": {
+    "n": 2,
+    "pnl": 2488.29
+   },
+   "ALPINEUSDT": {
+    "n": 1,
+    "pnl": 2208.18
+   },
+   "HEMIUSDT": {
+    "n": 1,
+    "pnl": 1962.06
+   },
+   "BTCUSDT": {
+    "n": 12,
+    "pnl": 1732.69
+   },
+   "HYPERUSDT": {
+    "n": 1,
+    "pnl": 1699.1
+   },
+   "OGNUSDT": {
+    "n": 1,
+    "pnl": 798.59
+   },
+   "KMNOUSDT": {
+    "n": 1,
+    "pnl": 651.06
+   },
+   "CFXUSDT": {
+    "n": 1,
+    "pnl": 511.31
+   },
+   "SKLUSDT": {
+    "n": 1,
+    "pnl": 312.89
+   },
+   "REZUSDT": {
+    "n": 1,
+    "pnl": 207.13
+   },
+   "ESPUSDT": {
+    "n": 1,
+    "pnl": 76.57
+   },
+   "HOMEUSDT": {
+    "n": 1,
+    "pnl": -120.02
+   },
+   "KAITOUSDT": {
+    "n": 1,
+    "pnl": -1205.78
+   },
+   "THEUSDT": {
+    "n": 1,
+    "pnl": -2242.07
+   },
+   "DIAUSDT": {
+    "n": 1,
+    "pnl": -3266.13
+   },
+   "COTIUSDT": {
+    "n": 1,
+    "pnl": -6248.13
+   },
+   "ACEUSDT": {
+    "n": 1,
+    "pnl": -11135.86
+   },
+   "TUTUSDT": {
+    "n": 1,
+    "pnl": -12830.53
+   },
+   "BMTUSDT": {
+    "n": 1,
+    "pnl": -16807.3
+   }
+  }
+ },
+ {
+  "userId": 4726185,
+  "nick": "PhemexXqdAAkaOlXOODlcatjqz",
+  "total_positions": 50,
+  "total_pnl": -9285.04,
+  "n_symbols": 4,
+  "best_symbol": "ZEREBROUSDT",
+  "best_n": 18,
+  "best_pnl": 3914.67,
+  "best_winrate": 0.333,
+  "best_share_pnl": -0.422,
+  "best_avg_dur_h": 64.6,
+  "symbols": {
+   "ZEREBROUSDT": {
+    "n": 18,
+    "pnl": 3914.67
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": -296.97
+   },
+   "ARBUSDT": {
+    "n": 15,
+    "pnl": -3133.41
+   },
+   "u1000PEPEUSDT": {
+    "n": 16,
+    "pnl": -9769.33
+   }
+  }
+ },
+ {
+  "userId": 646960,
+  "nick": "Rocky",
+  "total_positions": 23,
+  "total_pnl": -32144.17,
+  "n_symbols": 7,
+  "best_symbol": "XRPUSDT",
+  "best_n": 5,
+  "best_pnl": 3696.75,
+  "best_winrate": 0.4,
+  "best_share_pnl": -0.115,
+  "best_avg_dur_h": 180.7,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": 3696.75
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 1826.5
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -1666.84
+   },
+   "XTIUSDT": {
+    "n": 2,
+    "pnl": -3265.89
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": -3278.4
+   },
+   "u1000PEPEUSDT": {
+    "n": 1,
+    "pnl": -13709.19
+   },
+   "BTCUSDT": {
+    "n": 10,
+    "pnl": -15747.1
+   }
+  }
+ },
+ {
+  "userId": 1188296,
+  "nick": "Profit-hunter",
+  "total_positions": 50,
+  "total_pnl": 12393.29,
+  "n_symbols": 32,
+  "best_symbol": "ZECUSDT",
+  "best_n": 5,
+  "best_pnl": 3635.87,
+  "best_winrate": 0.6,
+  "best_share_pnl": 0.293,
+  "best_avg_dur_h": 24.2,
+  "symbols": {
+   "XTIUSDT": {
+    "n": 1,
+    "pnl": 6262.31
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 5992.95
+   },
+   "ZECUSDT": {
+    "n": 5,
+    "pnl": 3635.87
+   },
+   "ATOMUSDT": {
+    "n": 1,
+    "pnl": 2273.94
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 1500.71
+   },
+   "BMNRUSDT": {
+    "n": 1,
+    "pnl": 1097.44
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": 1093.14
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 1003.8
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": 650.58
+   },
+   "UNIUSDT": {
+    "n": 1,
+    "pnl": 394.26
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": 384.55
+   },
+   "FILUSDT": {
+    "n": 4,
+    "pnl": 345.85
+   },
+   "CSCOUSDT": {
+    "n": 1,
+    "pnl": 127.2
+   },
+   "CRCLUSDT": {
+    "n": 1,
+    "pnl": 118.28
+   },
+   "XLMUSDT": {
+    "n": 2,
+    "pnl": 81.53
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 9.84
+   },
+   "HOODUSDT": {
+    "n": 1,
+    "pnl": -2.58
+   },
+   "MRVLUSDT": {
+    "n": 1,
+    "pnl": -3.16
+   },
+   "COINUSDT": {
+    "n": 1,
+    "pnl": -5.63
+   },
+   "CBRSUSDT": {
+    "n": 1,
+    "pnl": -14.09
+   },
+   "METAUSDT": {
+    "n": 2,
+    "pnl": -94.47
+   },
+   "WDCUSDT": {
+    "n": 1,
+    "pnl": -98.13
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -115.9
+   },
+   "DRAMUSDT": {
+    "n": 3,
+    "pnl": -141.67
+   },
+   "JUPUSDT": {
+    "n": 2,
+    "pnl": -168.81
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": -272.99
+   },
+   "AMZNUSDT": {
+    "n": 1,
+    "pnl": -328.85
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": -442.42
+   },
+   "BABAUSDT": {
+    "n": 1,
+    "pnl": -676.22
+   },
+   "MSTRUSDT": {
+    "n": 1,
+    "pnl": -693.93
+   },
+   "BCHUSDT": {
+    "n": 2,
+    "pnl": -3140.46
+   },
+   "XAGUSDT": {
+    "n": 1,
+    "pnl": -6379.66
+   }
+  }
+ },
+ {
+  "userId": 7255220,
+  "nick": "PhemexbyMENkjsxXZQyNRSHFIFT",
+  "total_positions": 46,
+  "total_pnl": -1661.0,
+  "n_symbols": 13,
+  "best_symbol": "BTCUSDT",
+  "best_n": 12,
+  "best_pnl": 2114.43,
+  "best_winrate": 0.667,
+  "best_share_pnl": -1.273,
+  "best_avg_dur_h": 352.8,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 12,
+    "pnl": 2114.43
+   },
+   "PYTHUSDT": {
+    "n": 1,
+    "pnl": 9.64
+   },
+   "PTBUSDT": {
+    "n": 1,
+    "pnl": 8.73
+   },
+   "TAOUSDT": {
+    "n": 2,
+    "pnl": 7.22
+   },
+   "PUMPBTCUSDT": {
+    "n": 1,
+    "pnl": -10.1
+   },
+   "MYXUSDT": {
+    "n": 3,
+    "pnl": -14.69
+   },
+   "ZBCNUSDT": {
+    "n": 1,
+    "pnl": -17.48
+   },
+   "HBARUSDT": {
+    "n": 3,
+    "pnl": -30.85
+   },
+   "SOMIUSDT": {
+    "n": 2,
+    "pnl": -101.32
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -455.37
+   },
+   "BNBUSDT": {
+    "n": 5,
+    "pnl": -723.31
+   },
+   "ETHUSDT": {
+    "n": 7,
+    "pnl": -1060.64
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": -1387.26
+   }
+  }
+ },
+ {
+  "userId": 705254,
+  "nick": "PhemexmNvjAFIVAYVkevKLhwDKWgTgYfMitb",
+  "total_positions": 31,
+  "total_pnl": 1965.53,
+  "n_symbols": 7,
+  "best_symbol": "BTCUSDT",
+  "best_n": 20,
+  "best_pnl": 2020.25,
+  "best_winrate": 0.6,
+  "best_share_pnl": 1.028,
+  "best_avg_dur_h": 339.7,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 20,
+    "pnl": 2020.25
+   },
+   "JCTUSDT": {
+    "n": 5,
+    "pnl": 0.04
+   },
+   "XPLUSDT": {
+    "n": 1,
+    "pnl": -0.0
+   },
+   "JELLYJELLYUSDT": {
+    "n": 1,
+    "pnl": -0.0
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -0.0
+   },
+   "CAKEUSDT": {
+    "n": 1,
+    "pnl": -1.26
+   },
+   "RIVERUSDT": {
+    "n": 1,
+    "pnl": -53.49
+   }
+  }
+ },
+ {
+  "userId": 1894920,
+  "nick": "AP37",
+  "total_positions": 50,
+  "total_pnl": 1740.31,
+  "n_symbols": 5,
+  "best_symbol": "BTCUSDT",
+  "best_n": 45,
+  "best_pnl": 1824.54,
+  "best_winrate": 0.489,
+  "best_share_pnl": 1.048,
+  "best_avg_dur_h": 8.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 45,
+    "pnl": 1824.54
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 158.21
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": -14.14
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -38.57
+   },
+   "ATOMUSDT": {
+    "n": 2,
+    "pnl": -189.73
+   }
+  }
+ },
+ {
+  "userId": 8017187,
+  "nick": "EagleTrader",
+  "total_positions": 50,
+  "total_pnl": 2562.86,
+  "n_symbols": 12,
+  "best_symbol": "SOLUSDT",
+  "best_n": 25,
+  "best_pnl": 1443.12,
+  "best_winrate": 1.0,
+  "best_share_pnl": 0.563,
+  "best_avg_dur_h": 140.9,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 25,
+    "pnl": 1443.12
+   },
+   "BTCUSDT": {
+    "n": 15,
+    "pnl": 991.68
+   },
+   "HOODUSDT": {
+    "n": 1,
+    "pnl": 34.35
+   },
+   "COINUSDT": {
+    "n": 1,
+    "pnl": 28.44
+   },
+   "CRCLUSDT": {
+    "n": 1,
+    "pnl": 19.23
+   },
+   "MSTRUSDT": {
+    "n": 1,
+    "pnl": 18.35
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": 8.92
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 5.99
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 4.49
+   },
+   "VIRTUALUSDT": {
+    "n": 1,
+    "pnl": 4.36
+   },
+   "TIAUSDT": {
+    "n": 1,
+    "pnl": 3.32
+   },
+   "HYPERUSDT": {
+    "n": 1,
+    "pnl": 0.61
+   }
+  }
+ },
+ {
+  "userId": 5133813,
+  "nick": "YOLO",
+  "total_positions": 50,
+  "total_pnl": -609.01,
+  "n_symbols": 4,
+  "best_symbol": "ETHUSDT",
+  "best_n": 10,
+  "best_pnl": 1411.43,
+  "best_winrate": 0.8,
+  "best_share_pnl": -2.318,
+  "best_avg_dur_h": 10.0,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 10,
+    "pnl": 1411.43
+   },
+   "ENAUSDT": {
+    "n": 11,
+    "pnl": 30.22
+   },
+   "BCHUSDT": {
+    "n": 15,
+    "pnl": -714.56
+   },
+   "PUMPUSDT": {
+    "n": 14,
+    "pnl": -1336.1
+   }
+  }
+ },
+ {
+  "userId": 818027,
+  "nick": "PhemexWcUnHcsrFcLcYeKxGkSpGpg",
+  "total_positions": 50,
+  "total_pnl": -3240.96,
+  "n_symbols": 10,
+  "best_symbol": "ETHUSDT",
+  "best_n": 20,
+  "best_pnl": 1365.23,
+  "best_winrate": 0.5,
+  "best_share_pnl": -0.421,
+  "best_avg_dur_h": 101.5,
+  "symbols": {
+   "AVAXUSDT": {
+    "n": 3,
+    "pnl": 1495.26
+   },
+   "ETHUSDT": {
+    "n": 20,
+    "pnl": 1365.23
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 345.23
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": 289.79
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": 181.19
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 1.9
+   },
+   "SUPERUSDT": {
+    "n": 1,
+    "pnl": -7.11
+   },
+   "UNIUSDT": {
+    "n": 2,
+    "pnl": -33.77
+   },
+   "FARTCOINUSDT": {
+    "n": 2,
+    "pnl": -807.49
+   },
+   "BTCUSDT": {
+    "n": 17,
+    "pnl": -6071.19
+   }
+  }
+ },
+ {
+  "userId": 4818955,
+  "nick": "SKRYPTONITE",
+  "total_positions": 17,
+  "total_pnl": 1220.39,
+  "n_symbols": 4,
+  "best_symbol": "ADAUSDT",
+  "best_n": 11,
+  "best_pnl": 1341.23,
+  "best_winrate": 0.364,
+  "best_share_pnl": 1.099,
+  "best_avg_dur_h": 55.1,
+  "symbols": {
+   "ADAUSDT": {
+    "n": 11,
+    "pnl": 1341.23
+   },
+   "GUNUSDT": {
+    "n": 1,
+    "pnl": -2.14
+   },
+   "ALGOUSDT": {
+    "n": 2,
+    "pnl": -44.44
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": -74.27
+   }
+  }
+ },
+ {
+  "userId": 794892,
+  "nick": "PhemextJAodXP",
+  "total_positions": 41,
+  "total_pnl": -20074.14,
+  "n_symbols": 12,
+  "best_symbol": "ZECUSDT",
+  "best_n": 16,
+  "best_pnl": 1056.51,
+  "best_winrate": 0.625,
+  "best_share_pnl": -0.053,
+  "best_avg_dur_h": 20.8,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 16,
+    "pnl": 1056.51
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": 843.64
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 215.47
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -19.26
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": -134.15
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -398.21
+   },
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": -675.94
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -1843.94
+   },
+   "ATOMUSDT": {
+    "n": 5,
+    "pnl": -1934.25
+   },
+   "FARTCOINUSDT": {
+    "n": 1,
+    "pnl": -4472.42
+   },
+   "ICPUSDT": {
+    "n": 1,
+    "pnl": -5193.76
+   },
+   "CRVUSDT": {
+    "n": 6,
+    "pnl": -7517.83
+   }
+  }
+ },
+ {
+  "userId": 1867565,
+  "nick": "Boomin",
+  "total_positions": 50,
+  "total_pnl": 647.24,
+  "n_symbols": 8,
+  "best_symbol": "BTCUSDT",
+  "best_n": 16,
+  "best_pnl": 1025.98,
+  "best_winrate": 0.688,
+  "best_share_pnl": 1.585,
+  "best_avg_dur_h": 10.1,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 16,
+    "pnl": 1025.98
+   },
+   "HYPEUSDT": {
+    "n": 7,
+    "pnl": 930.51
+   },
+   "ZECUSDT": {
+    "n": 5,
+    "pnl": 484.38
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -49.26
+   },
+   "XAGUSDT": {
+    "n": 6,
+    "pnl": -179.67
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": -181.36
+   },
+   "SOLUSDT": {
+    "n": 13,
+    "pnl": -579.6
+   },
+   "XBRUSDT": {
+    "n": 1,
+    "pnl": -803.73
+   }
+  }
+ },
+ {
+  "userId": 4596371,
+  "nick": "ChainMasters",
+  "total_positions": 50,
+  "total_pnl": 184.84,
+  "n_symbols": 5,
+  "best_symbol": "ETHUSDT",
+  "best_n": 11,
+  "best_pnl": 837.59,
+  "best_winrate": 1.0,
+  "best_share_pnl": 4.531,
+  "best_avg_dur_h": 5.6,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 11,
+    "pnl": 837.59
+   },
+   "BTCUSDT": {
+    "n": 12,
+    "pnl": 446.26
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -34.62
+   },
+   "ZECUSDT": {
+    "n": 15,
+    "pnl": -156.41
+   },
+   "DOGEUSDT": {
+    "n": 10,
+    "pnl": -907.99
+   }
+  }
+ },
+ {
+  "userId": 1485428,
+  "nick": "Ted15",
+  "total_positions": 27,
+  "total_pnl": 740.4,
+  "n_symbols": 5,
+  "best_symbol": "u1000PEPEUSDT",
+  "best_n": 22,
+  "best_pnl": 835.85,
+  "best_winrate": 0.409,
+  "best_share_pnl": 1.129,
+  "best_avg_dur_h": 122.5,
+  "symbols": {
+   "u1000PEPEUSDT": {
+    "n": 22,
+    "pnl": 835.85
+   },
+   "PUMPUSDT": {
+    "n": 1,
+    "pnl": 47.29
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 0.37
+   },
+   "AZTECUSDT": {
+    "n": 1,
+    "pnl": -11.44
+   },
+   "GUAUSDT": {
+    "n": 2,
+    "pnl": -131.67
+   }
+  }
+ },
+ {
+  "userId": 4804101,
+  "nick": "PhemexwGdhqneoWZZRFLiC",
+  "total_positions": 50,
+  "total_pnl": 770.77,
+  "n_symbols": 14,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": 828.74,
+  "best_winrate": 0.8,
+  "best_share_pnl": 1.075,
+  "best_avg_dur_h": 1.5,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 2,
+    "pnl": 1274.26
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": 828.74
+   },
+   "SNDKUSDT": {
+    "n": 4,
+    "pnl": 757.81
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 709.6
+   },
+   "FARTCOINUSDT": {
+    "n": 3,
+    "pnl": 434.44
+   },
+   "NAS100USDT": {
+    "n": 2,
+    "pnl": -7.48
+   },
+   "HYPEUSDT": {
+    "n": 3,
+    "pnl": -40.13
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": -161.75
+   },
+   "ATOMUSDT": {
+    "n": 1,
+    "pnl": -164.3
+   },
+   "XTIUSDT": {
+    "n": 1,
+    "pnl": -169.64
+   },
+   "SUIUSDT": {
+    "n": 2,
+    "pnl": -232.15
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -543.71
+   },
+   "PUMPUSDT": {
+    "n": 7,
+    "pnl": -795.71
+   },
+   "ETHUSDT": {
+    "n": 16,
+    "pnl": -1119.21
+   }
+  }
+ },
+ {
+  "userId": 2898655,
+  "nick": "JohnJohn",
+  "total_positions": 50,
+  "total_pnl": 1144.57,
+  "n_symbols": 25,
+  "best_symbol": "BTCUSDT",
+  "best_n": 6,
+  "best_pnl": 823.52,
+  "best_winrate": 0.167,
+  "best_share_pnl": 0.719,
+  "best_avg_dur_h": 220.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": 823.52
+   },
+   "YFIUSDT": {
+    "n": 1,
+    "pnl": 99.59
+   },
+   "AVAXUSDT": {
+    "n": 2,
+    "pnl": 79.15
+   },
+   "TUTUSDT": {
+    "n": 1,
+    "pnl": 43.11
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": 42.26
+   },
+   "ADAUSDT": {
+    "n": 2,
+    "pnl": 41.74
+   },
+   "OPUSDT": {
+    "n": 1,
+    "pnl": 38.51
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": 38.01
+   },
+   "TRUMPUSDT": {
+    "n": 1,
+    "pnl": 34.14
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": 33.74
+   },
+   "WLDUSDT": {
+    "n": 1,
+    "pnl": 30.71
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 30.57
+   },
+   "INJUSDT": {
+    "n": 2,
+    "pnl": 29.14
+   },
+   "ARBUSDT": {
+    "n": 1,
+    "pnl": 29.01
+   },
+   "BCHUSDT": {
+    "n": 4,
+    "pnl": 25.99
+   },
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": 11.87
+   },
+   "BNBUSDT": {
+    "n": 3,
+    "pnl": 7.87
+   },
+   "ETHFIUSDT": {
+    "n": 1,
+    "pnl": 1.13
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -3.67
+   },
+   "PUMPUSDT": {
+    "n": 1,
+    "pnl": -4.25
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": -19.15
+   },
+   "SUIUSDT": {
+    "n": 4,
+    "pnl": -20.44
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -32.02
+   },
+   "DOGEUSDT": {
+    "n": 4,
+    "pnl": -48.18
+   },
+   "ETHUSDT": {
+    "n": 4,
+    "pnl": -167.76
+   }
+  }
+ },
+ {
+  "userId": 8019881,
+  "nick": "Rose",
+  "total_positions": 50,
+  "total_pnl": -865.88,
+  "n_symbols": 14,
+  "best_symbol": "XRPUSDT",
+  "best_n": 5,
+  "best_pnl": 770.17,
+  "best_winrate": 0.8,
+  "best_share_pnl": -0.889,
+  "best_avg_dur_h": 16.9,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": 770.17
+   },
+   "BTCUSDT": {
+    "n": 16,
+    "pnl": 364.88
+   },
+   "MUBARAKUSDT": {
+    "n": 3,
+    "pnl": 213.52
+   },
+   "BMTUSDT": {
+    "n": 2,
+    "pnl": 125.26
+   },
+   "HFTUSDT": {
+    "n": 5,
+    "pnl": 121.85
+   },
+   "BCHUSDT": {
+    "n": 2,
+    "pnl": 48.87
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 28.59
+   },
+   "IOTXUSDT": {
+    "n": 1,
+    "pnl": 24.88
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 19.8
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": 5.27
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": -1.45
+   },
+   "C98USDT": {
+    "n": 3,
+    "pnl": -34.81
+   },
+   "PUMPUSDT": {
+    "n": 3,
+    "pnl": -209.06
+   },
+   "TUTUSDT": {
+    "n": 6,
+    "pnl": -2343.65
+   }
+  }
+ },
+ {
+  "userId": 692178,
+  "nick": "PhemexTmsyChOcUopITikFqKVazJjyfcEfVO",
+  "total_positions": 34,
+  "total_pnl": -614167.95,
+  "n_symbols": 9,
+  "best_symbol": "COAIUSDT",
+  "best_n": 6,
+  "best_pnl": 691.8,
+  "best_winrate": 0.833,
+  "best_share_pnl": -0.001,
+  "best_avg_dur_h": 2.2,
+  "symbols": {
+   "COOKIEUSDT": {
+    "n": 1,
+    "pnl": 9520.23
+   },
+   "HEMIUSDT": {
+    "n": 1,
+    "pnl": 1255.23
+   },
+   "AIAUSDT": {
+    "n": 2,
+    "pnl": 1224.56
+   },
+   "COAIUSDT": {
+    "n": 6,
+    "pnl": 691.8
+   },
+   "FARTCOINUSDT": {
+    "n": 1,
+    "pnl": 32.71
+   },
+   "STRKUSDT": {
+    "n": 2,
+    "pnl": -749.28
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": -10562.97
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": -65219.18
+   },
+   "POPCATUSDT": {
+    "n": 15,
+    "pnl": -550361.05
+   }
+  }
+ },
+ {
+  "userId": 8843803,
+  "nick": "DropTopWop",
+  "total_positions": 49,
+  "total_pnl": -100.3,
+  "n_symbols": 10,
+  "best_symbol": "XRPUSDT",
+  "best_n": 7,
+  "best_pnl": 632.84,
+  "best_winrate": 0.143,
+  "best_share_pnl": -6.31,
+  "best_avg_dur_h": 82.5,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 7,
+    "pnl": 632.84
+   },
+   "SOLUSDT": {
+    "n": 11,
+    "pnl": 333.38
+   },
+   "BTCUSDC": {
+    "n": 4,
+    "pnl": 5.71
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -2.56
+   },
+   "SOLUSDC": {
+    "n": 1,
+    "pnl": -5.53
+   },
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": -34.77
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": -44.78
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": -190.6
+   },
+   "ETHUSDC": {
+    "n": 5,
+    "pnl": -341.66
+   },
+   "SUIUSDT": {
+    "n": 14,
+    "pnl": -452.34
+   }
+  }
+ },
+ {
+  "userId": 8023786,
+  "nick": "Ultra_Trader_90",
+  "total_positions": 50,
+  "total_pnl": -7883.28,
+  "n_symbols": 9,
+  "best_symbol": "ETHUSDT",
+  "best_n": 8,
+  "best_pnl": 524.74,
+  "best_winrate": 0.875,
+  "best_share_pnl": -0.067,
+  "best_avg_dur_h": 202.3,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 8,
+    "pnl": 524.74
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 150.6
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 24.97
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -172.52
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": -177.42
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": -214.29
+   },
+   "ONDOUSDT": {
+    "n": 2,
+    "pnl": -374.98
+   },
+   "BTCUSDT": {
+    "n": 26,
+    "pnl": -2028.65
+   },
+   "BNBUSDT": {
+    "n": 2,
+    "pnl": -5615.73
+   }
+  }
+ },
+ {
+  "userId": 4474811,
+  "nick": "PhemexhFtHwAlfIk",
+  "total_positions": 50,
+  "total_pnl": -684.3,
+  "n_symbols": 14,
+  "best_symbol": "BTCUSDT",
+  "best_n": 15,
+  "best_pnl": 523.86,
+  "best_winrate": 0.467,
+  "best_share_pnl": -0.766,
+  "best_avg_dur_h": 11.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 15,
+    "pnl": 523.86
+   },
+   "FILUSDT": {
+    "n": 1,
+    "pnl": 369.62
+   },
+   "AZTECUSDT": {
+    "n": 1,
+    "pnl": 221.21
+   },
+   "ETHUSDT": {
+    "n": 14,
+    "pnl": 80.25
+   },
+   "LUNCUSDT": {
+    "n": 1,
+    "pnl": 13.69
+   },
+   "CCUSDT": {
+    "n": 1,
+    "pnl": -21.14
+   },
+   "ATOMUSDT": {
+    "n": 1,
+    "pnl": -107.04
+   },
+   "VINEUSDT": {
+    "n": 1,
+    "pnl": -112.82
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": -128.67
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -164.13
+   },
+   "USUSDT": {
+    "n": 1,
+    "pnl": -209.1
+   },
+   "ONDOUSDT": {
+    "n": 2,
+    "pnl": -236.48
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": -308.13
+   },
+   "BCHUSDT": {
+    "n": 5,
+    "pnl": -605.42
+   }
+  }
+ },
+ {
+  "userId": 4780117,
+  "nick": "Maryy512",
+  "total_positions": 13,
+  "total_pnl": 654.49,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 8,
+  "best_pnl": 518.15,
+  "best_winrate": 1.0,
+  "best_share_pnl": 0.792,
+  "best_avg_dur_h": 244.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 8,
+    "pnl": 518.15
+   },
+   "SUIUSDT": {
+    "n": 3,
+    "pnl": 125.6
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": 10.74
+   }
+  }
+ },
+ {
+  "userId": 649655,
+  "nick": "Pandapunch ",
+  "total_positions": 50,
+  "total_pnl": -1346.33,
+  "n_symbols": 5,
+  "best_symbol": "BTCUSDT",
+  "best_n": 28,
+  "best_pnl": 477.99,
+  "best_winrate": 0.821,
+  "best_share_pnl": -0.355,
+  "best_avg_dur_h": 93.5,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 28,
+    "pnl": 477.99
+   },
+   "KASUSDT": {
+    "n": 7,
+    "pnl": -142.51
+   },
+   "DOTUSDT": {
+    "n": 2,
+    "pnl": -183.39
+   },
+   "SOLUSDT": {
+    "n": 12,
+    "pnl": -486.29
+   },
+   "CFXUSDT": {
+    "n": 1,
+    "pnl": -1012.14
+   }
+  }
+ },
+ {
+  "userId": 5021975,
+  "nick": "PhemexWEmimNFClfhJTvqBHNnzcnSg",
+  "total_positions": 50,
+  "total_pnl": 649.21,
+  "n_symbols": 22,
+  "best_symbol": "LABUSDT",
+  "best_n": 12,
+  "best_pnl": 475.0,
+  "best_winrate": 0.667,
+  "best_share_pnl": 0.732,
+  "best_avg_dur_h": 58.3,
+  "symbols": {
+   "LABUSDT": {
+    "n": 12,
+    "pnl": 475.0
+   },
+   "SKHYNIXUSDT": {
+    "n": 5,
+    "pnl": 226.28
+   },
+   "TRADOORUSDT": {
+    "n": 3,
+    "pnl": 147.8
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": 96.87
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 59.82
+   },
+   "PTUSDT": {
+    "n": 2,
+    "pnl": 18.18
+   },
+   "AUCTIONUSDT": {
+    "n": 1,
+    "pnl": 16.3
+   },
+   "ZBTUSDT": {
+    "n": 1,
+    "pnl": 9.98
+   },
+   "u1000PEPEUSDT": {
+    "n": 2,
+    "pnl": 3.84
+   },
+   "IPUSDT": {
+    "n": 1,
+    "pnl": 2.77
+   },
+   "BUSDT": {
+    "n": 1,
+    "pnl": 2.34
+   },
+   "CLOUSDT": {
+    "n": 1,
+    "pnl": 2.25
+   },
+   "ZKPUSDT": {
+    "n": 1,
+    "pnl": 1.89
+   },
+   "BROCCOLIUSDT": {
+    "n": 1,
+    "pnl": 1.83
+   },
+   "DUSKUSDT": {
+    "n": 1,
+    "pnl": 0.4
+   },
+   "GUNUSDT": {
+    "n": 1,
+    "pnl": -1.72
+   },
+   "ZRXUSDT": {
+    "n": 1,
+    "pnl": -6.76
+   },
+   "HANAUSDT": {
+    "n": 1,
+    "pnl": -9.87
+   },
+   "FHEUSDT": {
+    "n": 1,
+    "pnl": -16.14
+   },
+   "ZROUSDT": {
+    "n": 1,
+    "pnl": -40.44
+   },
+   "LIGHTUSDT": {
+    "n": 4,
+    "pnl": -49.37
+   },
+   "RIVERUSDT": {
+    "n": 3,
+    "pnl": -292.05
+   }
+  }
+ },
+ {
+  "userId": 7158316,
+  "nick": "Gambler",
+  "total_positions": 50,
+  "total_pnl": -2616.99,
+  "n_symbols": 27,
+  "best_symbol": "BTCUSDT",
+  "best_n": 7,
+  "best_pnl": 403.52,
+  "best_winrate": 0.857,
+  "best_share_pnl": -0.154,
+  "best_avg_dur_h": 70.7,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 7,
+    "pnl": 403.52
+   },
+   "GPSUSDT": {
+    "n": 1,
+    "pnl": 113.98
+   },
+   "BIGTIMEUSDT": {
+    "n": 1,
+    "pnl": 34.57
+   },
+   "STGUSDT": {
+    "n": 1,
+    "pnl": 27.92
+   },
+   "ZENUSDT": {
+    "n": 1,
+    "pnl": 27.44
+   },
+   "ARKMUSDT": {
+    "n": 1,
+    "pnl": 19.91
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": 19.36
+   },
+   "SOLUSDT": {
+    "n": 4,
+    "pnl": 14.66
+   },
+   "CAKEUSDT": {
+    "n": 1,
+    "pnl": 13.74
+   },
+   "ETCUSDT": {
+    "n": 1,
+    "pnl": 13.06
+   },
+   "ASTERUSDT": {
+    "n": 1,
+    "pnl": 10.81
+   },
+   "BANKUSDT": {
+    "n": 3,
+    "pnl": 7.18
+   },
+   "TONUSDT": {
+    "n": 1,
+    "pnl": 6.78
+   },
+   "CKBUSDT": {
+    "n": 2,
+    "pnl": 6.56
+   },
+   "DYDXUSDT": {
+    "n": 1,
+    "pnl": 5.71
+   },
+   "PYTHUSDT": {
+    "n": 1,
+    "pnl": 1.72
+   },
+   "SYNUSDT": {
+    "n": 1,
+    "pnl": -8.84
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -30.85
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -35.07
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": -39.78
+   },
+   "MIRAUSDT": {
+    "n": 1,
+    "pnl": -59.18
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -73.14
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -119.36
+   },
+   "INJUSDT": {
+    "n": 1,
+    "pnl": -153.87
+   },
+   "TAOUSDT": {
+    "n": 9,
+    "pnl": -321.23
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -775.61
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": -1726.98
+   }
+  }
+ },
+ {
+  "userId": 5044528,
+  "nick": "PhemexSQgiKqtktnWhzk",
+  "total_positions": 50,
+  "total_pnl": -8319.74,
+  "n_symbols": 6,
+  "best_symbol": "ONDOUSDT",
+  "best_n": 13,
+  "best_pnl": 370.24,
+  "best_winrate": 0.077,
+  "best_share_pnl": -0.045,
+  "best_avg_dur_h": 160.5,
+  "symbols": {
+   "ONDOUSDT": {
+    "n": 13,
+    "pnl": 370.24
+   },
+   "SYRUPUSDT": {
+    "n": 1,
+    "pnl": 332.89
+   },
+   "XRPUSDT": {
+    "n": 7,
+    "pnl": 13.61
+   },
+   "CCUSDT": {
+    "n": 9,
+    "pnl": -284.13
+   },
+   "ENAUSDT": {
+    "n": 13,
+    "pnl": -441.31
+   },
+   "SOLUSDT": {
+    "n": 7,
+    "pnl": -8311.04
+   }
+  }
+ },
+ {
+  "userId": 3845968,
+  "nick": "PhemexmBnWYPgYNYzjrRMEoeExiygdmXTCoI",
+  "total_positions": 48,
+  "total_pnl": -69.34,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 40,
+  "best_pnl": 348.72,
+  "best_winrate": 0.525,
+  "best_share_pnl": -5.029,
+  "best_avg_dur_h": 38.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 40,
+    "pnl": 348.72
+   },
+   "ETHUSDT": {
+    "n": 8,
+    "pnl": -418.06
+   }
+  }
+ },
+ {
+  "userId": 2279671,
+  "nick": "biggestloser",
+  "total_positions": 50,
+  "total_pnl": 1617.66,
+  "n_symbols": 22,
+  "best_symbol": "SNDKUSDT",
+  "best_n": 6,
+  "best_pnl": 343.79,
+  "best_winrate": 1.0,
+  "best_share_pnl": 0.213,
+  "best_avg_dur_h": 11.4,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": 458.0
+   },
+   "SNDKUSDT": {
+    "n": 6,
+    "pnl": 343.79
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 319.41
+   },
+   "TAOUSDT": {
+    "n": 3,
+    "pnl": 256.24
+   },
+   "HYPEUSDT": {
+    "n": 5,
+    "pnl": 222.68
+   },
+   "BNBUSDT": {
+    "n": 6,
+    "pnl": 217.95
+   },
+   "BEAMUSDT": {
+    "n": 4,
+    "pnl": 155.14
+   },
+   "ZECUSDT": {
+    "n": 2,
+    "pnl": 141.88
+   },
+   "BOMEUSDT": {
+    "n": 1,
+    "pnl": 94.59
+   },
+   "XTIUSDT": {
+    "n": 1,
+    "pnl": 76.17
+   },
+   "ADAUSDT": {
+    "n": 3,
+    "pnl": 60.83
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": 19.44
+   },
+   "u1000PEPEUSDT": {
+    "n": 1,
+    "pnl": 18.85
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": 16.92
+   },
+   "ZORAUSDT": {
+    "n": 1,
+    "pnl": 13.98
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 9.53
+   },
+   "NVDAUSDT": {
+    "n": 1,
+    "pnl": 5.13
+   },
+   "NAS100USDT": {
+    "n": 1,
+    "pnl": -33.92
+   },
+   "TUTUSDT": {
+    "n": 1,
+    "pnl": -46.11
+   },
+   "ZILUSDT": {
+    "n": 1,
+    "pnl": -130.37
+   },
+   "VETUSDT": {
+    "n": 1,
+    "pnl": -239.21
+   },
+   "SPCXUSDT": {
+    "n": 5,
+    "pnl": -363.26
+   }
+  }
+ },
+ {
+  "userId": 9175165,
+  "nick": "Helios-MR",
+  "total_positions": 50,
+  "total_pnl": 255.35,
+  "n_symbols": 2,
+  "best_symbol": "DOGEUSDT",
+  "best_n": 26,
+  "best_pnl": 335.6,
+  "best_winrate": 0.538,
+  "best_share_pnl": 1.314,
+  "best_avg_dur_h": 20.1,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 26,
+    "pnl": 335.6
+   },
+   "BNBUSDT": {
+    "n": 24,
+    "pnl": -80.25
+   }
+  }
+ },
+ {
+  "userId": 4339872,
+  "nick": "PhemexgzAeXky",
+  "total_positions": 50,
+  "total_pnl": -2386.48,
+  "n_symbols": 21,
+  "best_symbol": "APTUSDT",
+  "best_n": 5,
+  "best_pnl": 329.47,
+  "best_winrate": 1.0,
+  "best_share_pnl": -0.138,
+  "best_avg_dur_h": 52.0,
+  "symbols": {
+   "DASHUSDT": {
+    "n": 1,
+    "pnl": 600.58
+   },
+   "APTUSDT": {
+    "n": 5,
+    "pnl": 329.47
+   },
+   "LINKUSDT": {
+    "n": 3,
+    "pnl": 162.01
+   },
+   "TAOUSDT": {
+    "n": 4,
+    "pnl": 157.01
+   },
+   "HBARUSDT": {
+    "n": 2,
+    "pnl": 143.0
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": 104.17
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": 92.75
+   },
+   "ZORAUSDT": {
+    "n": 3,
+    "pnl": 88.2
+   },
+   "TRUMPUSDT": {
+    "n": 3,
+    "pnl": 83.7
+   },
+   "ZENUSDT": {
+    "n": 2,
+    "pnl": 79.71
+   },
+   "NIGHTUSDT": {
+    "n": 3,
+    "pnl": 76.05
+   },
+   "FILUSDT": {
+    "n": 2,
+    "pnl": 58.01
+   },
+   "DOTUSDT": {
+    "n": 2,
+    "pnl": 57.81
+   },
+   "STXUSDT": {
+    "n": 1,
+    "pnl": 52.72
+   },
+   "ADAUSDT": {
+    "n": 2,
+    "pnl": 48.42
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": 27.68
+   },
+   "VVVUSDT": {
+    "n": 1,
+    "pnl": 19.24
+   },
+   "MOODENGUSDT": {
+    "n": 1,
+    "pnl": 14.92
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 4.25
+   },
+   "ETHUSDT": {
+    "n": 7,
+    "pnl": -1870.77
+   },
+   "YFIUSDT": {
+    "n": 1,
+    "pnl": -2715.4
+   }
+  }
+ },
+ {
+  "userId": 719522,
+  "nick": "WallStTrader",
+  "total_positions": 25,
+  "total_pnl": -2741.23,
+  "n_symbols": 8,
+  "best_symbol": "BTCUSDT",
+  "best_n": 18,
+  "best_pnl": 326.01,
+  "best_winrate": 0.611,
+  "best_share_pnl": -0.119,
+  "best_avg_dur_h": 17.7,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 18,
+    "pnl": 326.01
+   },
+   "ASTERUSDT": {
+    "n": 1,
+    "pnl": -81.39
+   },
+   "HIPPOUSDT": {
+    "n": 1,
+    "pnl": -146.24
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -235.61
+   },
+   "XPLUSDT": {
+    "n": 1,
+    "pnl": -339.0
+   },
+   "CUSDT": {
+    "n": 1,
+    "pnl": -477.29
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": -581.08
+   },
+   "ARBUSDT": {
+    "n": 1,
+    "pnl": -1206.62
+   }
+  }
+ },
+ {
+  "userId": 746961,
+  "nick": "achilles",
+  "total_positions": 50,
+  "total_pnl": 1122.01,
+  "n_symbols": 10,
+  "best_symbol": "BTCUSDT",
+  "best_n": 28,
+  "best_pnl": 311.56,
+  "best_winrate": 0.607,
+  "best_share_pnl": 0.278,
+  "best_avg_dur_h": 9.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 28,
+    "pnl": 311.56
+   },
+   "MUXUSDT": {
+    "n": 2,
+    "pnl": 154.99
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 136.42
+   },
+   "XTIUSDT": {
+    "n": 4,
+    "pnl": 108.41
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 103.53
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": 80.04
+   },
+   "ZECUSDT": {
+    "n": 3,
+    "pnl": 78.65
+   },
+   "XAGUSDT": {
+    "n": 5,
+    "pnl": 74.41
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": 38.45
+   },
+   "XAUUSDT": {
+    "n": 4,
+    "pnl": 35.55
+   }
+  }
+ },
+ {
+  "userId": 9179690,
+  "nick": "Selene-DS",
+  "total_positions": 29,
+  "total_pnl": 273.33,
+  "n_symbols": 2,
+  "best_symbol": "DOGEUSDT",
+  "best_n": 16,
+  "best_pnl": 305.94,
+  "best_winrate": 0.438,
+  "best_share_pnl": 1.119,
+  "best_avg_dur_h": 9.4,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 16,
+    "pnl": 305.94
+   },
+   "BNBUSDT": {
+    "n": 13,
+    "pnl": -32.61
+   }
+  }
+ },
+ {
+  "userId": 1047077,
+  "nick": "Investment Forecasters ",
+  "total_positions": 50,
+  "total_pnl": 286.12,
+  "n_symbols": 9,
+  "best_symbol": "ETHUSDT",
+  "best_n": 11,
+  "best_pnl": 290.92,
+  "best_winrate": 0.273,
+  "best_share_pnl": 1.017,
+  "best_avg_dur_h": 24.6,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 11,
+    "pnl": 290.92
+   },
+   "SOLUSDT": {
+    "n": 4,
+    "pnl": 267.52
+   },
+   "XAUUSDT": {
+    "n": 5,
+    "pnl": 52.82
+   },
+   "XTIUSDT": {
+    "n": 6,
+    "pnl": -7.69
+   },
+   "TRUMPUSDT": {
+    "n": 3,
+    "pnl": -18.95
+   },
+   "CHIPUSDT": {
+    "n": 1,
+    "pnl": -19.93
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -22.43
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": -23.84
+   },
+   "BTCUSDT": {
+    "n": 15,
+    "pnl": -232.29
+   }
+  }
+ },
+ {
+  "userId": 1046511,
+  "nick": "cremebean",
+  "total_positions": 17,
+  "total_pnl": 315.69,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 10,
+  "best_pnl": 286.73,
+  "best_winrate": 1.0,
+  "best_share_pnl": 0.908,
+  "best_avg_dur_h": 539.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 10,
+    "pnl": 286.73
+   },
+   "ETHUSDT": {
+    "n": 6,
+    "pnl": 36.24
+   },
+   "OPENAIUSDT": {
+    "n": 1,
+    "pnl": -7.28
+   }
+  }
+ },
+ {
+  "userId": 8167242,
+  "nick": "Phemex_Arnvidr",
+  "total_positions": 40,
+  "total_pnl": 2.07,
+  "n_symbols": 25,
+  "best_symbol": "BTCUSDT",
+  "best_n": 6,
+  "best_pnl": 284.47,
+  "best_winrate": 0.5,
+  "best_share_pnl": 137.717,
+  "best_avg_dur_h": 745.4,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": 284.47
+   },
+   "DUSKUSDT": {
+    "n": 2,
+    "pnl": 253.93
+   },
+   "ZROUSDT": {
+    "n": 1,
+    "pnl": 212.1
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 97.2
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": 85.27
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": 75.34
+   },
+   "ACHUSDT": {
+    "n": 1,
+    "pnl": 52.71
+   },
+   "POLUSDT": {
+    "n": 1,
+    "pnl": 29.22
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 25.68
+   },
+   "BATUSDT": {
+    "n": 1,
+    "pnl": 14.83
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": -0.45
+   },
+   "INJUSDT": {
+    "n": 1,
+    "pnl": -10.94
+   },
+   "MINAUSDT": {
+    "n": 1,
+    "pnl": -13.25
+   },
+   "ACEUSDT": {
+    "n": 2,
+    "pnl": -16.57
+   },
+   "ZENUSDT": {
+    "n": 1,
+    "pnl": -23.63
+   },
+   "CRVUSDT": {
+    "n": 1,
+    "pnl": -30.03
+   },
+   "VICUSDT": {
+    "n": 1,
+    "pnl": -30.13
+   },
+   "BCHUSDT": {
+    "n": 1,
+    "pnl": -47.95
+   },
+   "EDUUSDT": {
+    "n": 1,
+    "pnl": -53.65
+   },
+   "ZECUSDT": {
+    "n": 4,
+    "pnl": -57.62
+   },
+   "CHZUSDT": {
+    "n": 1,
+    "pnl": -101.86
+   },
+   "PARTIUSDT": {
+    "n": 2,
+    "pnl": -130.62
+   },
+   "RAREUSDT": {
+    "n": 2,
+    "pnl": -139.42
+   },
+   "1INCHUSDT": {
+    "n": 1,
+    "pnl": -202.43
+   },
+   "LSKUSDT": {
+    "n": 2,
+    "pnl": -270.11
+   }
+  }
+ },
+ {
+  "userId": 5102859,
+  "nick": "Wolfi",
+  "total_positions": 50,
+  "total_pnl": -3350.44,
+  "n_symbols": 2,
+  "best_symbol": "XBRUSDT",
+  "best_n": 46,
+  "best_pnl": 273.64,
+  "best_winrate": 0.913,
+  "best_share_pnl": -0.082,
+  "best_avg_dur_h": 54.3,
+  "symbols": {
+   "XBRUSDT": {
+    "n": 46,
+    "pnl": 273.64
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": -3624.08
+   }
+  }
+ },
+ {
+  "userId": 4791968,
+  "nick": "Arvin_CK",
+  "total_positions": 50,
+  "total_pnl": 125.17,
+  "n_symbols": 4,
+  "best_symbol": "SOLUSDT",
+  "best_n": 46,
+  "best_pnl": 257.4,
+  "best_winrate": 0.674,
+  "best_share_pnl": 2.056,
+  "best_avg_dur_h": 31.0,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 46,
+    "pnl": 257.4
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 3.78
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -4.2
+   },
+   "DOTUSDT": {
+    "n": 2,
+    "pnl": -131.8
+   }
+  }
+ },
+ {
+  "userId": 4534475,
+  "nick": "CryptoSicko",
+  "total_positions": 50,
+  "total_pnl": -6484.34,
+  "n_symbols": 25,
+  "best_symbol": "WLDUSDT",
+  "best_n": 7,
+  "best_pnl": 250.63,
+  "best_winrate": 0.429,
+  "best_share_pnl": -0.039,
+  "best_avg_dur_h": 13.3,
+  "symbols": {
+   "CGPTUSDT": {
+    "n": 1,
+    "pnl": 583.15
+   },
+   "HUSDT": {
+    "n": 2,
+    "pnl": 402.8
+   },
+   "HYPEUSDT": {
+    "n": 4,
+    "pnl": 260.19
+   },
+   "WLDUSDT": {
+    "n": 7,
+    "pnl": 250.63
+   },
+   "PORTALUSDT": {
+    "n": 2,
+    "pnl": 224.69
+   },
+   "RONUSDT": {
+    "n": 1,
+    "pnl": 89.57
+   },
+   "USELESSUSDT": {
+    "n": 1,
+    "pnl": 19.47
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 8.6
+   },
+   "PUMPBTCUSDT": {
+    "n": 1,
+    "pnl": -7.94
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -29.14
+   },
+   "LABUSDT": {
+    "n": 4,
+    "pnl": -41.42
+   },
+   "UBUSDT": {
+    "n": 1,
+    "pnl": -62.9
+   },
+   "SNDKUSDT": {
+    "n": 1,
+    "pnl": -66.76
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": -83.39
+   },
+   "BANANAS31USDT": {
+    "n": 1,
+    "pnl": -84.45
+   },
+   "JUPUSDT": {
+    "n": 1,
+    "pnl": -91.77
+   },
+   "EPICUSDT": {
+    "n": 1,
+    "pnl": -110.62
+   },
+   "LINKUSDT": {
+    "n": 4,
+    "pnl": -145.19
+   },
+   "GIGGLEUSDT": {
+    "n": 1,
+    "pnl": -147.27
+   },
+   "BCHUSDT": {
+    "n": 3,
+    "pnl": -150.99
+   },
+   "SPCXUSDT": {
+    "n": 3,
+    "pnl": -308.61
+   },
+   "FIDAUSDT": {
+    "n": 1,
+    "pnl": -654.38
+   },
+   "TONUSDT": {
+    "n": 1,
+    "pnl": -1273.08
+   },
+   "ZECUSDT": {
+    "n": 5,
+    "pnl": -1488.23
+   },
+   "EDENUSDT": {
+    "n": 1,
+    "pnl": -3577.32
+   }
+  }
+ },
+ {
+  "userId": 7133153,
+  "nick": "PhemexxKiTwYCgMNlmtZWfUpNhTWepFHw",
+  "total_positions": 50,
+  "total_pnl": -648.94,
+  "n_symbols": 13,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": 238.66,
+  "best_winrate": 1.0,
+  "best_share_pnl": -0.368,
+  "best_avg_dur_h": 818.7,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": 238.66
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": 137.13
+   },
+   "WLDUSDT": {
+    "n": 6,
+    "pnl": 135.18
+   },
+   "BCHUSDT": {
+    "n": 4,
+    "pnl": 131.8
+   },
+   "PIPPINUSDT": {
+    "n": 5,
+    "pnl": 104.5
+   },
+   "TAOUSDT": {
+    "n": 4,
+    "pnl": 93.3
+   },
+   "SIRENUSDT": {
+    "n": 7,
+    "pnl": 84.3
+   },
+   "SUIUSDT": {
+    "n": 4,
+    "pnl": 78.85
+   },
+   "ZROUSDT": {
+    "n": 4,
+    "pnl": 63.19
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": 60.12
+   },
+   "SOLUSDT": {
+    "n": 3,
+    "pnl": 58.63
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": 41.28
+   },
+   "OMUSDT": {
+    "n": 1,
+    "pnl": -1875.89
+   }
+  }
+ },
+ {
+  "userId": 4482091,
+  "nick": "BillFromTheVil DeepSix",
+  "total_positions": 13,
+  "total_pnl": 110.6,
+  "n_symbols": 3,
+  "best_symbol": "ZECUSDT",
+  "best_n": 8,
+  "best_pnl": 233.61,
+  "best_winrate": 0.75,
+  "best_share_pnl": 2.112,
+  "best_avg_dur_h": 53.0,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 8,
+    "pnl": 233.61
+   },
+   "XLMUSDT": {
+    "n": 2,
+    "pnl": -26.57
+   },
+   "SOLUSDT": {
+    "n": 3,
+    "pnl": -96.44
+   }
+  }
+ },
+ {
+  "userId": 1086957,
+  "nick": "Waki Yaqui ",
+  "total_positions": 50,
+  "total_pnl": 556.52,
+  "n_symbols": 13,
+  "best_symbol": "SOLUSDT",
+  "best_n": 17,
+  "best_pnl": 215.99,
+  "best_winrate": 0.529,
+  "best_share_pnl": 0.388,
+  "best_avg_dur_h": 13.8,
+  "symbols": {
+   "ADAUSDT": {
+    "n": 4,
+    "pnl": 258.0
+   },
+   "SOLUSDT": {
+    "n": 17,
+    "pnl": 215.99
+   },
+   "ONDOUSDT": {
+    "n": 6,
+    "pnl": 209.26
+   },
+   "APEUSDT": {
+    "n": 3,
+    "pnl": 22.64
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": 1.3
+   },
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": 0.75
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": 0.72
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -0.67
+   },
+   "API3USDT": {
+    "n": 1,
+    "pnl": -0.86
+   },
+   "FARTCOINUSDT": {
+    "n": 1,
+    "pnl": -1.8
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": -8.23
+   },
+   "u1000PEPEUSDT": {
+    "n": 5,
+    "pnl": -66.98
+   },
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": -73.58
+   }
+  }
+ },
+ {
+  "userId": 2647518,
+  "nick": "PhemexOuHysnlkDvbWfTymYVfwlRwZ",
+  "total_positions": 50,
+  "total_pnl": -2721.02,
+  "n_symbols": 10,
+  "best_symbol": "BTCUSDT",
+  "best_n": 19,
+  "best_pnl": 209.21,
+  "best_winrate": 0.895,
+  "best_share_pnl": -0.077,
+  "best_avg_dur_h": 79.4,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 19,
+    "pnl": 209.21
+   },
+   "ETHUSDT": {
+    "n": 12,
+    "pnl": 151.52
+   },
+   "HBARUSDT": {
+    "n": 2,
+    "pnl": 2.56
+   },
+   "DOTUSDT": {
+    "n": 2,
+    "pnl": 1.62
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 1.3
+   },
+   "SOLUSDT": {
+    "n": 6,
+    "pnl": -294.69
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -313.33
+   },
+   "SEIUSDT": {
+    "n": 1,
+    "pnl": -391.93
+   },
+   "ICPUSDT": {
+    "n": 1,
+    "pnl": -443.63
+   },
+   "NEARUSDT": {
+    "n": 3,
+    "pnl": -1643.65
+   }
+  }
+ },
+ {
+  "userId": 9175173,
+  "nick": "Conservative Trend",
+  "total_positions": 50,
+  "total_pnl": 173.13,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 27,
+  "best_pnl": 208.49,
+  "best_winrate": 0.407,
+  "best_share_pnl": 1.204,
+  "best_avg_dur_h": 14.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 27,
+    "pnl": 208.49
+   },
+   "ETHUSDT": {
+    "n": 23,
+    "pnl": -35.36
+   }
+  }
+ },
+ {
+  "userId": 901875,
+  "nick": "MrDuviois",
+  "total_positions": 50,
+  "total_pnl": 128.78,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDC",
+  "best_n": 24,
+  "best_pnl": 168.11,
+  "best_winrate": 0.333,
+  "best_share_pnl": 1.305,
+  "best_avg_dur_h": 31.5,
+  "symbols": {
+   "BTCUSDC": {
+    "n": 24,
+    "pnl": 168.11
+   },
+   "BTCUSDT": {
+    "n": 25,
+    "pnl": 117.01
+   },
+   "SP500USDT": {
+    "n": 1,
+    "pnl": -156.34
+   }
+  }
+ },
+ {
+  "userId": 2083685,
+  "nick": "Big Barat",
+  "total_positions": 50,
+  "total_pnl": 144.92,
+  "n_symbols": 1,
+  "best_symbol": "SOLUSDT",
+  "best_n": 50,
+  "best_pnl": 144.92,
+  "best_winrate": 0.36,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 128.9,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 50,
+    "pnl": 144.92
+   }
+  }
+ },
+ {
+  "userId": 7196360,
+  "nick": "biglongshort",
+  "total_positions": 50,
+  "total_pnl": 343.03,
+  "n_symbols": 11,
+  "best_symbol": "XRPUSDT",
+  "best_n": 5,
+  "best_pnl": 136.96,
+  "best_winrate": 0.8,
+  "best_share_pnl": 0.399,
+  "best_avg_dur_h": 127.3,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": 136.96
+   },
+   "NEARUSDT": {
+    "n": 7,
+    "pnl": 70.61
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": 67.14
+   },
+   "ETHUSDT": {
+    "n": 6,
+    "pnl": 63.13
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": 47.11
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 44.26
+   },
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": 8.65
+   },
+   "KASUSDT": {
+    "n": 2,
+    "pnl": -9.64
+   },
+   "HYPEUSDT": {
+    "n": 8,
+    "pnl": -12.53
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": -19.08
+   },
+   "ZECUSDT": {
+    "n": 12,
+    "pnl": -53.58
+   }
+  }
+ },
+ {
+  "userId": 7057932,
+  "nick": "NovaTrader",
+  "total_positions": 50,
+  "total_pnl": -200.88,
+  "n_symbols": 12,
+  "best_symbol": "SUIUSDT",
+  "best_n": 5,
+  "best_pnl": 133.6,
+  "best_winrate": 0.8,
+  "best_share_pnl": -0.665,
+  "best_avg_dur_h": 409.9,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 5,
+    "pnl": 133.6
+   },
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": 93.58
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": 91.31
+   },
+   "SOLUSDT": {
+    "n": 6,
+    "pnl": 79.83
+   },
+   "LINKUSDT": {
+    "n": 3,
+    "pnl": 33.04
+   },
+   "ASTERUSDT": {
+    "n": 2,
+    "pnl": 5.13
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 2.4
+   },
+   "AIXBTUSDT": {
+    "n": 1,
+    "pnl": 2.28
+   },
+   "ZENUSDT": {
+    "n": 1,
+    "pnl": 1.65
+   },
+   "WIFUSDT": {
+    "n": 1,
+    "pnl": 0.17
+   },
+   "TIAUSDT": {
+    "n": 8,
+    "pnl": -265.18
+   },
+   "VIRTUALUSDT": {
+    "n": 6,
+    "pnl": -378.66
+   }
+  }
+ },
+ {
+  "userId": 4040923,
+  "nick": "Grizzlies",
+  "total_positions": 22,
+  "total_pnl": -1332.02,
+  "n_symbols": 9,
+  "best_symbol": "ZECUSDT",
+  "best_n": 5,
+  "best_pnl": 132.91,
+  "best_winrate": 0.2,
+  "best_share_pnl": -0.1,
+  "best_avg_dur_h": 86.7,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 5,
+    "pnl": 132.91
+   },
+   "FFUSDT": {
+    "n": 1,
+    "pnl": -0.21
+   },
+   "SP500USDT": {
+    "n": 2,
+    "pnl": -1.33
+   },
+   "HOODUSDT": {
+    "n": 3,
+    "pnl": -8.65
+   },
+   "GRASSUSDT": {
+    "n": 1,
+    "pnl": -23.16
+   },
+   "CRCLUSDT": {
+    "n": 2,
+    "pnl": -40.09
+   },
+   "MUXUSDT": {
+    "n": 2,
+    "pnl": -217.6
+   },
+   "COINUSDT": {
+    "n": 4,
+    "pnl": -378.01
+   },
+   "MIRAUSDT": {
+    "n": 2,
+    "pnl": -795.9
+   }
+  }
+ },
+ {
+  "userId": 1375038,
+  "nick": "PhemexCAucBeDIZO",
+  "total_positions": 50,
+  "total_pnl": -828.24,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 10,
+  "best_pnl": 119.31,
+  "best_winrate": 0.7,
+  "best_share_pnl": -0.144,
+  "best_avg_dur_h": 20.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 10,
+    "pnl": 119.31
+   },
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": 7.98
+   },
+   "WLDUSDT": {
+    "n": 35,
+    "pnl": -955.52
+   }
+  }
+ },
+ {
+  "userId": 2064402,
+  "nick": "Gainsville",
+  "total_positions": 50,
+  "total_pnl": 121.37,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 42,
+  "best_pnl": 115.77,
+  "best_winrate": 0.881,
+  "best_share_pnl": 0.954,
+  "best_avg_dur_h": 3.4,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 42,
+    "pnl": 115.77
+   },
+   "LINKUSDT": {
+    "n": 7,
+    "pnl": 5.08
+   },
+   "SNDKUSDT": {
+    "n": 1,
+    "pnl": 0.52
+   }
+  }
+ },
+ {
+  "userId": 9175169,
+  "nick": "Trident-Reaper",
+  "total_positions": 44,
+  "total_pnl": -28.83,
+  "n_symbols": 3,
+  "best_symbol": "ETHUSDT",
+  "best_n": 15,
+  "best_pnl": 115.0,
+  "best_winrate": 0.533,
+  "best_share_pnl": -3.989,
+  "best_avg_dur_h": 3.0,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 15,
+    "pnl": 115.0
+   },
+   "BTCUSDT": {
+    "n": 14,
+    "pnl": -37.05
+   },
+   "SOLUSDT": {
+    "n": 15,
+    "pnl": -106.78
+   }
+  }
+ },
+ {
+  "userId": 5043651,
+  "nick": "MoonBoy",
+  "total_positions": 50,
+  "total_pnl": 1621.21,
+  "n_symbols": 26,
+  "best_symbol": "TUTUSDT",
+  "best_n": 5,
+  "best_pnl": 109.56,
+  "best_winrate": 0.6,
+  "best_share_pnl": 0.068,
+  "best_avg_dur_h": 83.7,
+  "symbols": {
+   "MUBARAKUSDT": {
+    "n": 2,
+    "pnl": 530.25
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": 383.84
+   },
+   "LITUSDT": {
+    "n": 3,
+    "pnl": 253.65
+   },
+   "PUMPUSDT": {
+    "n": 3,
+    "pnl": 165.81
+   },
+   "PEOPLEUSDT": {
+    "n": 1,
+    "pnl": 153.15
+   },
+   "KAITOUSDT": {
+    "n": 1,
+    "pnl": 116.12
+   },
+   "DEXEUSDT": {
+    "n": 2,
+    "pnl": 112.18
+   },
+   "TUTUSDT": {
+    "n": 5,
+    "pnl": 109.56
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 82.17
+   },
+   "RECALLUSDT": {
+    "n": 3,
+    "pnl": 80.1
+   },
+   "ENSOUSDT": {
+    "n": 2,
+    "pnl": 64.6
+   },
+   "JUPUSDT": {
+    "n": 1,
+    "pnl": 33.07
+   },
+   "EDUUSDT": {
+    "n": 1,
+    "pnl": 6.71
+   },
+   "JSTUSDT": {
+    "n": 6,
+    "pnl": 3.44
+   },
+   "LDOUSDT": {
+    "n": 1,
+    "pnl": -0.45
+   },
+   "PTUSDT": {
+    "n": 2,
+    "pnl": -8.51
+   },
+   "BELUSDT": {
+    "n": 1,
+    "pnl": -8.55
+   },
+   "USELESSUSDT": {
+    "n": 1,
+    "pnl": -14.48
+   },
+   "TLMUSDT": {
+    "n": 1,
+    "pnl": -16.86
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -18.89
+   },
+   "CTRUSDT": {
+    "n": 1,
+    "pnl": -20.35
+   },
+   "UNIUSDT": {
+    "n": 4,
+    "pnl": -21.11
+   },
+   "HEMIUSDT": {
+    "n": 1,
+    "pnl": -28.67
+   },
+   "TURTLEUSDT": {
+    "n": 1,
+    "pnl": -40.2
+   },
+   "HEIUSDT": {
+    "n": 3,
+    "pnl": -40.61
+   },
+   "EDENUSDT": {
+    "n": 1,
+    "pnl": -254.78
+   }
+  }
+ },
+ {
+  "userId": 7032989,
+  "nick": "Triple A Academy ",
+  "total_positions": 50,
+  "total_pnl": -198.78,
+  "n_symbols": 13,
+  "best_symbol": "BTCUSDT",
+  "best_n": 15,
+  "best_pnl": 92.46,
+  "best_winrate": 0.867,
+  "best_share_pnl": -0.465,
+  "best_avg_dur_h": 188.7,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 15,
+    "pnl": 92.46
+   },
+   "HBARUSDT": {
+    "n": 3,
+    "pnl": 33.11
+   },
+   "INJUSDT": {
+    "n": 2,
+    "pnl": 23.21
+   },
+   "SUIUSDT": {
+    "n": 2,
+    "pnl": 13.51
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": 10.7
+   },
+   "TAOUSDT": {
+    "n": 2,
+    "pnl": 9.21
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": 7.1
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 2.47
+   },
+   "CHZUSDT": {
+    "n": 1,
+    "pnl": -0.27
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -29.5
+   },
+   "SOLUSDT": {
+    "n": 7,
+    "pnl": -69.21
+   },
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": -100.62
+   },
+   "ETHUSDT": {
+    "n": 7,
+    "pnl": -190.96
+   }
+  }
+ },
+ {
+  "userId": 2215294,
+  "nick": "PhemexXfxHCoDueDJAQOaKoY",
+  "total_positions": 50,
+  "total_pnl": 175.4,
+  "n_symbols": 22,
+  "best_symbol": "ETHUSDT",
+  "best_n": 5,
+  "best_pnl": 89.8,
+  "best_winrate": 0.2,
+  "best_share_pnl": 0.512,
+  "best_avg_dur_h": 27.7,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 5,
+    "pnl": 89.8
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 61.16
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 21.45
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 12.58
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": 11.6
+   },
+   "FILUSDT": {
+    "n": 1,
+    "pnl": 8.79
+   },
+   "XLMUSDT": {
+    "n": 2,
+    "pnl": 7.09
+   },
+   "SUSHIUSDT": {
+    "n": 1,
+    "pnl": 0.11
+   },
+   "TRXUSDT": {
+    "n": 1,
+    "pnl": 0.01
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -0.02
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -0.29
+   },
+   "JUPUSDT": {
+    "n": 1,
+    "pnl": -0.37
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -1.08
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": -1.6
+   },
+   "INJUSDT": {
+    "n": 1,
+    "pnl": -2.16
+   },
+   "XAGUSDT": {
+    "n": 1,
+    "pnl": -2.29
+   },
+   "EDENUSDT": {
+    "n": 1,
+    "pnl": -2.42
+   },
+   "ONDOUSDT": {
+    "n": 3,
+    "pnl": -3.26
+   },
+   "RENDERUSDT": {
+    "n": 1,
+    "pnl": -3.48
+   },
+   "PUMPUSDT": {
+    "n": 2,
+    "pnl": -4.01
+   },
+   "NEARUSDT": {
+    "n": 3,
+    "pnl": -5.47
+   },
+   "BTCUSDT": {
+    "n": 17,
+    "pnl": -10.74
+   }
+  }
+ },
+ {
+  "userId": 1750299,
+  "nick": "cryptomofo",
+  "total_positions": 50,
+  "total_pnl": 102.02,
+  "n_symbols": 7,
+  "best_symbol": "HYPEUSDT",
+  "best_n": 15,
+  "best_pnl": 85.32,
+  "best_winrate": 0.467,
+  "best_share_pnl": 0.836,
+  "best_avg_dur_h": 30.3,
+  "symbols": {
+   "HYPEUSDT": {
+    "n": 15,
+    "pnl": 85.32
+   },
+   "VVVUSDT": {
+    "n": 13,
+    "pnl": 27.35
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": 11.67
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 4.21
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -0.29
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -7.19
+   },
+   "BTCUSDT": {
+    "n": 18,
+    "pnl": -19.04
+   }
+  }
+ },
+ {
+  "userId": 5041164,
+  "nick": "Phemexo001",
+  "total_positions": 17,
+  "total_pnl": -3573.03,
+  "n_symbols": 5,
+  "best_symbol": "BTCUSDT",
+  "best_n": 6,
+  "best_pnl": 84.14,
+  "best_winrate": 0.667,
+  "best_share_pnl": -0.024,
+  "best_avg_dur_h": 197.1,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": 84.14
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -155.01
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -227.54
+   },
+   "ADAUSDT": {
+    "n": 2,
+    "pnl": -299.36
+   },
+   "NEIROUSDT": {
+    "n": 7,
+    "pnl": -2975.26
+   }
+  }
+ },
+ {
+  "userId": 994017,
+  "nick": "WolfTape",
+  "total_positions": 50,
+  "total_pnl": -118.87,
+  "n_symbols": 21,
+  "best_symbol": "u1000SHIBUSDT",
+  "best_n": 6,
+  "best_pnl": 74.24,
+  "best_winrate": 0.5,
+  "best_share_pnl": -0.625,
+  "best_avg_dur_h": 12.1,
+  "symbols": {
+   "u1000SHIBUSDT": {
+    "n": 6,
+    "pnl": 74.24
+   },
+   "ADAUSDT": {
+    "n": 3,
+    "pnl": 22.1
+   },
+   "BCHUSDT": {
+    "n": 1,
+    "pnl": 9.41
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 8.07
+   },
+   "AAVEUSDT": {
+    "n": 5,
+    "pnl": 0.97
+   },
+   "QQQUSDT": {
+    "n": 1,
+    "pnl": -0.04
+   },
+   "AVAXUSDT": {
+    "n": 3,
+    "pnl": -0.47
+   },
+   "SP500USDT": {
+    "n": 1,
+    "pnl": -0.76
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -2.06
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -3.44
+   },
+   "PORTALUSDT": {
+    "n": 1,
+    "pnl": -5.89
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": -8.33
+   },
+   "XLMUSDT": {
+    "n": 2,
+    "pnl": -10.25
+   },
+   "SPYXUSDT": {
+    "n": 1,
+    "pnl": -12.24
+   },
+   "BIOUSDT": {
+    "n": 1,
+    "pnl": -16.81
+   },
+   "PENGUUSDT": {
+    "n": 1,
+    "pnl": -17.86
+   },
+   "BTCUSDT": {
+    "n": 9,
+    "pnl": -21.4
+   },
+   "FLUXUSDT": {
+    "n": 1,
+    "pnl": -22.06
+   },
+   "DOGEUSDT": {
+    "n": 4,
+    "pnl": -34.34
+   },
+   "LITUSDT": {
+    "n": 2,
+    "pnl": -38.36
+   },
+   "u1000PEPEUSDT": {
+    "n": 3,
+    "pnl": -39.35
+   }
+  }
+ },
+ {
+  "userId": 2167230,
+  "nick": "Mike_Kaya",
+  "total_positions": 6,
+  "total_pnl": 54.29,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": 72.79,
+  "best_winrate": 0.4,
+  "best_share_pnl": 1.341,
+  "best_avg_dur_h": 566.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": 72.79
+   },
+   "SP500USDT": {
+    "n": 1,
+    "pnl": -18.5
+   }
+  }
+ },
+ {
+  "userId": 7106567,
+  "nick": "Crypto-Forex-Club",
+  "total_positions": 50,
+  "total_pnl": -402.83,
+  "n_symbols": 9,
+  "best_symbol": "BTCUSDT",
+  "best_n": 6,
+  "best_pnl": 72.73,
+  "best_winrate": 0.5,
+  "best_share_pnl": -0.181,
+  "best_avg_dur_h": 7.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": 72.73
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 19.0
+   },
+   "ADAUSDT": {
+    "n": 2,
+    "pnl": 3.0
+   },
+   "IOTXUSDT": {
+    "n": 1,
+    "pnl": -7.98
+   },
+   "ENAUSDT": {
+    "n": 2,
+    "pnl": -13.03
+   },
+   "KGENUSDT": {
+    "n": 1,
+    "pnl": -22.32
+   },
+   "u1000RATSUSDT": {
+    "n": 1,
+    "pnl": -28.12
+   },
+   "TUTUSDT": {
+    "n": 4,
+    "pnl": -56.16
+   },
+   "ETHUSDT": {
+    "n": 32,
+    "pnl": -369.94
+   }
+  }
+ },
+ {
+  "userId": 8926779,
+  "nick": "CryptoCulture",
+  "total_positions": 38,
+  "total_pnl": 70.3,
+  "n_symbols": 1,
+  "best_symbol": "ETHUSDT",
+  "best_n": 38,
+  "best_pnl": 70.3,
+  "best_winrate": 0.816,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 38.9,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 38,
+    "pnl": 70.3
+   }
+  }
+ },
+ {
+  "userId": 5036919,
+  "nick": "RUE$$EL ",
+  "total_positions": 49,
+  "total_pnl": -2324.9,
+  "n_symbols": 6,
+  "best_symbol": "SOLUSDT",
+  "best_n": 7,
+  "best_pnl": 66.36,
+  "best_winrate": 0.857,
+  "best_share_pnl": -0.029,
+  "best_avg_dur_h": 65.0,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 7,
+    "pnl": 66.36
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 23.51
+   },
+   "ETHUSDT": {
+    "n": 15,
+    "pnl": 13.74
+   },
+   "COAIUSDT": {
+    "n": 1,
+    "pnl": -98.58
+   },
+   "BTCUSDT": {
+    "n": 22,
+    "pnl": -524.24
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -1805.69
+   }
+  }
+ },
+ {
+  "userId": 8101608,
+  "nick": "C33S",
+  "total_positions": 50,
+  "total_pnl": -62.18,
+  "n_symbols": 11,
+  "best_symbol": "SOLUSDT",
+  "best_n": 12,
+  "best_pnl": 65.92,
+  "best_winrate": 0.417,
+  "best_share_pnl": -1.06,
+  "best_avg_dur_h": 13.9,
+  "symbols": {
+   "ALGOUSDT": {
+    "n": 2,
+    "pnl": 114.24
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": 65.99
+   },
+   "SOLUSDT": {
+    "n": 12,
+    "pnl": 65.92
+   },
+   "ETHUSDT": {
+    "n": 13,
+    "pnl": 14.33
+   },
+   "BNBUSDT": {
+    "n": 3,
+    "pnl": 12.43
+   },
+   "FETUSDT": {
+    "n": 1,
+    "pnl": 6.42
+   },
+   "ARKMUSDT": {
+    "n": 1,
+    "pnl": 2.24
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -30.56
+   },
+   "u1000PEPEUSDT": {
+    "n": 1,
+    "pnl": -37.72
+   },
+   "BTCUSDT": {
+    "n": 9,
+    "pnl": -122.54
+   },
+   "DOGEUSDT": {
+    "n": 6,
+    "pnl": -152.92
+   }
+  }
+ },
+ {
+  "userId": 8839292,
+  "nick": "Kenshiro",
+  "total_positions": 50,
+  "total_pnl": -105.82,
+  "n_symbols": 5,
+  "best_symbol": "ETHUSDT",
+  "best_n": 10,
+  "best_pnl": 55.05,
+  "best_winrate": 0.5,
+  "best_share_pnl": -0.52,
+  "best_avg_dur_h": 44.9,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 10,
+    "pnl": 55.05
+   },
+   "TAOUSDT": {
+    "n": 4,
+    "pnl": 2.94
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": -3.72
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": -4.99
+   },
+   "BTCUSDT": {
+    "n": 33,
+    "pnl": -155.08
+   }
+  }
+ },
+ {
+  "userId": 2278359,
+  "nick": "Badass999 ",
+  "total_positions": 50,
+  "total_pnl": -352.13,
+  "n_symbols": 24,
+  "best_symbol": "BNBUSDT",
+  "best_n": 6,
+  "best_pnl": 54.89,
+  "best_winrate": 0.667,
+  "best_share_pnl": -0.156,
+  "best_avg_dur_h": 12.9,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 114.71
+   },
+   "HYPEUSDT": {
+    "n": 4,
+    "pnl": 61.08
+   },
+   "BNBUSDT": {
+    "n": 6,
+    "pnl": 54.89
+   },
+   "ZECUSDT": {
+    "n": 3,
+    "pnl": 21.65
+   },
+   "AVGOUSDT": {
+    "n": 1,
+    "pnl": 13.61
+   },
+   "AEROUSDT": {
+    "n": 1,
+    "pnl": 9.12
+   },
+   "WCTUSDT": {
+    "n": 1,
+    "pnl": 5.28
+   },
+   "BILLUSDT": {
+    "n": 1,
+    "pnl": 3.51
+   },
+   "XBRUSDT": {
+    "n": 1,
+    "pnl": 1.26
+   },
+   "2ZUSDT": {
+    "n": 1,
+    "pnl": 0.43
+   },
+   "BIOUSDT": {
+    "n": 1,
+    "pnl": -0.51
+   },
+   "BSBUSDT": {
+    "n": 6,
+    "pnl": -1.13
+   },
+   "XAUUSDT": {
+    "n": 2,
+    "pnl": -4.04
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -7.65
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -9.51
+   },
+   "TROLLUSDT": {
+    "n": 1,
+    "pnl": -10.06
+   },
+   "XTIUSDT": {
+    "n": 3,
+    "pnl": -10.22
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -10.87
+   },
+   "SUIUSDT": {
+    "n": 2,
+    "pnl": -12.98
+   },
+   "RECALLUSDT": {
+    "n": 1,
+    "pnl": -23.4
+   },
+   "HBARUSDT": {
+    "n": 3,
+    "pnl": -31.91
+   },
+   "SPCXUSDT": {
+    "n": 1,
+    "pnl": -55.36
+   },
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": -89.47
+   },
+   "LABUSDT": {
+    "n": 3,
+    "pnl": -370.56
+   }
+  }
+ },
+ {
+  "userId": 1843093,
+  "nick": "Johnny Box",
+  "total_positions": 50,
+  "total_pnl": -943.3,
+  "n_symbols": 8,
+  "best_symbol": "ETHUSDT",
+  "best_n": 20,
+  "best_pnl": 53.85,
+  "best_winrate": 0.3,
+  "best_share_pnl": -0.057,
+  "best_avg_dur_h": 54.2,
+  "symbols": {
+   "NILUSDT": {
+    "n": 1,
+    "pnl": 57.65
+   },
+   "BEATUSDT": {
+    "n": 1,
+    "pnl": 56.6
+   },
+   "ETHUSDT": {
+    "n": 20,
+    "pnl": 53.85
+   },
+   "BANUSDT": {
+    "n": 1,
+    "pnl": -12.82
+   },
+   "UBUSDT": {
+    "n": 1,
+    "pnl": -117.29
+   },
+   "ORDIUSDT": {
+    "n": 1,
+    "pnl": -152.23
+   },
+   "XRPUSDT": {
+    "n": 7,
+    "pnl": -251.81
+   },
+   "BTCUSDT": {
+    "n": 18,
+    "pnl": -577.25
+   }
+  }
+ },
+ {
+  "userId": 7072947,
+  "nick": "PhemexlHRiHmkHlWzilASujLmfoWwoiiTRZu",
+  "total_positions": 50,
+  "total_pnl": -528.61,
+  "n_symbols": 11,
+  "best_symbol": "ETHUSDT",
+  "best_n": 8,
+  "best_pnl": 50.27,
+  "best_winrate": 0.875,
+  "best_share_pnl": -0.095,
+  "best_avg_dur_h": 88.2,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 8,
+    "pnl": 50.27
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": 32.97
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": 26.66
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": 1.43
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": 0.79
+   },
+   "BCHUSDT": {
+    "n": 2,
+    "pnl": -0.28
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": -1.68
+   },
+   "GRASSUSDT": {
+    "n": 10,
+    "pnl": -7.9
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -10.77
+   },
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": -29.38
+   },
+   "BTCUSDT": {
+    "n": 19,
+    "pnl": -590.73
+   }
+  }
+ },
+ {
+  "userId": 8017560,
+  "nick": "Kiuppy",
+  "total_positions": 50,
+  "total_pnl": -1981.04,
+  "n_symbols": 17,
+  "best_symbol": "XRPUSDT",
+  "best_n": 6,
+  "best_pnl": 42.38,
+  "best_winrate": 0.833,
+  "best_share_pnl": -0.021,
+  "best_avg_dur_h": 24.5,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 6,
+    "pnl": 42.38
+   },
+   "BNBUSDT": {
+    "n": 2,
+    "pnl": 23.85
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": 20.36
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 13.54
+   },
+   "TERUSDT": {
+    "n": 1,
+    "pnl": 1.51
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": 0.65
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -1.91
+   },
+   "ALGOUSDT": {
+    "n": 2,
+    "pnl": -2.96
+   },
+   "ONDOUSDT": {
+    "n": 3,
+    "pnl": -10.92
+   },
+   "STXUSDT": {
+    "n": 1,
+    "pnl": -11.18
+   },
+   "INJUSDT": {
+    "n": 1,
+    "pnl": -12.08
+   },
+   "TAOUSDT": {
+    "n": 3,
+    "pnl": -17.58
+   },
+   "BTCUSDT": {
+    "n": 8,
+    "pnl": -63.85
+   },
+   "XLMUSDT": {
+    "n": 6,
+    "pnl": -188.28
+   },
+   "ADAUSDT": {
+    "n": 4,
+    "pnl": -526.88
+   },
+   "SUIUSDT": {
+    "n": 7,
+    "pnl": -617.46
+   },
+   "LABUSDT": {
+    "n": 2,
+    "pnl": -630.24
+   }
+  }
+ },
+ {
+  "userId": 9179688,
+  "nick": "Logos-Triad",
+  "total_positions": 50,
+  "total_pnl": 64.94,
+  "n_symbols": 3,
+  "best_symbol": "ETHUSDT",
+  "best_n": 17,
+  "best_pnl": 42.18,
+  "best_winrate": 0.471,
+  "best_share_pnl": 0.65,
+  "best_avg_dur_h": 19.8,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 17,
+    "pnl": 42.18
+   },
+   "SOLUSDT": {
+    "n": 16,
+    "pnl": 19.35
+   },
+   "BTCUSDT": {
+    "n": 17,
+    "pnl": 3.4
+   }
+  }
+ },
+ {
+  "userId": 5026670,
+  "nick": "PhemexqdLeRUkQVHefxQuDqiAmbBW",
+  "total_positions": 50,
+  "total_pnl": -0.6,
+  "n_symbols": 5,
+  "best_symbol": "LINKUSDT",
+  "best_n": 19,
+  "best_pnl": 37.26,
+  "best_winrate": 0.368,
+  "best_share_pnl": -61.963,
+  "best_avg_dur_h": 5.5,
+  "symbols": {
+   "LINKUSDT": {
+    "n": 19,
+    "pnl": 37.26
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 26.83
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 20.12
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -8.35
+   },
+   "XRPUSDT": {
+    "n": 28,
+    "pnl": -76.47
+   }
+  }
+ },
+ {
+  "userId": 4991635,
+  "nick": "PhemexWzNdRhlSoGtpmqKBXtiweYfPnfmOpAu pop",
+  "total_positions": 50,
+  "total_pnl": 267.9,
+  "n_symbols": 8,
+  "best_symbol": "XRPUSDT",
+  "best_n": 21,
+  "best_pnl": 37.11,
+  "best_winrate": 0.81,
+  "best_share_pnl": 0.139,
+  "best_avg_dur_h": 27.2,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 4,
+    "pnl": 148.02
+   },
+   "BTCUSDT": {
+    "n": 3,
+    "pnl": 64.41
+   },
+   "XRPUSDT": {
+    "n": 21,
+    "pnl": 37.11
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 18.77
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": 5.64
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 2.08
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 1.72
+   },
+   "DOGEUSDT": {
+    "n": 18,
+    "pnl": -9.85
+   }
+  }
+ },
+ {
+  "userId": 4065131,
+  "nick": "Dr. Dankenstein",
+  "total_positions": 50,
+  "total_pnl": 25.49,
+  "n_symbols": 36,
+  "best_symbol": "BTCUSDT",
+  "best_n": 7,
+  "best_pnl": 27.32,
+  "best_winrate": 0.714,
+  "best_share_pnl": 1.072,
+  "best_avg_dur_h": 61.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 7,
+    "pnl": 27.32
+   },
+   "ATUSDT": {
+    "n": 2,
+    "pnl": 3.11
+   },
+   "LABUSDT": {
+    "n": 2,
+    "pnl": 2.51
+   },
+   "TRUSTUSDT": {
+    "n": 1,
+    "pnl": 1.26
+   },
+   "SAROSUSDT": {
+    "n": 1,
+    "pnl": 1.23
+   },
+   "STABLEUSDT": {
+    "n": 1,
+    "pnl": 1.18
+   },
+   "JCTUSDT": {
+    "n": 1,
+    "pnl": 1.08
+   },
+   "CLOUSDT": {
+    "n": 1,
+    "pnl": 1.08
+   },
+   "SPORTFUNUSDT": {
+    "n": 1,
+    "pnl": 1.07
+   },
+   "MEGAUSDT": {
+    "n": 1,
+    "pnl": 0.69
+   },
+   "KITEUSDT": {
+    "n": 1,
+    "pnl": 0.67
+   },
+   "COMMONUSDT": {
+    "n": 2,
+    "pnl": 0.43
+   },
+   "RVVUSDT": {
+    "n": 1,
+    "pnl": 0.37
+   },
+   "YBUSDT": {
+    "n": 1,
+    "pnl": 0.19
+   },
+   "ALLOUSDT": {
+    "n": 1,
+    "pnl": 0.17
+   },
+   "INXUSDT": {
+    "n": 1,
+    "pnl": 0.08
+   },
+   "ESPUSDT": {
+    "n": 1,
+    "pnl": 0.08
+   },
+   "ZBTUSDT": {
+    "n": 1,
+    "pnl": 0.07
+   },
+   "ACUUSDT": {
+    "n": 1,
+    "pnl": 0.05
+   },
+   "42USDT": {
+    "n": 1,
+    "pnl": 0.03
+   },
+   "BLESSUSDT": {
+    "n": 2,
+    "pnl": 0.01
+   },
+   "XPINUSDT": {
+    "n": 1,
+    "pnl": 0.01
+   },
+   "FIGHTUSDT": {
+    "n": 1,
+    "pnl": 0.0
+   },
+   "GWEIUSDT": {
+    "n": 1,
+    "pnl": -0.01
+   },
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": -0.05
+   },
+   "MELANIAUSDT": {
+    "n": 1,
+    "pnl": -0.22
+   },
+   "AZTECUSDT": {
+    "n": 3,
+    "pnl": -0.28
+   },
+   "HUSDT": {
+    "n": 1,
+    "pnl": -0.57
+   },
+   "CCUSDT": {
+    "n": 3,
+    "pnl": -0.95
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -1.01
+   },
+   "BEATUSDT": {
+    "n": 1,
+    "pnl": -1.38
+   },
+   "FOLKSUSDT": {
+    "n": 1,
+    "pnl": -2.54
+   },
+   "MONUSDT": {
+    "n": 1,
+    "pnl": -2.54
+   },
+   "UAIUSDT": {
+    "n": 1,
+    "pnl": -2.54
+   },
+   "MMTUSDT": {
+    "n": 1,
+    "pnl": -2.55
+   },
+   "PIGGYUSDT": {
+    "n": 1,
+    "pnl": -2.56
+   }
+  }
+ },
+ {
+  "userId": 5077890,
+  "nick": "Liquidity",
+  "total_positions": 50,
+  "total_pnl": 166.87,
+  "n_symbols": 29,
+  "best_symbol": "DRAMUSDT",
+  "best_n": 6,
+  "best_pnl": 25.39,
+  "best_winrate": 0.833,
+  "best_share_pnl": 0.152,
+  "best_avg_dur_h": 7.3,
+  "symbols": {
+   "MUXUSDT": {
+    "n": 2,
+    "pnl": 52.64
+   },
+   "SOXLUSDT": {
+    "n": 1,
+    "pnl": 38.65
+   },
+   "DRAMUSDT": {
+    "n": 6,
+    "pnl": 25.39
+   },
+   "NAS100USDT": {
+    "n": 1,
+    "pnl": 24.61
+   },
+   "MSFTUSDT": {
+    "n": 1,
+    "pnl": 15.39
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": 12.04
+   },
+   "UNIUSDT": {
+    "n": 1,
+    "pnl": 7.85
+   },
+   "LINKUSDT": {
+    "n": 3,
+    "pnl": 7.63
+   },
+   "BNBUSDT": {
+    "n": 3,
+    "pnl": 5.94
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": 5.1
+   },
+   "BTCUSDT": {
+    "n": 2,
+    "pnl": 4.77
+   },
+   "HOODUSDT": {
+    "n": 1,
+    "pnl": 4.4
+   },
+   "TIAUSDT": {
+    "n": 1,
+    "pnl": 4.37
+   },
+   "SNDKUSDT": {
+    "n": 3,
+    "pnl": 4.23
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 3.3
+   },
+   "NVOUSDT": {
+    "n": 1,
+    "pnl": 3.24
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": 2.9
+   },
+   "METAUSDT": {
+    "n": 3,
+    "pnl": 1.51
+   },
+   "TUTUSDT": {
+    "n": 1,
+    "pnl": 0.38
+   },
+   "INTCUSDT": {
+    "n": 1,
+    "pnl": 0.28
+   },
+   "DASHUSDT": {
+    "n": 1,
+    "pnl": 0.21
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": -0.76
+   },
+   "GRASSUSDT": {
+    "n": 1,
+    "pnl": -1.1
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": -4.17
+   },
+   "AMDUSDT": {
+    "n": 2,
+    "pnl": -5.88
+   },
+   "BERAUSDT": {
+    "n": 1,
+    "pnl": -7.43
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": -8.31
+   },
+   "CATXUSDT": {
+    "n": 3,
+    "pnl": -12.14
+   },
+   "SKHYNIXUSDT": {
+    "n": 2,
+    "pnl": -18.18
+   }
+  }
+ },
+ {
+  "userId": 8836969,
+  "nick": "Mindful Crypto Life",
+  "total_positions": 50,
+  "total_pnl": 24.53,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": 24.53,
+  "best_winrate": 0.48,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 14.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": 24.53
+   }
+  }
+ },
+ {
+  "userId": 8818623,
+  "nick": "Hank",
+  "total_positions": 9,
+  "total_pnl": 20.44,
+  "n_symbols": 2,
+  "best_symbol": "XAUUSDT",
+  "best_n": 5,
+  "best_pnl": 20.93,
+  "best_winrate": 1.0,
+  "best_share_pnl": 1.024,
+  "best_avg_dur_h": 57.3,
+  "symbols": {
+   "XAUUSDT": {
+    "n": 5,
+    "pnl": 20.93
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": -0.49
+   }
+  }
+ },
+ {
+  "userId": 4831212,
+  "nick": "Naterz90",
+  "total_positions": 33,
+  "total_pnl": 146.8,
+  "n_symbols": 6,
+  "best_symbol": "SOLUSDT",
+  "best_n": 11,
+  "best_pnl": 20.47,
+  "best_winrate": 0.727,
+  "best_share_pnl": 0.139,
+  "best_avg_dur_h": 16.0,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": 74.25
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": 23.65
+   },
+   "SOLUSDT": {
+    "n": 11,
+    "pnl": 20.47
+   },
+   "HBARUSDT": {
+    "n": 6,
+    "pnl": 16.09
+   },
+   "AVAXUSDT": {
+    "n": 7,
+    "pnl": 7.8
+   },
+   "ATOMUSDT": {
+    "n": 2,
+    "pnl": 4.53
+   }
+  }
+ },
+ {
+  "userId": 8133253,
+  "nick": "Diamond Whale",
+  "total_positions": 50,
+  "total_pnl": 16.53,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": 16.53,
+  "best_winrate": 0.5,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 14.5,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": 16.53
+   }
+  }
+ },
+ {
+  "userId": 9175171,
+  "nick": "Hydra-MultiFactor",
+  "total_positions": 50,
+  "total_pnl": -113.95,
+  "n_symbols": 6,
+  "best_symbol": "BNBUSDT",
+  "best_n": 7,
+  "best_pnl": 16.29,
+  "best_winrate": 0.714,
+  "best_share_pnl": -0.143,
+  "best_avg_dur_h": 62.1,
+  "symbols": {
+   "BNBUSDT": {
+    "n": 7,
+    "pnl": 16.29
+   },
+   "XRPUSDT": {
+    "n": 7,
+    "pnl": 9.98
+   },
+   "DOGEUSDT": {
+    "n": 6,
+    "pnl": -1.67
+   },
+   "ETHUSDT": {
+    "n": 11,
+    "pnl": -13.21
+   },
+   "SOLUSDT": {
+    "n": 9,
+    "pnl": -54.88
+   },
+   "BTCUSDT": {
+    "n": 10,
+    "pnl": -70.46
+   }
+  }
+ },
+ {
+  "userId": 7191504,
+  "nick": "PhemexqHKkrYvEmH",
+  "total_positions": 50,
+  "total_pnl": -18.77,
+  "n_symbols": 18,
+  "best_symbol": "COTIUSDT",
+  "best_n": 7,
+  "best_pnl": 14.56,
+  "best_winrate": 0.286,
+  "best_share_pnl": -0.776,
+  "best_avg_dur_h": 2.3,
+  "symbols": {
+   "COTIUSDT": {
+    "n": 7,
+    "pnl": 14.56
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": 8.02
+   },
+   "HEIUSDT": {
+    "n": 4,
+    "pnl": 4.24
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": 3.24
+   },
+   "NIGHTUSDT": {
+    "n": 2,
+    "pnl": 2.4
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -1.17
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -1.37
+   },
+   "BMTUSDT": {
+    "n": 1,
+    "pnl": -1.79
+   },
+   "GIGGLEUSDT": {
+    "n": 2,
+    "pnl": -2.11
+   },
+   "ACEUSDT": {
+    "n": 2,
+    "pnl": -2.44
+   },
+   "HEMIUSDT": {
+    "n": 1,
+    "pnl": -2.61
+   },
+   "ESPUSDT": {
+    "n": 2,
+    "pnl": -2.71
+   },
+   "u1000RATSUSDT": {
+    "n": 3,
+    "pnl": -2.75
+   },
+   "REUSDT": {
+    "n": 2,
+    "pnl": -3.42
+   },
+   "PUMPUSDT": {
+    "n": 4,
+    "pnl": -5.27
+   },
+   "DIAUSDT": {
+    "n": 5,
+    "pnl": -5.92
+   },
+   "TUTUSDT": {
+    "n": 4,
+    "pnl": -7.72
+   },
+   "HFTUSDT": {
+    "n": 5,
+    "pnl": -11.93
+   }
+  }
+ },
+ {
+  "userId": 9131370,
+  "nick": "JMV",
+  "total_positions": 16,
+  "total_pnl": 15.26,
+  "n_symbols": 6,
+  "best_symbol": "BTCUSDT",
+  "best_n": 7,
+  "best_pnl": 14.39,
+  "best_winrate": 0.714,
+  "best_share_pnl": 0.943,
+  "best_avg_dur_h": 289.9,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 7,
+    "pnl": 14.39
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 1.74
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 0.88
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -0.03
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": -0.39
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": -1.33
+   }
+  }
+ },
+ {
+  "userId": 9175172,
+  "nick": "Titan-Breakout",
+  "total_positions": 50,
+  "total_pnl": -135.37,
+  "n_symbols": 3,
+  "best_symbol": "SOLUSDT",
+  "best_n": 19,
+  "best_pnl": 12.08,
+  "best_winrate": 0.368,
+  "best_share_pnl": -0.089,
+  "best_avg_dur_h": 25.2,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 19,
+    "pnl": 12.08
+   },
+   "ETHUSDT": {
+    "n": 20,
+    "pnl": -64.62
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": -82.84
+   }
+  }
+ },
+ {
+  "userId": 8815207,
+  "nick": "KillerBiene",
+  "total_positions": 50,
+  "total_pnl": -290.11,
+  "n_symbols": 9,
+  "best_symbol": "DOGEUSDT",
+  "best_n": 10,
+  "best_pnl": 11.34,
+  "best_winrate": 0.6,
+  "best_share_pnl": -0.039,
+  "best_avg_dur_h": 61.8,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 10,
+    "pnl": 11.34
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": 8.74
+   },
+   "NAS100USDT": {
+    "n": 1,
+    "pnl": 3.77
+   },
+   "STGUSDT": {
+    "n": 1,
+    "pnl": 3.11
+   },
+   "ARBUSDT": {
+    "n": 3,
+    "pnl": -2.15
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -3.47
+   },
+   "XTIUSDT": {
+    "n": 2,
+    "pnl": -15.35
+   },
+   "CRCLUSDT": {
+    "n": 1,
+    "pnl": -32.26
+   },
+   "BTCUSDT": {
+    "n": 30,
+    "pnl": -263.85
+   }
+  }
+ },
+ {
+  "userId": 9175174,
+  "nick": "Apex Fader",
+  "total_positions": 50,
+  "total_pnl": -8.04,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 19,
+  "best_pnl": 9.56,
+  "best_winrate": 0.579,
+  "best_share_pnl": -1.19,
+  "best_avg_dur_h": 12.4,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 19,
+    "pnl": 9.56
+   },
+   "SOLUSDT": {
+    "n": 17,
+    "pnl": -4.3
+   },
+   "ETHUSDT": {
+    "n": 14,
+    "pnl": -13.3
+   }
+  }
+ },
+ {
+  "userId": 3327837,
+  "nick": "gmaintraining",
+  "total_positions": 50,
+  "total_pnl": -427.75,
+  "n_symbols": 10,
+  "best_symbol": "JASMYUSDT",
+  "best_n": 7,
+  "best_pnl": 8.19,
+  "best_winrate": 0.286,
+  "best_share_pnl": -0.019,
+  "best_avg_dur_h": 3.1,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": 26.92
+   },
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": 9.05
+   },
+   "JASMYUSDT": {
+    "n": 7,
+    "pnl": 8.19
+   },
+   "BNBUSDT": {
+    "n": 2,
+    "pnl": 4.03
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 0.26
+   },
+   "FILUSDT": {
+    "n": 1,
+    "pnl": -3.46
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -13.56
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -40.33
+   },
+   "u1000PEPEUSDT": {
+    "n": 6,
+    "pnl": -44.85
+   },
+   "AVAXUSDT": {
+    "n": 29,
+    "pnl": -373.98
+   }
+  }
+ },
+ {
+  "userId": 4988759,
+  "nick": "FundingArb",
+  "total_positions": 43,
+  "total_pnl": -712.72,
+  "n_symbols": 16,
+  "best_symbol": "LINKUSDT",
+  "best_n": 9,
+  "best_pnl": 3.83,
+  "best_winrate": 1.0,
+  "best_share_pnl": -0.005,
+  "best_avg_dur_h": 9.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 3,
+    "pnl": 80.63
+   },
+   "WLFIUSDT": {
+    "n": 3,
+    "pnl": 69.01
+   },
+   "HBARUSDT": {
+    "n": 2,
+    "pnl": 59.82
+   },
+   "RIVERUSDT": {
+    "n": 4,
+    "pnl": 11.39
+   },
+   "LINKUSDT": {
+    "n": 9,
+    "pnl": 3.83
+   },
+   "ENAUSDT": {
+    "n": 5,
+    "pnl": 3.24
+   },
+   "WLDUSDT": {
+    "n": 2,
+    "pnl": 2.47
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 0.0
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -16.29
+   },
+   "JUPUSDT": {
+    "n": 1,
+    "pnl": -22.9
+   },
+   "BCHUSDT": {
+    "n": 1,
+    "pnl": -67.05
+   },
+   "BIOUSDT": {
+    "n": 2,
+    "pnl": -72.84
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": -88.51
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -145.88
+   },
+   "SUIUSDT": {
+    "n": 4,
+    "pnl": -231.68
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -297.96
+   }
+  }
+ },
+ {
+  "userId": 8068178,
+  "nick": "PhemexwRXuojeBAqcuAjJZIioQtKrjgPJXv",
+  "total_positions": 50,
+  "total_pnl": -146.6,
+  "n_symbols": 10,
+  "best_symbol": "ETHUSDT",
+  "best_n": 13,
+  "best_pnl": 3.33,
+  "best_winrate": 0.615,
+  "best_share_pnl": -0.023,
+  "best_avg_dur_h": 103.5,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 13,
+    "pnl": 3.33
+   },
+   "SIRENUSDT": {
+    "n": 1,
+    "pnl": 1.53
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 0.53
+   },
+   "GOOGLUSDT": {
+    "n": 1,
+    "pnl": 0.0
+   },
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": -0.37
+   },
+   "TONUSDT": {
+    "n": 2,
+    "pnl": -0.65
+   },
+   "AXSUSDT": {
+    "n": 1,
+    "pnl": -4.53
+   },
+   "FHEUSDT": {
+    "n": 1,
+    "pnl": -5.54
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -10.73
+   },
+   "BTCUSDT": {
+    "n": 27,
+    "pnl": -130.16
+   }
+  }
+ },
+ {
+  "userId": 4226999,
+  "nick": "LetsTakeProfit",
+  "total_positions": 50,
+  "total_pnl": -160.08,
+  "n_symbols": 10,
+  "best_symbol": "TAOUSDT",
+  "best_n": 5,
+  "best_pnl": 2.91,
+  "best_winrate": 0.8,
+  "best_share_pnl": -0.018,
+  "best_avg_dur_h": 51.2,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 3,
+    "pnl": 3.3
+   },
+   "TAOUSDT": {
+    "n": 5,
+    "pnl": 2.91
+   },
+   "NEARUSDT": {
+    "n": 5,
+    "pnl": -0.29
+   },
+   "ENAUSDT": {
+    "n": 3,
+    "pnl": -0.3
+   },
+   "CRVUSDT": {
+    "n": 2,
+    "pnl": -2.21
+   },
+   "ALGOUSDT": {
+    "n": 2,
+    "pnl": -6.94
+   },
+   "ETHUSDT": {
+    "n": 10,
+    "pnl": -8.23
+   },
+   "ZECUSDT": {
+    "n": 9,
+    "pnl": -11.37
+   },
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": -12.78
+   },
+   "ORDIUSDT": {
+    "n": 5,
+    "pnl": -124.17
+   }
+  }
+ },
+ {
+  "userId": 8086397,
+  "nick": "Trade4me 500 +",
+  "total_positions": 5,
+  "total_pnl": 2.25,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDC",
+  "best_n": 5,
+  "best_pnl": 2.25,
+  "best_winrate": 0.8,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 198.8,
+  "symbols": {
+   "BTCUSDC": {
+    "n": 5,
+    "pnl": 2.25
+   }
+  }
+ },
+ {
+  "userId": 8086205,
+  "nick": "QuantTrader",
+  "total_positions": 50,
+  "total_pnl": 1.0,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": 1.0,
+  "best_winrate": 0.5,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 14.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": 1.0
+   }
+  }
+ },
+ {
+  "userId": 5094499,
+  "nick": "justsomerandomguy",
+  "total_positions": 50,
+  "total_pnl": -15.62,
+  "n_symbols": 9,
+  "best_symbol": "SUIUSDT",
+  "best_n": 6,
+  "best_pnl": 0.17,
+  "best_winrate": 0.5,
+  "best_share_pnl": -0.011,
+  "best_avg_dur_h": 9.6,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 6,
+    "pnl": 0.17
+   },
+   "ADAUSDT": {
+    "n": 6,
+    "pnl": -0.12
+   },
+   "NEARUSDT": {
+    "n": 4,
+    "pnl": -0.26
+   },
+   "AAVEUSDT": {
+    "n": 8,
+    "pnl": -0.37
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -0.89
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -1.0
+   },
+   "INJUSDT": {
+    "n": 5,
+    "pnl": -2.9
+   },
+   "APTUSDT": {
+    "n": 8,
+    "pnl": -2.9
+   },
+   "TAOUSDT": {
+    "n": 10,
+    "pnl": -7.34
+   }
+  }
+ },
+ {
+  "userId": 5129010,
+  "nick": "jettodeshu",
+  "total_positions": 46,
+  "total_pnl": -98.93,
+  "n_symbols": 5,
+  "best_symbol": "ETHUSDT",
+  "best_n": 5,
+  "best_pnl": -0.89,
+  "best_winrate": 0.4,
+  "best_share_pnl": 0.009,
+  "best_avg_dur_h": 3.3,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 5,
+    "pnl": -0.89
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -7.36
+   },
+   "BTCUSDT": {
+    "n": 7,
+    "pnl": -13.44
+   },
+   "MORPHOUSDT": {
+    "n": 9,
+    "pnl": -35.85
+   },
+   "AAVEUSDT": {
+    "n": 24,
+    "pnl": -41.39
+   }
+  }
+ },
+ {
+  "userId": 8026665,
+  "nick": "PhemexBalleBP",
+  "total_positions": 50,
+  "total_pnl": 15.91,
+  "n_symbols": 5,
+  "best_symbol": "FARTCOINUSDT",
+  "best_n": 35,
+  "best_pnl": -1.17,
+  "best_winrate": 0.543,
+  "best_share_pnl": -0.074,
+  "best_avg_dur_h": 1.0,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 4,
+    "pnl": 44.77
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": 3.76
+   },
+   "FARTCOINUSDT": {
+    "n": 35,
+    "pnl": -1.17
+   },
+   "SOLUSDT": {
+    "n": 4,
+    "pnl": -10.35
+   },
+   "MOODENGUSDT": {
+    "n": 3,
+    "pnl": -21.1
+   }
+  }
+ },
+ {
+  "userId": 1529025,
+  "nick": "kilomanhiti",
+  "total_positions": 50,
+  "total_pnl": -3.34,
+  "n_symbols": 2,
+  "best_symbol": "XRPUSDC",
+  "best_n": 38,
+  "best_pnl": -1.65,
+  "best_winrate": 0.053,
+  "best_share_pnl": 0.495,
+  "best_avg_dur_h": 1.8,
+  "symbols": {
+   "XRPUSDC": {
+    "n": 38,
+    "pnl": -1.65
+   },
+   "XRPUSDT": {
+    "n": 12,
+    "pnl": -1.69
+   }
+  }
+ },
+ {
+  "userId": 1209433,
+  "nick": "EVM x1",
+  "total_positions": 50,
+  "total_pnl": -64.74,
+  "n_symbols": 4,
+  "best_symbol": "XRPUSDT",
+  "best_n": 5,
+  "best_pnl": -2.65,
+  "best_winrate": 0.4,
+  "best_share_pnl": 0.041,
+  "best_avg_dur_h": 9.1,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": 0.57
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 0.33
+   },
+   "XRPUSDT": {
+    "n": 5,
+    "pnl": -2.65
+   },
+   "BTCUSDT": {
+    "n": 40,
+    "pnl": -62.99
+   }
+  }
+ },
+ {
+  "userId": 3111863,
+  "nick": "poopasspoo$",
+  "total_positions": 50,
+  "total_pnl": -57.16,
+  "n_symbols": 11,
+  "best_symbol": "BNBUSDT",
+  "best_n": 23,
+  "best_pnl": -4.04,
+  "best_winrate": 0.174,
+  "best_share_pnl": 0.071,
+  "best_avg_dur_h": 9.4,
+  "symbols": {
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 5.83
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 3.68
+   },
+   "u1000PEPEUSDT": {
+    "n": 1,
+    "pnl": 2.9
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": 2.31
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 0.67
+   },
+   "EDGEXUSDT": {
+    "n": 1,
+    "pnl": -0.11
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -0.4
+   },
+   "BNBUSDT": {
+    "n": 23,
+    "pnl": -4.04
+   },
+   "BTCUSDT": {
+    "n": 6,
+    "pnl": -9.66
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": -24.33
+   },
+   "SUIUSDT": {
+    "n": 11,
+    "pnl": -34.01
+   }
+  }
+ },
+ {
+  "userId": 9175170,
+  "nick": "Phantom-Reversal",
+  "total_positions": 50,
+  "total_pnl": -51.72,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 23,
+  "best_pnl": -6.53,
+  "best_winrate": 0.478,
+  "best_share_pnl": 0.126,
+  "best_avg_dur_h": 15.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 23,
+    "pnl": -6.53
+   },
+   "ETHUSDT": {
+    "n": 27,
+    "pnl": -45.19
+   }
+  }
+ },
+ {
+  "userId": 9179689,
+  "nick": "Tensor Grid",
+  "total_positions": 50,
+  "total_pnl": -83.7,
+  "n_symbols": 5,
+  "best_symbol": "ETHUSDT",
+  "best_n": 14,
+  "best_pnl": -7.77,
+  "best_winrate": 0.357,
+  "best_share_pnl": 0.093,
+  "best_avg_dur_h": 6.0,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 14,
+    "pnl": -7.77
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": -14.0
+   },
+   "BNBUSDT": {
+    "n": 10,
+    "pnl": -19.09
+   },
+   "XRPUSDT": {
+    "n": 6,
+    "pnl": -20.14
+   },
+   "SOLUSDT": {
+    "n": 9,
+    "pnl": -22.69
+   }
+  }
+ },
+ {
+  "userId": 2661452,
+  "nick": "PhemexlVxejE",
+  "total_positions": 50,
+  "total_pnl": -3871.05,
+  "n_symbols": 11,
+  "best_symbol": "ZECUSDT",
+  "best_n": 9,
+  "best_pnl": -8.4,
+  "best_winrate": 0.444,
+  "best_share_pnl": 0.002,
+  "best_avg_dur_h": 26.3,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 167.32
+   },
+   "PENDLEUSDT": {
+    "n": 1,
+    "pnl": -5.19
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": -7.03
+   },
+   "ZECUSDT": {
+    "n": 9,
+    "pnl": -8.4
+   },
+   "ORDIUSDT": {
+    "n": 1,
+    "pnl": -21.21
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -56.52
+   },
+   "PENGUUSDT": {
+    "n": 1,
+    "pnl": -61.95
+   },
+   "FARTCOINUSDT": {
+    "n": 3,
+    "pnl": -274.88
+   },
+   "HYPEUSDT": {
+    "n": 12,
+    "pnl": -366.71
+   },
+   "VVVUSDT": {
+    "n": 18,
+    "pnl": -591.67
+   },
+   "RENDERUSDT": {
+    "n": 2,
+    "pnl": -2644.8
+   }
+  }
+ },
+ {
+  "userId": 4693049,
+  "nick": "BA21",
+  "total_positions": 50,
+  "total_pnl": -130.67,
+  "n_symbols": 26,
+  "best_symbol": "WOOUSDT",
+  "best_n": 6,
+  "best_pnl": -8.92,
+  "best_winrate": 0.833,
+  "best_share_pnl": 0.068,
+  "best_avg_dur_h": 13.3,
+  "symbols": {
+   "ARBUSDT": {
+    "n": 1,
+    "pnl": 9.72
+   },
+   "IMXUSDT": {
+    "n": 3,
+    "pnl": 8.03
+   },
+   "XLMUSDT": {
+    "n": 1,
+    "pnl": 4.83
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 4.66
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": 4.11
+   },
+   "HBARUSDT": {
+    "n": 1,
+    "pnl": 2.9
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": 2.45
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": 2.2
+   },
+   "ETCUSDT": {
+    "n": 1,
+    "pnl": 1.23
+   },
+   "ALGOUSDT": {
+    "n": 1,
+    "pnl": 0.88
+   },
+   "TRXUSDT": {
+    "n": 1,
+    "pnl": 0.73
+   },
+   "APTUSDT": {
+    "n": 1,
+    "pnl": 0.73
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 0.06
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": -0.16
+   },
+   "PYTHUSDT": {
+    "n": 3,
+    "pnl": -3.31
+   },
+   "LDOUSDT": {
+    "n": 2,
+    "pnl": -3.31
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": -4.32
+   },
+   "LTCUSDT": {
+    "n": 2,
+    "pnl": -7.54
+   },
+   "WOOUSDT": {
+    "n": 6,
+    "pnl": -8.92
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -10.73
+   },
+   "UNIUSDT": {
+    "n": 3,
+    "pnl": -11.37
+   },
+   "OPUSDT": {
+    "n": 3,
+    "pnl": -15.0
+   },
+   "ARKMUSDT": {
+    "n": 1,
+    "pnl": -15.4
+   },
+   "CRVUSDT": {
+    "n": 2,
+    "pnl": -25.8
+   },
+   "AAVEUSDT": {
+    "n": 2,
+    "pnl": -30.96
+   },
+   "MANAUSDT": {
+    "n": 3,
+    "pnl": -36.36
+   }
+  }
+ },
+ {
+  "userId": 8132291,
+  "nick": "$NIKEPIG's Rocket",
+  "total_positions": 50,
+  "total_pnl": -10.0,
+  "n_symbols": 1,
+  "best_symbol": "ADAUSDT",
+  "best_n": 50,
+  "best_pnl": -10.0,
+  "best_winrate": 0.44,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 9.4,
+  "symbols": {
+   "ADAUSDT": {
+    "n": 50,
+    "pnl": -10.0
+   }
+  }
+ },
+ {
+  "userId": 9175167,
+  "nick": "Vector-Grid",
+  "total_positions": 50,
+  "total_pnl": -109.1,
+  "n_symbols": 5,
+  "best_symbol": "SOLUSDT",
+  "best_n": 9,
+  "best_pnl": -10.02,
+  "best_winrate": 0.333,
+  "best_share_pnl": 0.092,
+  "best_avg_dur_h": 9.0,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 9,
+    "pnl": -10.02
+   },
+   "BNBUSDT": {
+    "n": 9,
+    "pnl": -12.25
+   },
+   "ETHUSDT": {
+    "n": 9,
+    "pnl": -26.12
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": -28.05
+   },
+   "XRPUSDT": {
+    "n": 12,
+    "pnl": -32.67
+   }
+  }
+ },
+ {
+  "userId": 7124330,
+  "nick": "Lytoshiro Swing",
+  "total_positions": 37,
+  "total_pnl": -6596.75,
+  "n_symbols": 12,
+  "best_symbol": "SUIUSDT",
+  "best_n": 7,
+  "best_pnl": -12.13,
+  "best_winrate": 0.571,
+  "best_share_pnl": 0.002,
+  "best_avg_dur_h": 1.6,
+  "symbols": {
+   "NEARUSDT": {
+    "n": 2,
+    "pnl": 172.49
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -4.88
+   },
+   "SUIUSDT": {
+    "n": 7,
+    "pnl": -12.13
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -47.27
+   },
+   "VTHOUSDT": {
+    "n": 1,
+    "pnl": -57.83
+   },
+   "IMXUSDT": {
+    "n": 3,
+    "pnl": -83.62
+   },
+   "RENDERUSDT": {
+    "n": 7,
+    "pnl": -234.17
+   },
+   "ONDOUSDT": {
+    "n": 4,
+    "pnl": -261.98
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -331.75
+   },
+   "SEIUSDT": {
+    "n": 4,
+    "pnl": -730.34
+   },
+   "FETUSDT": {
+    "n": 5,
+    "pnl": -2023.75
+   },
+   "TIAUSDT": {
+    "n": 1,
+    "pnl": -2981.52
+   }
+  }
+ },
+ {
+  "userId": 4040271,
+  "nick": "Niugerra",
+  "total_positions": 50,
+  "total_pnl": -106.36,
+  "n_symbols": 12,
+  "best_symbol": "u1000SHIBUSDT",
+  "best_n": 8,
+  "best_pnl": -13.41,
+  "best_winrate": 0.25,
+  "best_share_pnl": 0.126,
+  "best_avg_dur_h": 3.2,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": 33.61
+   },
+   "u1000PEPEUSDT": {
+    "n": 3,
+    "pnl": 6.97
+   },
+   "SOLUSDT": {
+    "n": 3,
+    "pnl": 3.69
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": -0.42
+   },
+   "UNIUSDT": {
+    "n": 1,
+    "pnl": -4.33
+   },
+   "SUIUSDT": {
+    "n": 2,
+    "pnl": -6.49
+   },
+   "u1000SHIBUSDT": {
+    "n": 8,
+    "pnl": -13.41
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": -14.53
+   },
+   "PUMPUSDT": {
+    "n": 7,
+    "pnl": -15.33
+   },
+   "ETHUSDT": {
+    "n": 5,
+    "pnl": -15.91
+   },
+   "ZECUSDT": {
+    "n": 3,
+    "pnl": -16.37
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": -63.85
+   }
+  }
+ },
+ {
+  "userId": 1861517,
+  "nick": "PhemexJqgRiICaggvtEhYdtKmFp",
+  "total_positions": 50,
+  "total_pnl": -444.22,
+  "n_symbols": 11,
+  "best_symbol": "JUPUSDT",
+  "best_n": 8,
+  "best_pnl": -14.54,
+  "best_winrate": 0.375,
+  "best_share_pnl": 0.033,
+  "best_avg_dur_h": 328.3,
+  "symbols": {
+   "BRETTUSDT": {
+    "n": 1,
+    "pnl": 21.28
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -3.19
+   },
+   "WIFUSDT": {
+    "n": 1,
+    "pnl": -4.64
+   },
+   "PENGUUSDT": {
+    "n": 1,
+    "pnl": -8.38
+   },
+   "JUPUSDT": {
+    "n": 8,
+    "pnl": -14.54
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -15.83
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": -34.32
+   },
+   "u1000PEPEUSDT": {
+    "n": 3,
+    "pnl": -41.22
+   },
+   "DOGEUSDT": {
+    "n": 10,
+    "pnl": -101.71
+   },
+   "ETHUSDT": {
+    "n": 12,
+    "pnl": -109.36
+   },
+   "SOLUSDT": {
+    "n": 7,
+    "pnl": -132.3
+   }
+  }
+ },
+ {
+  "userId": 1862820,
+  "nick": "TheJellyman",
+  "total_positions": 27,
+  "total_pnl": -195.99,
+  "n_symbols": 3,
+  "best_symbol": "SOLUSDT",
+  "best_n": 9,
+  "best_pnl": -15.15,
+  "best_winrate": 0.333,
+  "best_share_pnl": 0.077,
+  "best_avg_dur_h": 11.7,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 9,
+    "pnl": -15.15
+   },
+   "ETHUSDT": {
+    "n": 8,
+    "pnl": -51.56
+   },
+   "BTCUSDT": {
+    "n": 10,
+    "pnl": -129.28
+   }
+  }
+ },
+ {
+  "userId": 7150524,
+  "nick": "Shelby",
+  "total_positions": 50,
+  "total_pnl": -84.79,
+  "n_symbols": 6,
+  "best_symbol": "BTCUSDT",
+  "best_n": 45,
+  "best_pnl": -15.88,
+  "best_winrate": 0.444,
+  "best_share_pnl": 0.187,
+  "best_avg_dur_h": 10.1,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": 8.86
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 5.53
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -11.34
+   },
+   "BTCUSDT": {
+    "n": 45,
+    "pnl": -15.88
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -17.91
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -54.06
+   }
+  }
+ },
+ {
+  "userId": 4148782,
+  "nick": "Trader15",
+  "total_positions": 50,
+  "total_pnl": -245.02,
+  "n_symbols": 9,
+  "best_symbol": "ETHUSDT",
+  "best_n": 5,
+  "best_pnl": -17.75,
+  "best_winrate": 0.0,
+  "best_share_pnl": 0.072,
+  "best_avg_dur_h": 18.3,
+  "symbols": {
+   "ADAUSDT": {
+    "n": 3,
+    "pnl": -8.08
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -8.23
+   },
+   "ETHUSDT": {
+    "n": 5,
+    "pnl": -17.75
+   },
+   "HBARUSDT": {
+    "n": 7,
+    "pnl": -20.22
+   },
+   "XRPUSDT": {
+    "n": 4,
+    "pnl": -21.05
+   },
+   "HYPEUSDT": {
+    "n": 5,
+    "pnl": -24.06
+   },
+   "ZECUSDT": {
+    "n": 9,
+    "pnl": -28.61
+   },
+   "BTCUSDT": {
+    "n": 8,
+    "pnl": -57.59
+   },
+   "SUIUSDT": {
+    "n": 7,
+    "pnl": -59.43
+   }
+  }
+ },
+ {
+  "userId": 1726299,
+  "nick": "PhemexlwoVUfDtxExyvYsSTwZyMY",
+  "total_positions": 50,
+  "total_pnl": -281.95,
+  "n_symbols": 20,
+  "best_symbol": "ETHUSDT",
+  "best_n": 7,
+  "best_pnl": -20.44,
+  "best_winrate": 0.143,
+  "best_share_pnl": 0.073,
+  "best_avg_dur_h": 8.7,
+  "symbols": {
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": 27.75
+   },
+   "SOLUSDT": {
+    "n": 4,
+    "pnl": 24.92
+   },
+   "BUSDT": {
+    "n": 1,
+    "pnl": 0.03
+   },
+   "TONUSDT": {
+    "n": 1,
+    "pnl": -1.62
+   },
+   "PIEVERSEUSDT": {
+    "n": 3,
+    "pnl": -2.09
+   },
+   "REUSDT": {
+    "n": 1,
+    "pnl": -2.33
+   },
+   "USUSDT": {
+    "n": 1,
+    "pnl": -4.58
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -5.1
+   },
+   "SPACEUSDT": {
+    "n": 1,
+    "pnl": -9.57
+   },
+   "PENDLEUSDT": {
+    "n": 1,
+    "pnl": -15.46
+   },
+   "SAGAUSDT": {
+    "n": 1,
+    "pnl": -15.58
+   },
+   "LAYERUSDT": {
+    "n": 2,
+    "pnl": -19.49
+   },
+   "ETHUSDT": {
+    "n": 7,
+    "pnl": -20.44
+   },
+   "TAOUSDT": {
+    "n": 1,
+    "pnl": -23.46
+   },
+   "NILUSDT": {
+    "n": 1,
+    "pnl": -24.69
+   },
+   "QUSDT": {
+    "n": 4,
+    "pnl": -30.56
+   },
+   "USELESSUSDT": {
+    "n": 1,
+    "pnl": -30.76
+   },
+   "TUTUSDT": {
+    "n": 2,
+    "pnl": -31.14
+   },
+   "BTCUSDT": {
+    "n": 14,
+    "pnl": -41.04
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": -56.75
+   }
+  }
+ },
+ {
+  "userId": 7213792,
+  "nick": "DemegawaHitoshi",
+  "total_positions": 50,
+  "total_pnl": 49.68,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 47,
+  "best_pnl": -21.52,
+  "best_winrate": 0.404,
+  "best_share_pnl": -0.433,
+  "best_avg_dur_h": 4.1,
+  "symbols": {
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": 66.73
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 4.46
+   },
+   "BTCUSDT": {
+    "n": 47,
+    "pnl": -21.52
+   }
+  }
+ },
+ {
+  "userId": 7172080,
+  "nick": "SoVictorr",
+  "total_positions": 18,
+  "total_pnl": -70.91,
+  "n_symbols": 7,
+  "best_symbol": "SOLUSDT",
+  "best_n": 5,
+  "best_pnl": -22.8,
+  "best_winrate": 0.2,
+  "best_share_pnl": 0.322,
+  "best_avg_dur_h": 28.1,
+  "symbols": {
+   "AVAXUSDT": {
+    "n": 3,
+    "pnl": 0.13
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": 0.07
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": 0.0
+   },
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": -0.08
+   },
+   "ETHUSDT": {
+    "n": 2,
+    "pnl": -0.66
+   },
+   "SOLUSDT": {
+    "n": 5,
+    "pnl": -22.8
+   },
+   "BTCUSDT": {
+    "n": 3,
+    "pnl": -47.57
+   }
+  }
+ },
+ {
+  "userId": 4860475,
+  "nick": "PhemexSDnmMesgyO",
+  "total_positions": 50,
+  "total_pnl": -134.85,
+  "n_symbols": 11,
+  "best_symbol": "LITUSDT",
+  "best_n": 31,
+  "best_pnl": -29.73,
+  "best_winrate": 0.419,
+  "best_share_pnl": 0.22,
+  "best_avg_dur_h": 1.5,
+  "symbols": {
+   "QUSDT": {
+    "n": 2,
+    "pnl": 5.84
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": -2.3
+   },
+   "SUIUSDT": {
+    "n": 1,
+    "pnl": -3.84
+   },
+   "GOATUSDT": {
+    "n": 1,
+    "pnl": -5.37
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -5.71
+   },
+   "ARPAUSDT": {
+    "n": 1,
+    "pnl": -5.89
+   },
+   "FIDAUSDT": {
+    "n": 2,
+    "pnl": -7.97
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": -15.92
+   },
+   "LITUSDT": {
+    "n": 31,
+    "pnl": -29.73
+   },
+   "GENIUSUSDT": {
+    "n": 1,
+    "pnl": -30.12
+   },
+   "BTCUSDT": {
+    "n": 8,
+    "pnl": -33.85
+   }
+  }
+ },
+ {
+  "userId": 8836944,
+  "nick": "Frankbot",
+  "total_positions": 50,
+  "total_pnl": -32.12,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": -32.12,
+  "best_winrate": 0.44,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 14.2,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": -32.12
+   }
+  }
+ },
+ {
+  "userId": 9175175,
+  "nick": "Stoic Triad",
+  "total_positions": 50,
+  "total_pnl": -387.77,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 14,
+  "best_pnl": -32.21,
+  "best_winrate": 0.214,
+  "best_share_pnl": 0.083,
+  "best_avg_dur_h": 23.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 14,
+    "pnl": -32.21
+   },
+   "ETHUSDT": {
+    "n": 20,
+    "pnl": -145.99
+   },
+   "SOLUSDT": {
+    "n": 16,
+    "pnl": -209.56
+   }
+  }
+ },
+ {
+  "userId": 4650569,
+  "nick": "Kaizen ",
+  "total_positions": 50,
+  "total_pnl": -1348.38,
+  "n_symbols": 16,
+  "best_symbol": "XPLUSDT",
+  "best_n": 5,
+  "best_pnl": -45.47,
+  "best_winrate": 0.2,
+  "best_share_pnl": 0.034,
+  "best_avg_dur_h": 6.9,
+  "symbols": {
+   "SIRENUSDT": {
+    "n": 1,
+    "pnl": 36.45
+   },
+   "ETHUSDT": {
+    "n": 4,
+    "pnl": 36.36
+   },
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": 30.87
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": 20.02
+   },
+   "MMTUSDT": {
+    "n": 1,
+    "pnl": 17.46
+   },
+   "REUSDT": {
+    "n": 1,
+    "pnl": 10.69
+   },
+   "BNBUSDT": {
+    "n": 1,
+    "pnl": -1.81
+   },
+   "SPCXUSDT": {
+    "n": 3,
+    "pnl": -14.12
+   },
+   "ICNTUSDT": {
+    "n": 1,
+    "pnl": -18.2
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -22.85
+   },
+   "FETUSDT": {
+    "n": 1,
+    "pnl": -23.56
+   },
+   "XPLUSDT": {
+    "n": 5,
+    "pnl": -45.47
+   },
+   "CRVUSDT": {
+    "n": 1,
+    "pnl": -50.8
+   },
+   "u1000000MOGUSDT": {
+    "n": 2,
+    "pnl": -60.61
+   },
+   "INJUSDT": {
+    "n": 3,
+    "pnl": -181.48
+   },
+   "BTCUSDT": {
+    "n": 23,
+    "pnl": -1081.32
+   }
+  }
+ },
+ {
+  "userId": 8166429,
+  "nick": "Cassius",
+  "total_positions": 50,
+  "total_pnl": -1016.74,
+  "n_symbols": 19,
+  "best_symbol": "SNDKUSDT",
+  "best_n": 6,
+  "best_pnl": -52.65,
+  "best_winrate": 0.0,
+  "best_share_pnl": 0.052,
+  "best_avg_dur_h": 16.2,
+  "symbols": {
+   "PUMPUSDT": {
+    "n": 1,
+    "pnl": 79.02
+   },
+   "BANANAS31USDT": {
+    "n": 1,
+    "pnl": 3.53
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -0.21
+   },
+   "u1000PEPEUSDT": {
+    "n": 2,
+    "pnl": -4.95
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -5.82
+   },
+   "STXUSDT": {
+    "n": 1,
+    "pnl": -9.08
+   },
+   "ETCUSDT": {
+    "n": 3,
+    "pnl": -11.72
+   },
+   "DEGENUSDT": {
+    "n": 1,
+    "pnl": -14.09
+   },
+   "u1000SHIBUSDT": {
+    "n": 2,
+    "pnl": -36.43
+   },
+   "APTUSDT": {
+    "n": 3,
+    "pnl": -46.04
+   },
+   "WIFUSDT": {
+    "n": 1,
+    "pnl": -46.05
+   },
+   "SNDKUSDT": {
+    "n": 6,
+    "pnl": -52.65
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": -60.05
+   },
+   "u1000FLOKIUSDT": {
+    "n": 2,
+    "pnl": -60.72
+   },
+   "u1000BONKUSDT": {
+    "n": 3,
+    "pnl": -65.27
+   },
+   "ZECUSDT": {
+    "n": 6,
+    "pnl": -78.5
+   },
+   "ATOMUSDT": {
+    "n": 9,
+    "pnl": -93.16
+   },
+   "MOODENGUSDT": {
+    "n": 3,
+    "pnl": -132.5
+   },
+   "POPCATUSDT": {
+    "n": 3,
+    "pnl": -382.05
+   }
+  }
+ },
+ {
+  "userId": 1296870,
+  "nick": "longETHshortcoinunlocks",
+  "total_positions": 8,
+  "total_pnl": -561.75,
+  "n_symbols": 4,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": -63.77,
+  "best_winrate": 0.2,
+  "best_share_pnl": 0.114,
+  "best_avg_dur_h": 21.5,
+  "symbols": {
+   "ICPUSDT": {
+    "n": 1,
+    "pnl": -40.37
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": -63.77
+   },
+   "BCHUSDT": {
+    "n": 1,
+    "pnl": -113.3
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -344.31
+   }
+  }
+ },
+ {
+  "userId": 4813647,
+  "nick": "crhash",
+  "total_positions": 50,
+  "total_pnl": -285.41,
+  "n_symbols": 3,
+  "best_symbol": "LTCUSDT",
+  "best_n": 19,
+  "best_pnl": -70.21,
+  "best_winrate": 0.263,
+  "best_share_pnl": 0.246,
+  "best_avg_dur_h": 11.4,
+  "symbols": {
+   "XAUUSDT": {
+    "n": 2,
+    "pnl": -2.69
+   },
+   "LTCUSDT": {
+    "n": 19,
+    "pnl": -70.21
+   },
+   "BTCUSDT": {
+    "n": 29,
+    "pnl": -212.5
+   }
+  }
+ },
+ {
+  "userId": 697473,
+  "nick": "L'arTisTe",
+  "total_positions": 50,
+  "total_pnl": -837.96,
+  "n_symbols": 5,
+  "best_symbol": "NEARUSDT",
+  "best_n": 8,
+  "best_pnl": -82.81,
+  "best_winrate": 0.375,
+  "best_share_pnl": 0.099,
+  "best_avg_dur_h": 4.6,
+  "symbols": {
+   "NAS100USDT": {
+    "n": 1,
+    "pnl": -9.93
+   },
+   "XAUUSDT": {
+    "n": 2,
+    "pnl": -48.6
+   },
+   "NEARUSDT": {
+    "n": 8,
+    "pnl": -82.81
+   },
+   "ETHUSDT": {
+    "n": 18,
+    "pnl": -285.76
+   },
+   "BTCUSDT": {
+    "n": 21,
+    "pnl": -410.86
+   }
+  }
+ },
+ {
+  "userId": 5131340,
+  "nick": "PhemexEQUJIEJ",
+  "total_positions": 50,
+  "total_pnl": -482.1,
+  "n_symbols": 5,
+  "best_symbol": "SUIUSDT",
+  "best_n": 11,
+  "best_pnl": -97.06,
+  "best_winrate": 0.545,
+  "best_share_pnl": 0.201,
+  "best_avg_dur_h": 2.4,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -22.66
+   },
+   "PUMPUSDT": {
+    "n": 1,
+    "pnl": -23.56
+   },
+   "SUIUSDT": {
+    "n": 11,
+    "pnl": -97.06
+   },
+   "XRPUSDT": {
+    "n": 17,
+    "pnl": -130.29
+   },
+   "TRUMPUSDT": {
+    "n": 20,
+    "pnl": -208.54
+   }
+  }
+ },
+ {
+  "userId": 2958766,
+  "nick": "TOOCQQL",
+  "total_positions": 6,
+  "total_pnl": -100.39,
+  "n_symbols": 1,
+  "best_symbol": "ETHUSDT",
+  "best_n": 6,
+  "best_pnl": -100.39,
+  "best_winrate": 0.0,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 0.6,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 6,
+    "pnl": -100.39
+   }
+  }
+ },
+ {
+  "userId": 4800990,
+  "nick": "Gantz",
+  "total_positions": 50,
+  "total_pnl": -106.64,
+  "n_symbols": 1,
+  "best_symbol": "XAUUSDT",
+  "best_n": 50,
+  "best_pnl": -106.64,
+  "best_winrate": 0.42,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 11.1,
+  "symbols": {
+   "XAUUSDT": {
+    "n": 50,
+    "pnl": -106.64
+   }
+  }
+ },
+ {
+  "userId": 1646385,
+  "nick": "Michael50x2000",
+  "total_positions": 50,
+  "total_pnl": -3161.28,
+  "n_symbols": 23,
+  "best_symbol": "CATIUSDT",
+  "best_n": 6,
+  "best_pnl": -151.2,
+  "best_winrate": 0.167,
+  "best_share_pnl": 0.048,
+  "best_avg_dur_h": 79.3,
+  "symbols": {
+   "SAGAUSDT": {
+    "n": 2,
+    "pnl": 332.79
+   },
+   "HEIUSDT": {
+    "n": 1,
+    "pnl": 301.9
+   },
+   "RIVERUSDT": {
+    "n": 2,
+    "pnl": 40.89
+   },
+   "HIPPOUSDT": {
+    "n": 2,
+    "pnl": 24.92
+   },
+   "CCUSDT": {
+    "n": 1,
+    "pnl": 15.04
+   },
+   "BANANAUSDT": {
+    "n": 2,
+    "pnl": 5.48
+   },
+   "EVAAUSDT": {
+    "n": 1,
+    "pnl": -0.06
+   },
+   "GIGGLEUSDT": {
+    "n": 1,
+    "pnl": -0.78
+   },
+   "CYSUSDT": {
+    "n": 2,
+    "pnl": -23.05
+   },
+   "GPSUSDT": {
+    "n": 1,
+    "pnl": -31.17
+   },
+   "u1000PEPEUSDT": {
+    "n": 3,
+    "pnl": -31.6
+   },
+   "XAUUSDT": {
+    "n": 1,
+    "pnl": -32.92
+   },
+   "POWERUSDT": {
+    "n": 1,
+    "pnl": -40.78
+   },
+   "CATIUSDT": {
+    "n": 6,
+    "pnl": -151.2
+   },
+   "FHEUSDT": {
+    "n": 5,
+    "pnl": -170.55
+   },
+   "MYXUSDT": {
+    "n": 2,
+    "pnl": -241.68
+   },
+   "SAHARAUSDT": {
+    "n": 1,
+    "pnl": -255.77
+   },
+   "ALCHUSDT": {
+    "n": 1,
+    "pnl": -275.41
+   },
+   "PIPPINUSDT": {
+    "n": 8,
+    "pnl": -347.88
+   },
+   "TRADOORUSDT": {
+    "n": 1,
+    "pnl": -467.58
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -602.63
+   },
+   "EDGEXUSDT": {
+    "n": 3,
+    "pnl": -603.69
+   },
+   "ARIAUSDT": {
+    "n": 2,
+    "pnl": -605.54
+   }
+  }
+ },
+ {
+  "userId": 1490611,
+  "nick": "Leprechaun",
+  "total_positions": 50,
+  "total_pnl": -182.84,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": -182.84,
+  "best_winrate": 0.34,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 15.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": -182.84
+   }
+  }
+ },
+ {
+  "userId": 4984266,
+  "nick": "TALAPADON",
+  "total_positions": 50,
+  "total_pnl": -476.85,
+  "n_symbols": 4,
+  "best_symbol": "ETHUSDT",
+  "best_n": 11,
+  "best_pnl": -210.09,
+  "best_winrate": 0.273,
+  "best_share_pnl": 0.441,
+  "best_avg_dur_h": 24.7,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -15.39
+   },
+   "AIAUSDT": {
+    "n": 2,
+    "pnl": -17.78
+   },
+   "ETHUSDT": {
+    "n": 11,
+    "pnl": -210.09
+   },
+   "BTCUSDT": {
+    "n": 36,
+    "pnl": -233.6
+   }
+  }
+ },
+ {
+  "userId": 3100492,
+  "nick": "PhemexNKzvuBRfNGLJNOFETyfVaMRJRZkK",
+  "total_positions": 50,
+  "total_pnl": -2112.97,
+  "n_symbols": 3,
+  "best_symbol": "u1000PEPEUSDT",
+  "best_n": 8,
+  "best_pnl": -236.68,
+  "best_winrate": 0.25,
+  "best_share_pnl": 0.112,
+  "best_avg_dur_h": 15.0,
+  "symbols": {
+   "LITUSDT": {
+    "n": 2,
+    "pnl": -94.9
+   },
+   "u1000PEPEUSDT": {
+    "n": 8,
+    "pnl": -236.68
+   },
+   "u1000BONKUSDT": {
+    "n": 40,
+    "pnl": -1781.38
+   }
+  }
+ },
+ {
+  "userId": 4589399,
+  "nick": "DreMoneyMk'r",
+  "total_positions": 50,
+  "total_pnl": -752.75,
+  "n_symbols": 4,
+  "best_symbol": "ALGOUSDT",
+  "best_n": 9,
+  "best_pnl": -255.31,
+  "best_winrate": 0.222,
+  "best_share_pnl": 0.339,
+  "best_avg_dur_h": 7.9,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": 139.39
+   },
+   "ENAUSDT": {
+    "n": 3,
+    "pnl": -19.17
+   },
+   "ALGOUSDT": {
+    "n": 9,
+    "pnl": -255.31
+   },
+   "ADAUSDT": {
+    "n": 37,
+    "pnl": -617.66
+   }
+  }
+ },
+ {
+  "userId": 2575941,
+  "nick": "Steveayit",
+  "total_positions": 5,
+  "total_pnl": -282.19,
+  "n_symbols": 1,
+  "best_symbol": "SPXUSDT",
+  "best_n": 5,
+  "best_pnl": -282.19,
+  "best_winrate": 0.4,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 1312.6,
+  "symbols": {
+   "SPXUSDT": {
+    "n": 5,
+    "pnl": -282.19
+   }
+  }
+ },
+ {
+  "userId": 5079366,
+  "nick": "MommyStarGaze",
+  "total_positions": 50,
+  "total_pnl": -5582.9,
+  "n_symbols": 34,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": -291.79,
+  "best_winrate": 0.4,
+  "best_share_pnl": 0.052,
+  "best_avg_dur_h": 1449.0,
+  "symbols": {
+   "AIAUSDT": {
+    "n": 2,
+    "pnl": 3.11
+   },
+   "TUTUSDT": {
+    "n": 1,
+    "pnl": -3.52
+   },
+   "BROCCOLIUSDT": {
+    "n": 1,
+    "pnl": -4.72
+   },
+   "WLFIUSDT": {
+    "n": 2,
+    "pnl": -20.45
+   },
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": -43.06
+   },
+   "DASHUSDT": {
+    "n": 1,
+    "pnl": -59.28
+   },
+   "AVNTUSDT": {
+    "n": 1,
+    "pnl": -62.83
+   },
+   "ALGOUSDT": {
+    "n": 1,
+    "pnl": -63.9
+   },
+   "ICXUSDT": {
+    "n": 1,
+    "pnl": -71.7
+   },
+   "ADAUSDT": {
+    "n": 2,
+    "pnl": -95.94
+   },
+   "ICPUSDT": {
+    "n": 1,
+    "pnl": -96.14
+   },
+   "LAYERUSDT": {
+    "n": 1,
+    "pnl": -133.63
+   },
+   "HBARUSDT": {
+    "n": 2,
+    "pnl": -133.73
+   },
+   "RUNEUSDT": {
+    "n": 1,
+    "pnl": -136.86
+   },
+   "VETUSDT": {
+    "n": 1,
+    "pnl": -137.29
+   },
+   "EGLDUSDT": {
+    "n": 1,
+    "pnl": -141.02
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": -141.36
+   },
+   "MINAUSDT": {
+    "n": 1,
+    "pnl": -146.06
+   },
+   "DOGEUSDT": {
+    "n": 3,
+    "pnl": -154.69
+   },
+   "FETUSDT": {
+    "n": 2,
+    "pnl": -162.95
+   },
+   "ETHUSDT": {
+    "n": 4,
+    "pnl": -170.04
+   },
+   "RENDERUSDT": {
+    "n": 1,
+    "pnl": -174.29
+   },
+   "PEOPLEUSDT": {
+    "n": 1,
+    "pnl": -183.76
+   },
+   "JASMYUSDT": {
+    "n": 1,
+    "pnl": -194.68
+   },
+   "BMTUSDT": {
+    "n": 1,
+    "pnl": -195.17
+   },
+   "THETAUSDT": {
+    "n": 1,
+    "pnl": -242.89
+   },
+   "ZETAUSDT": {
+    "n": 1,
+    "pnl": -245.07
+   },
+   "MANTAUSDT": {
+    "n": 1,
+    "pnl": -249.97
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": -291.79
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -317.52
+   },
+   "LINKUSDT": {
+    "n": 2,
+    "pnl": -327.89
+   },
+   "ILVUSDT": {
+    "n": 1,
+    "pnl": -380.4
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": -392.37
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -411.02
+   }
+  }
+ },
+ {
+  "userId": 4809141,
+  "nick": "HW\ud83d\udcb0",
+  "total_positions": 19,
+  "total_pnl": -363.79,
+  "n_symbols": 8,
+  "best_symbol": "SUIUSDT",
+  "best_n": 5,
+  "best_pnl": -324.57,
+  "best_winrate": 0.6,
+  "best_share_pnl": 0.892,
+  "best_avg_dur_h": 53.6,
+  "symbols": {
+   "FARTCOINUSDT": {
+    "n": 4,
+    "pnl": 78.05
+   },
+   "NEARUSDT": {
+    "n": 4,
+    "pnl": 49.78
+   },
+   "RENDERUSDT": {
+    "n": 2,
+    "pnl": 34.68
+   },
+   "FETUSDT": {
+    "n": 1,
+    "pnl": 0.34
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -0.94
+   },
+   "JUPUSDT": {
+    "n": 1,
+    "pnl": -86.1
+   },
+   "BREVUSDT": {
+    "n": 1,
+    "pnl": -115.02
+   },
+   "SUIUSDT": {
+    "n": 5,
+    "pnl": -324.57
+   }
+  }
+ },
+ {
+  "userId": 5136527,
+  "nick": "PhemexnoPuMVNDPburTNGHplDiJ",
+  "total_positions": 30,
+  "total_pnl": -966.7,
+  "n_symbols": 8,
+  "best_symbol": "BTCUSDT",
+  "best_n": 19,
+  "best_pnl": -328.18,
+  "best_winrate": 0.211,
+  "best_share_pnl": 0.339,
+  "best_avg_dur_h": 51.6,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 16.37
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": 2.99
+   },
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": 1.94
+   },
+   "SAGAUSDT": {
+    "n": 2,
+    "pnl": -1.69
+   },
+   "BRETTUSDT": {
+    "n": 1,
+    "pnl": -26.32
+   },
+   "AI16ZUSDT": {
+    "n": 1,
+    "pnl": -176.67
+   },
+   "BTCUSDT": {
+    "n": 19,
+    "pnl": -328.18
+   },
+   "SOLUSDT": {
+    "n": 4,
+    "pnl": -455.16
+   }
+  }
+ },
+ {
+  "userId": 2607841,
+  "nick": "Bot Trader",
+  "total_positions": 50,
+  "total_pnl": -420.35,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": -420.35,
+  "best_winrate": 0.18,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 4.0,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": -420.35
+   }
+  }
+ },
+ {
+  "userId": 818537,
+  "nick": "PhemexTKMLzkBgKs",
+  "total_positions": 50,
+  "total_pnl": -514.52,
+  "n_symbols": 1,
+  "best_symbol": "SOLUSDT",
+  "best_n": 50,
+  "best_pnl": -514.52,
+  "best_winrate": 0.88,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 5.5,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 50,
+    "pnl": -514.52
+   }
+  }
+ },
+ {
+  "userId": 2184389,
+  "nick": "PhemexKDZJBYJEqHDur",
+  "total_positions": 39,
+  "total_pnl": -2662.54,
+  "n_symbols": 3,
+  "best_symbol": "ETHUSDT",
+  "best_n": 5,
+  "best_pnl": -596.63,
+  "best_winrate": 0.0,
+  "best_share_pnl": 0.224,
+  "best_avg_dur_h": 32.7,
+  "symbols": {
+   "ADAUSDT": {
+    "n": 1,
+    "pnl": 484.08
+   },
+   "ETHUSDT": {
+    "n": 5,
+    "pnl": -596.63
+   },
+   "BTCUSDT": {
+    "n": 33,
+    "pnl": -2549.99
+   }
+  }
+ },
+ {
+  "userId": 2325367,
+  "nick": "Bogdanoff\ud83e\udd33\ud83c\udffd",
+  "total_positions": 50,
+  "total_pnl": -2203.74,
+  "n_symbols": 5,
+  "best_symbol": "ETHUSDT",
+  "best_n": 15,
+  "best_pnl": -625.46,
+  "best_winrate": 0.733,
+  "best_share_pnl": 0.284,
+  "best_avg_dur_h": 52.1,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 1,
+    "pnl": -187.82
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -272.41
+   },
+   "AAVEUSDT": {
+    "n": 2,
+    "pnl": -304.82
+   },
+   "ETHUSDT": {
+    "n": 15,
+    "pnl": -625.46
+   },
+   "TRUMPUSDT": {
+    "n": 29,
+    "pnl": -813.23
+   }
+  }
+ },
+ {
+  "userId": 7126038,
+  "nick": "SY Trading \u269c\ufe0f",
+  "total_positions": 50,
+  "total_pnl": -603.83,
+  "n_symbols": 4,
+  "best_symbol": "SOLUSDT",
+  "best_n": 45,
+  "best_pnl": -625.52,
+  "best_winrate": 0.422,
+  "best_share_pnl": 1.036,
+  "best_avg_dur_h": 24.1,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 227.36
+   },
+   "BTCUSDT": {
+    "n": 1,
+    "pnl": -73.07
+   },
+   "XAUUSDT": {
+    "n": 3,
+    "pnl": -132.6
+   },
+   "SOLUSDT": {
+    "n": 45,
+    "pnl": -625.52
+   }
+  }
+ },
+ {
+  "userId": 995193,
+  "nick": "MoneyMonster",
+  "total_positions": 50,
+  "total_pnl": -10280.29,
+  "n_symbols": 5,
+  "best_symbol": "SIRENUSDT",
+  "best_n": 5,
+  "best_pnl": -813.79,
+  "best_winrate": 0.8,
+  "best_share_pnl": 0.079,
+  "best_avg_dur_h": 276.1,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 1,
+    "pnl": 17.02
+   },
+   "PAXGUSDT": {
+    "n": 3,
+    "pnl": -141.77
+   },
+   "SIRENUSDT": {
+    "n": 5,
+    "pnl": -813.79
+   },
+   "ORDIUSDT": {
+    "n": 2,
+    "pnl": -1326.86
+   },
+   "SOLUSDT": {
+    "n": 39,
+    "pnl": -8014.89
+   }
+  }
+ },
+ {
+  "userId": 7064938,
+  "nick": "Trading hunter",
+  "total_positions": 9,
+  "total_pnl": -890.4,
+  "n_symbols": 2,
+  "best_symbol": "ETHUSDT",
+  "best_n": 7,
+  "best_pnl": -883.1,
+  "best_winrate": 0.571,
+  "best_share_pnl": 0.992,
+  "best_avg_dur_h": 497.1,
+  "symbols": {
+   "PAXGUSDT": {
+    "n": 2,
+    "pnl": -7.3
+   },
+   "ETHUSDT": {
+    "n": 7,
+    "pnl": -883.1
+   }
+  }
+ },
+ {
+  "userId": 1086823,
+  "nick": "PhemexfqwAgIhK",
+  "total_positions": 50,
+  "total_pnl": -1558.76,
+  "n_symbols": 4,
+  "best_symbol": "BTCUSDT",
+  "best_n": 44,
+  "best_pnl": -1025.19,
+  "best_winrate": 0.432,
+  "best_share_pnl": 0.658,
+  "best_avg_dur_h": 30.5,
+  "symbols": {
+   "SUIUSDT": {
+    "n": 3,
+    "pnl": 290.79
+   },
+   "NEARUSDT": {
+    "n": 1,
+    "pnl": -120.66
+   },
+   "SOLUSDT": {
+    "n": 2,
+    "pnl": -703.72
+   },
+   "BTCUSDT": {
+    "n": 44,
+    "pnl": -1025.19
+   }
+  }
+ },
+ {
+  "userId": 5112115,
+  "nick": "Energy Trading Team",
+  "total_positions": 21,
+  "total_pnl": -1133.0,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 21,
+  "best_pnl": -1133.0,
+  "best_winrate": 0.429,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 36.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 21,
+    "pnl": -1133.0
+   }
+  }
+ },
+ {
+  "userId": 2987102,
+  "nick": "PhemexISJANvRSuUeDohifRvpOhpGvT",
+  "total_positions": 50,
+  "total_pnl": -5200.43,
+  "n_symbols": 17,
+  "best_symbol": "FARTCOINUSDT",
+  "best_n": 10,
+  "best_pnl": -1475.53,
+  "best_winrate": 0.2,
+  "best_share_pnl": 0.284,
+  "best_avg_dur_h": 17.2,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 2,
+    "pnl": 401.26
+   },
+   "ENAUSDT": {
+    "n": 1,
+    "pnl": 245.61
+   },
+   "TUTUSDT": {
+    "n": 3,
+    "pnl": 181.14
+   },
+   "MUBARAKUSDT": {
+    "n": 1,
+    "pnl": 151.15
+   },
+   "DEXEUSDT": {
+    "n": 1,
+    "pnl": 39.15
+   },
+   "LITUSDT": {
+    "n": 1,
+    "pnl": 32.59
+   },
+   "BELUSDT": {
+    "n": 1,
+    "pnl": -3.7
+   },
+   "HEIUSDT": {
+    "n": 2,
+    "pnl": -41.94
+   },
+   "CRVUSDT": {
+    "n": 1,
+    "pnl": -68.64
+   },
+   "ARKUSDT": {
+    "n": 1,
+    "pnl": -105.34
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -124.4
+   },
+   "LABUSDT": {
+    "n": 1,
+    "pnl": -146.17
+   },
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": -209.5
+   },
+   "u1000RATSUSDT": {
+    "n": 2,
+    "pnl": -428.08
+   },
+   "FARTCOINUSDT": {
+    "n": 10,
+    "pnl": -1475.53
+   },
+   "XPLUSDT": {
+    "n": 3,
+    "pnl": -1796.69
+   },
+   "BTCUSDT": {
+    "n": 18,
+    "pnl": -1851.35
+   }
+  }
+ },
+ {
+  "userId": 925929,
+  "nick": "KryptoAndi",
+  "total_positions": 27,
+  "total_pnl": -2288.51,
+  "n_symbols": 3,
+  "best_symbol": "BTCUSDT",
+  "best_n": 25,
+  "best_pnl": -2087.78,
+  "best_winrate": 0.48,
+  "best_share_pnl": 0.912,
+  "best_avg_dur_h": 69.9,
+  "symbols": {
+   "ETHUSDT": {
+    "n": 1,
+    "pnl": 413.78
+   },
+   "FETUSDT": {
+    "n": 1,
+    "pnl": -614.51
+   },
+   "BTCUSDT": {
+    "n": 25,
+    "pnl": -2087.78
+   }
+  }
+ },
+ {
+  "userId": 4905407,
+  "nick": "bigpicklemic",
+  "total_positions": 46,
+  "total_pnl": -7375.54,
+  "n_symbols": 4,
+  "best_symbol": "ETHUSDT",
+  "best_n": 32,
+  "best_pnl": -2238.08,
+  "best_winrate": 0.406,
+  "best_share_pnl": 0.303,
+  "best_avg_dur_h": 126.8,
+  "symbols": {
+   "u1000SHIBUSDT": {
+    "n": 1,
+    "pnl": -887.84
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -1139.37
+   },
+   "ETHUSDT": {
+    "n": 32,
+    "pnl": -2238.08
+   },
+   "BTCUSDT": {
+    "n": 11,
+    "pnl": -3110.25
+   }
+  }
+ },
+ {
+  "userId": 2098770,
+  "nick": "WallStreetAnalyst",
+  "total_positions": 50,
+  "total_pnl": -3011.66,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": -3011.66,
+  "best_winrate": 0.16,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 7.1,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": -3011.66
+   }
+  }
+ },
+ {
+  "userId": 8307342,
+  "nick": "PhemexIFJgqPfWcTpUZPmsUgMsFj",
+  "total_positions": 50,
+  "total_pnl": -25875.63,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 13,
+  "best_pnl": -3120.4,
+  "best_winrate": 0.538,
+  "best_share_pnl": 0.121,
+  "best_avg_dur_h": 54.6,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 13,
+    "pnl": -3120.4
+   },
+   "BTCUSDC": {
+    "n": 37,
+    "pnl": -22755.24
+   }
+  }
+ },
+ {
+  "userId": 4337062,
+  "nick": "Ironman8 ",
+  "total_positions": 50,
+  "total_pnl": -3919.54,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 50,
+  "best_pnl": -3919.54,
+  "best_winrate": 0.82,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 22.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 50,
+    "pnl": -3919.54
+   }
+  }
+ },
+ {
+  "userId": 2035392,
+  "nick": "Cryptodamus",
+  "total_positions": 50,
+  "total_pnl": -34856.46,
+  "n_symbols": 3,
+  "best_symbol": "SOLUSDT",
+  "best_n": 13,
+  "best_pnl": -5863.74,
+  "best_winrate": 0.385,
+  "best_share_pnl": 0.168,
+  "best_avg_dur_h": 72.1,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 13,
+    "pnl": -5863.74
+   },
+   "ETHUSDT": {
+    "n": 24,
+    "pnl": -6253.74
+   },
+   "BTCUSDT": {
+    "n": 13,
+    "pnl": -22738.99
+   }
+  }
+ },
+ {
+  "userId": 744809,
+  "nick": "PhemexoeAPLDZQaPdpqrvXkZzCRoPCXfxVJAf",
+  "total_positions": 50,
+  "total_pnl": -7278.57,
+  "n_symbols": 3,
+  "best_symbol": "PENGUUSDT",
+  "best_n": 45,
+  "best_pnl": -6017.17,
+  "best_winrate": 0.244,
+  "best_share_pnl": 0.827,
+  "best_avg_dur_h": 5.0,
+  "symbols": {
+   "HYPEUSDT": {
+    "n": 1,
+    "pnl": -497.77
+   },
+   "u1000PEPEUSDT": {
+    "n": 4,
+    "pnl": -763.63
+   },
+   "PENGUUSDT": {
+    "n": 45,
+    "pnl": -6017.17
+   }
+  }
+ },
+ {
+  "userId": 4333596,
+  "nick": "igysa1",
+  "total_positions": 6,
+  "total_pnl": -10240.12,
+  "n_symbols": 2,
+  "best_symbol": "BTCUSDT",
+  "best_n": 5,
+  "best_pnl": -7958.84,
+  "best_winrate": 0.8,
+  "best_share_pnl": 0.777,
+  "best_avg_dur_h": 1519.9,
+  "symbols": {
+   "WIFUSDT": {
+    "n": 1,
+    "pnl": -2281.28
+   },
+   "BTCUSDT": {
+    "n": 5,
+    "pnl": -7958.84
+   }
+  }
+ },
+ {
+  "userId": 4503649,
+  "nick": "GetGuap",
+  "total_positions": 50,
+  "total_pnl": -13126.22,
+  "n_symbols": 16,
+  "best_symbol": "ETHUSDT",
+  "best_n": 16,
+  "best_pnl": -10601.03,
+  "best_winrate": 0.125,
+  "best_share_pnl": 0.808,
+  "best_avg_dur_h": 11.6,
+  "symbols": {
+   "LINKUSDT": {
+    "n": 3,
+    "pnl": 68.28
+   },
+   "ONDOUSDT": {
+    "n": 2,
+    "pnl": 14.11
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -4.26
+   },
+   "AEROUSDT": {
+    "n": 1,
+    "pnl": -9.15
+   },
+   "AAVEUSDT": {
+    "n": 1,
+    "pnl": -10.54
+   },
+   "UNIUSDT": {
+    "n": 1,
+    "pnl": -11.64
+   },
+   "BTCUSDT": {
+    "n": 4,
+    "pnl": -17.24
+   },
+   "u1000PEPEUSDT": {
+    "n": 3,
+    "pnl": -21.95
+   },
+   "LTCUSDT": {
+    "n": 3,
+    "pnl": -24.11
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -98.54
+   },
+   "HYPEUSDT": {
+    "n": 2,
+    "pnl": -122.82
+   },
+   "SOLUSDT": {
+    "n": 3,
+    "pnl": -174.98
+   },
+   "XRPUSDT": {
+    "n": 2,
+    "pnl": -630.5
+   },
+   "INJUSDT": {
+    "n": 2,
+    "pnl": -682.42
+   },
+   "SUIUSDT": {
+    "n": 4,
+    "pnl": -799.43
+   },
+   "ETHUSDT": {
+    "n": 16,
+    "pnl": -10601.03
+   }
+  }
+ },
+ {
+  "userId": 1620364,
+  "nick": "PhemexmbkShWJxL",
+  "total_positions": 50,
+  "total_pnl": -19784.92,
+  "n_symbols": 1,
+  "best_symbol": "ZECUSDT",
+  "best_n": 50,
+  "best_pnl": -19784.92,
+  "best_winrate": 0.4,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 103.6,
+  "symbols": {
+   "ZECUSDT": {
+    "n": 50,
+    "pnl": -19784.92
+   }
+  }
+ },
+ {
+  "userId": 2407237,
+  "nick": "TheJewishCryptoBoy",
+  "total_positions": 22,
+  "total_pnl": -24714.42,
+  "n_symbols": 8,
+  "best_symbol": "u1000SHIBUSDT",
+  "best_n": 11,
+  "best_pnl": -24581.73,
+  "best_winrate": 0.364,
+  "best_share_pnl": 0.995,
+  "best_avg_dur_h": 706.3,
+  "symbols": {
+   "DOGEUSDT": {
+    "n": 3,
+    "pnl": 154.27
+   },
+   "PTBUSDT": {
+    "n": 1,
+    "pnl": 76.96
+   },
+   "KGENUSDT": {
+    "n": 1,
+    "pnl": 74.23
+   },
+   "CAMPUSDT": {
+    "n": 1,
+    "pnl": 62.04
+   },
+   "BTCUSDT": {
+    "n": 3,
+    "pnl": -100.48
+   },
+   "BASUSDT": {
+    "n": 1,
+    "pnl": -112.02
+   },
+   "BLESSUSDT": {
+    "n": 1,
+    "pnl": -287.69
+   },
+   "u1000SHIBUSDT": {
+    "n": 11,
+    "pnl": -24581.73
+   }
+  }
+ },
+ {
+  "userId": 4803746,
+  "nick": "R3nk0",
+  "total_positions": 38,
+  "total_pnl": -24732.29,
+  "n_symbols": 1,
+  "best_symbol": "BTCUSDT",
+  "best_n": 38,
+  "best_pnl": -24732.29,
+  "best_winrate": 0.816,
+  "best_share_pnl": 1.0,
+  "best_avg_dur_h": 139.3,
+  "symbols": {
+   "BTCUSDT": {
+    "n": 38,
+    "pnl": -24732.29
+   }
+  }
+ },
+ {
+  "userId": 763392,
+  "nick": "let\u2019s win",
+  "total_positions": 50,
+  "total_pnl": -41737.14,
+  "n_symbols": 14,
+  "best_symbol": "BTCUSDT",
+  "best_n": 32,
+  "best_pnl": -31241.12,
+  "best_winrate": 0.156,
+  "best_share_pnl": 0.749,
+  "best_avg_dur_h": 29.0,
+  "symbols": {
+   "SOLUSDT": {
+    "n": 1,
+    "pnl": 122.19
+   },
+   "XRPUSDT": {
+    "n": 1,
+    "pnl": -52.71
+   },
+   "TRUMPUSDT": {
+    "n": 1,
+    "pnl": -131.78
+   },
+   "XTIUSDT": {
+    "n": 2,
+    "pnl": -427.46
+   },
+   "XBRUSDT": {
+    "n": 2,
+    "pnl": -432.86
+   },
+   "UNIUSDT": {
+    "n": 1,
+    "pnl": -446.11
+   },
+   "CCUSDT": {
+    "n": 2,
+    "pnl": -663.78
+   },
+   "AVAXUSDT": {
+    "n": 1,
+    "pnl": -908.23
+   },
+   "DRIFTUSDT": {
+    "n": 3,
+    "pnl": -1046.52
+   },
+   "LINKUSDT": {
+    "n": 1,
+    "pnl": -1123.43
+   },
+   "DOTUSDT": {
+    "n": 1,
+    "pnl": -1377.92
+   },
+   "MONUSDT": {
+    "n": 1,
+    "pnl": -2002.34
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -2005.07
+   },
+   "BTCUSDT": {
+    "n": 32,
+    "pnl": -31241.12
+   }
+  }
+ },
+ {
+  "userId": 2200504,
+  "nick": "Bammmm",
+  "total_positions": 50,
+  "total_pnl": -73528.64,
+  "n_symbols": 7,
+  "best_symbol": "BTCUSDT",
+  "best_n": 37,
+  "best_pnl": -53621.32,
+  "best_winrate": 0.432,
+  "best_share_pnl": 0.729,
+  "best_avg_dur_h": 68.4,
+  "symbols": {
+   "LTCUSDT": {
+    "n": 1,
+    "pnl": 243.43
+   },
+   "ONDOUSDT": {
+    "n": 1,
+    "pnl": -1031.33
+   },
+   "XRPUSDT": {
+    "n": 3,
+    "pnl": -1390.25
+   },
+   "ETHUSDT": {
+    "n": 3,
+    "pnl": -3861.5
+   },
+   "DOGEUSDT": {
+    "n": 2,
+    "pnl": -3961.33
+   },
+   "GRTUSDT": {
+    "n": 3,
+    "pnl": -9906.34
+   },
+   "BTCUSDT": {
+    "n": 37,
+    "pnl": -53621.32
+   }
+  }
+ }
+]

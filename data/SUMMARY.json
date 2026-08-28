@@ -1,0 +1,299 @@
+{
+ "scraped_at": "2026-08-25",
+ "source": "api.phemex.com/phemex-lb/public/data (api10 bloqueado por CloudFront; api.phemex.com sirve los mismos paths)",
+ "traders_total": 306,
+ "traders_analizados": 192,
+ "traders_con_mejor_par": 160,
+ "rango_datos": "2023-03-03 a 2026-08-25",
+ "posiciones_cerradas": 7467,
+ "mejores_pares_por_trader": {
+  "PhemexRwoVXg": {
+   "uid": 5016387,
+   "par": "SUIUSDT",
+   "n": 9,
+   "pnl": 59300.87,
+   "wr": 0.556
+  },
+  "PhemexlcRAIXjPGj": {
+   "uid": 5054150,
+   "par": "BTCUSDT",
+   "n": 50,
+   "pnl": 40265.14,
+   "wr": 0.4
+  },
+  "DugEFresh": {
+   "uid": 4803093,
+   "par": "XRPUSDT",
+   "n": 38,
+   "pnl": 34739.0,
+   "wr": 0.368
+  },
+  "PhemexlhXNeQbZaCiWb": {
+   "uid": 4799287,
+   "par": "TAOUSDT",
+   "n": 11,
+   "pnl": 10182.45,
+   "wr": 0.455
+  },
+  "DoctorElephant": {
+   "uid": 769171,
+   "par": "BTCUSDT",
+   "n": 7,
+   "pnl": 8008.23,
+   "wr": 0.286
+  },
+  "TraderHobby": {
+   "uid": 2795038,
+   "par": "ETHUSDT",
+   "n": 16,
+   "pnl": 3931.69,
+   "wr": 0.562
+  },
+  "PhemexXqdAAkaOlXOODlcatjqz": {
+   "uid": 4726185,
+   "par": "ZEREBROUSDT",
+   "n": 18,
+   "pnl": 3914.67,
+   "wr": 0.333
+  },
+  "Rocky": {
+   "uid": 646960,
+   "par": "XRPUSDT",
+   "n": 5,
+   "pnl": 3696.75,
+   "wr": 0.4
+  },
+  "Profit-hunter": {
+   "uid": 1188296,
+   "par": "ZECUSDT",
+   "n": 5,
+   "pnl": 3635.87,
+   "wr": 0.6
+  },
+  "PhemexbyMENkjsxXZQyNRSHFIFT": {
+   "uid": 7255220,
+   "par": "BTCUSDT",
+   "n": 12,
+   "pnl": 2114.43,
+   "wr": 0.667
+  },
+  "PhemexmNvjAFIVAYVkevKLhwDKWgTgYfMitb": {
+   "uid": 705254,
+   "par": "BTCUSDT",
+   "n": 20,
+   "pnl": 2020.25,
+   "wr": 0.6
+  },
+  "AP37": {
+   "uid": 1894920,
+   "par": "BTCUSDT",
+   "n": 45,
+   "pnl": 1824.54,
+   "wr": 0.489
+  },
+  "EagleTrader": {
+   "uid": 8017187,
+   "par": "SOLUSDT",
+   "n": 25,
+   "pnl": 1443.12,
+   "wr": 1.0
+  },
+  "YOLO": {
+   "uid": 5133813,
+   "par": "ETHUSDT",
+   "n": 10,
+   "pnl": 1411.43,
+   "wr": 0.8
+  },
+  "PhemexWcUnHcsrFcLcYeKxGkSpGpg": {
+   "uid": 818027,
+   "par": "ETHUSDT",
+   "n": 20,
+   "pnl": 1365.23,
+   "wr": 0.5
+  },
+  "SKRYPTONITE": {
+   "uid": 4818955,
+   "par": "ADAUSDT",
+   "n": 11,
+   "pnl": 1341.23,
+   "wr": 0.364
+  },
+  "PhemextJAodXP": {
+   "uid": 794892,
+   "par": "ZECUSDT",
+   "n": 16,
+   "pnl": 1056.51,
+   "wr": 0.625
+  },
+  "Boomin": {
+   "uid": 1867565,
+   "par": "BTCUSDT",
+   "n": 16,
+   "pnl": 1025.98,
+   "wr": 0.688
+  },
+  "ChainMasters": {
+   "uid": 4596371,
+   "par": "ETHUSDT",
+   "n": 11,
+   "pnl": 837.59,
+   "wr": 1.0
+  },
+  "Ted15": {
+   "uid": 1485428,
+   "par": "u1000PEPEUSDT",
+   "n": 22,
+   "pnl": 835.85,
+   "wr": 0.409
+  },
+  "PhemexwGdhqneoWZZRFLiC": {
+   "uid": 4804101,
+   "par": "BTCUSDT",
+   "n": 5,
+   "pnl": 828.74,
+   "wr": 0.8
+  },
+  "JohnJohn": {
+   "uid": 2898655,
+   "par": "BTCUSDT",
+   "n": 6,
+   "pnl": 823.52,
+   "wr": 0.167
+  },
+  "Rose": {
+   "uid": 8019881,
+   "par": "XRPUSDT",
+   "n": 5,
+   "pnl": 770.17,
+   "wr": 0.8
+  },
+  "PhemexTmsyChOcUopITikFqKVazJjyfcEfVO": {
+   "uid": 692178,
+   "par": "COAIUSDT",
+   "n": 6,
+   "pnl": 691.8,
+   "wr": 0.833
+  },
+  "DropTopWop": {
+   "uid": 8843803,
+   "par": "XRPUSDT",
+   "n": 7,
+   "pnl": 632.84,
+   "wr": 0.143
+  },
+  "Ultra_Trader_90": {
+   "uid": 8023786,
+   "par": "ETHUSDT",
+   "n": 8,
+   "pnl": 524.74,
+   "wr": 0.875
+  },
+  "PhemexhFtHwAlfIk": {
+   "uid": 4474811,
+   "par": "BTCUSDT",
+   "n": 15,
+   "pnl": 523.86,
+   "wr": 0.467
+  },
+  "Maryy512": {
+   "uid": 4780117,
+   "par": "BTCUSDT",
+   "n": 8,
+   "pnl": 518.15,
+   "wr": 1.0
+  },
+  "Pandapunch ": {
+   "uid": 649655,
+   "par": "BTCUSDT",
+   "n": 28,
+   "pnl": 477.99,
+   "wr": 0.821
+  },
+  "PhemexWEmimNFClfhJTvqBHNnzcnSg": {
+   "uid": 5021975,
+   "par": "LABUSDT",
+   "n": 12,
+   "pnl": 475.0,
+   "wr": 0.667
+  },
+  "Gambler": {
+   "uid": 7158316,
+   "par": "BTCUSDT",
+   "n": 7,
+   "pnl": 403.52,
+   "wr": 0.857
+  },
+  "PhemexSQgiKqtktnWhzk": {
+   "uid": 5044528,
+   "par": "ONDOUSDT",
+   "n": 13,
+   "pnl": 370.24,
+   "wr": 0.077
+  },
+  "PhemexmBnWYPgYNYzjrRMEoeExiygdmXTCoI": {
+   "uid": 3845968,
+   "par": "BTCUSDT",
+   "n": 40,
+   "pnl": 348.72,
+   "wr": 0.525
+  },
+  "biggestloser": {
+   "uid": 2279671,
+   "par": "SNDKUSDT",
+   "n": 6,
+   "pnl": 343.79,
+   "wr": 1.0
+  },
+  "Helios-MR": {
+   "uid": 9175165,
+   "par": "DOGEUSDT",
+   "n": 26,
+   "pnl": 335.6,
+   "wr": 0.538
+  },
+  "PhemexgzAeXky": {
+   "uid": 4339872,
+   "par": "APTUSDT",
+   "n": 5,
+   "pnl": 329.47,
+   "wr": 1.0
+  },
+  "WallStTrader": {
+   "uid": 719522,
+   "par": "BTCUSDT",
+   "n": 18,
+   "pnl": 326.01,
+   "wr": 0.611
+  },
+  "achilles": {
+   "uid": 746961,
+   "par": "BTCUSDT",
+   "n": 28,
+   "pnl": 311.56,
+   "wr": 0.607
+  },
+  "Selene-DS": {
+   "uid": 9179690,
+   "par": "DOGEUSDT",
+   "n": 16,
+   "pnl": 305.94,
+   "wr": 0.438
+  },
+  "Investment Forecasters ": {
+   "uid": 1047077,
+   "par": "ETHUSDT",
+   "n": 11,
+   "pnl": 290.92,
+   "wr": 0.273
+  }
+ },
+ "hallazgos": [
+  "PnL neto agregado de la masa: ~-1.4M USD. Expectancy por trade: -190 USD (wr 46%, avg_loss 2.6x avg_win).",
+  "Los mejores pares \"ganadores\" (SUI +62k, ONDO +22k) son 1 solo trader (PhemexRwoVXg) con 2 shorts aguantados 157 y 127 dias. Loteria, no patron.",
+  "XRP (+38k) es el mas distribuido: 64 traders, varios positivos de forma independiente.",
+  "Sin los 15 trades loteria: BTC -368k, SOL -125k, POPCAT -602k siguen siendo los peores. TAO +10k y XBR +8k tambien concentrados en 1 trader cada uno.",
+  "Por duracion: TODOS los buckets pierden; >7d concentra -914k (perdedores abandonados + liquidaciones).",
+  "El edge real observado en los ganadores: gestion (dejar correr ganadores meses / cortar rapido), NO eleccion de par."
+ ]
+}
