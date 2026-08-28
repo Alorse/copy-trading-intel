@@ -36,6 +36,9 @@ Headers: `User-Agent` browser, `Origin: https://phemex.com`, `Referer: https://p
   - `data.rows[]`: `symbol`, `side`, `size`, `openPositionVal`, `margin`, `roi`, `closedPnl`, `realizedPnl` (**neto**), `openedTime`/`updatedTime` (ms), `fundingFee`, `exchangeFee`. Paginar hasta `rows < pageSize`.
   - ✅ Verificado: `realizedPnl = closedPnl − exchangeFee − fundingFee`, exacto.
 - Otros: `/phemex-lb/public/data/v3/user/symbol-metric`, `user/pnl-chart`, `user/pnl-rate-chart`, `position/current/v2`, `v3/user/leaders`.
+- **Posiciones ABIERTAS (sonda 2026-08-28):** `GET /phemex-lb/public/data/position/current/v2?userId=<id>` — ✅ **DISPONIBLE** (`code:0`, `data.total`, `data.rows[]`).
+  - Campos: `symbol`, `side` (Buy/Sell), `posSide` (Long/Short), `size`, `value` (notional), `positionMargin`, `avgEntryPrice`, `leverage`, `liquidationPrice`, `realizedPnl`, `positionId`, `transactTime`.
+  - ⚠️ **No trae PnL no realizado ni mark price** → `open_loss_divergence` no se puede calcular sin un feed de precios. Por eso NO está integrado en el pipeline v1 (que además solo rankea Binance).
 
 ## Endpoints Binance (públicos, POST JSON, sin auth)
 
@@ -48,6 +51,7 @@ Headers: `User-Agent` browser, `Content-Type: application/json`, `clienttype: we
   - Body: `{"portfolioId":"<leadPortfolioId>","pageNumber":1,"pageSize":50}`
   - ⚠️ La variante `/public/` devuelve 0 rows — usar `/friendly/`.
   - ⚠️ **Solo devuelve posiciones CERRADAS.** Las abiertas (y sus pérdidas latentes) son invisibles. Ver "Trampa 1".
+  - ✖ **Posiciones ABIERTAS: verificado NO disponible el 2026-08-28.** Sonda `scripts/probe_open_positions.py` sobre `/friendly/future/copy-trade/lead-portfolio/{positions,position-list,current-position,open-positions}` con `portfolioId` real: **HTTP 404 en los 4 candidatos** (con y sin paginación). No hay endpoint público de posiciones abiertas por lead-trader.
   - ✅ `closingPnl` es **NETO** de fees. Verificado sobre 96,994 cierres completos: residuo contra el PnL de precio = **−7.85 bps del notional**, 93.7% negativo (≈ taker ida y vuelta). Fees ≈ **8 bps por round-trip**.
 
 ## Scripts
