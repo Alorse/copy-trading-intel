@@ -10,6 +10,8 @@ de control de traders quebrados.
 alpha mostrado.
 - **Solo posiciones cerradas** son visibles (salvo data de abiertas): las \
 perdidas latentes de un loss-hider pueden no aparecer.
+- **t-stat i.i.d.**: las alphas correlacionadas por (symbol, mes, lado) inflan \
+el t ~10-15%; clusterizado, ningun caso del roster cae bajo 2.5.
 """
 
 

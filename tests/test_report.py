@@ -25,6 +25,7 @@ def test_report_contains_sections(con, tmp_path):
     assert "suoha" in text and "Cambios" in text
     assert "vicky" in text and "roi_artifact" in text
     assert "winner" in text.lower() or "mitad del alpha" in text
+    assert "i.i.d." in text and "clusterizado" in text
     assert "Primera corrida" in text
     # n_alpha divulgado: cabecera y valor de la fila
     assert "n_alpha" in text
