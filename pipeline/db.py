@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS trader_snapshot (
   snapshot_date TEXT NOT NULL, exchange TEXT NOT NULL,
   trader_id TEXT NOT NULL, nick TEXT,
   roi REAL, pnl REAL, aum REAL, win_rate REAL, mdd REAL,
+  start_time INTEGER,
   PRIMARY KEY (snapshot_date, exchange, trader_id));
 CREATE TABLE IF NOT EXISTS positions (
   snapshot_date TEXT NOT NULL, exchange TEXT NOT NULL,
@@ -40,11 +41,26 @@ TABLES = ["snapshots", "trader_snapshot", "positions",
           "open_positions", "trader_metrics"]
 
 
+# Columns added after the first schema shipped. CREATE TABLE IF NOT EXISTS will
+# not add them to a DB that already exists, and the DB is expensive to rebuild
+# (it needs the raw snapshots), so add them in place.
+_ADDED = [("trader_snapshot", "start_time", "INTEGER")]
+
+
+def _migrate(con):
+    for table, col, typ in _ADDED:
+        have = {r[1] for r in con.execute(f"PRAGMA table_info({table})")}
+        if col not in have:
+            con.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
+    con.commit()
+
+
 def connect(path):
     con = sqlite3.connect(str(path))
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys=ON")
     con.executescript(SCHEMA)
+    _migrate(con)
     return con
 
 

@@ -30,3 +30,22 @@ def test_ingest_is_idempotent(con, snap_dir):
     _load(con, snap_dir)   # re-ingest of the same snapshot
     n = con.execute("SELECT COUNT(*) FROM positions").fetchone()[0]
     assert n == 2          # 1 binance + 1 phemex, no duplication
+
+
+def test_ingest_stores_start_time_from_listing(con, snap_dir):
+    # startTime is only in <exchange>_list.json, never in the positions jsonl
+    _load(con, snap_dir)
+    st = con.execute("SELECT start_time FROM trader_snapshot "
+                     "WHERE exchange='binance'").fetchone()[0]
+    assert st == 1735689600000
+    # phemex has no listing in the fixture -> NULL, not a crash
+    assert con.execute("SELECT start_time FROM trader_snapshot "
+                       "WHERE exchange='phemex'").fetchone()[0] is None
+
+
+def test_ingest_survives_missing_listing(con, snap_dir, tmp_path):
+    (snap_dir / "binance_list.json").unlink()
+    counts = _load(con, snap_dir)
+    assert counts["binance"] == 1
+    assert con.execute("SELECT start_time FROM trader_snapshot "
+                       "WHERE exchange='binance'").fetchone()[0] is None

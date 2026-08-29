@@ -38,7 +38,7 @@ def test_metrics_block_exposes_roi(con):
     # the roster's own headline ROI: without it the report forces you to look at
     # the excluded traders' ROI and not the picked ones'
     _tm(con, "vet")
-    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
+    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?,NULL)",
                 (D, EX, "vet", "vet", 412.5, 0, 0, 0, 20.0))
     con.commit()
     m = rank.run(con, D, EX)["traders"][0]["metrics"]

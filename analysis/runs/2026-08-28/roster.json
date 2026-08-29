@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-28",
+ "generated": "2026-08-29",
  "snapshot": "2026-08-28",
  "engine": "v1.0",
  "unallocated": 0.7,
@@ -10,7 +10,7 @@
    "nick": "梭哈到世界尽头",
    "tier": "B",
    "weight": 0.1,
-   "score": 3.285,
+   "score": 2.956,
    "metrics": {
     "alpha": 0.030987463289859858,
     "t": 6.719645989551452,
@@ -22,7 +22,8 @@
     "roi": 139.64836868
    },
    "warnings": [
-    "alpha_decay"
+    "alpha_decay",
+    "fresh_start"
    ],
    "trend": {
     "rank_prev": null,
@@ -62,7 +63,7 @@
    "nick": "重生之我在币圈捡垃圾-",
    "tier": "B",
    "weight": 0.1,
-   "score": 1.826,
+   "score": 1.644,
    "metrics": {
     "alpha": 0.006927812263726515,
     "t": 3.974335280103096,
@@ -74,6 +75,7 @@
     "roi": 1209.23233001
    },
    "warnings": [
+    "fresh_start",
     "mdd_high"
    ],
    "trend": {

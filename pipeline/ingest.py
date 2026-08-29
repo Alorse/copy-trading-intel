@@ -1,5 +1,5 @@
 """Snapshot CSVs -> SQLite. Idempotent per (snapshot_date, exchange)."""
-import csv, os
+import csv, json, os
 from pipeline import db as dbmod
 
 
@@ -17,6 +17,26 @@ def _i(x):
         return None
 
 
+def _start_times(snap_dir, exchange):
+    """portfolio_id -> startTime (ms) from the scrape listing.
+
+    startTime is when the lead portfolio opened. Binance only serves positions
+    opened at or after it (verified 2026-08-28: 0 of 590 portfolios had an older
+    one, against 177 of 485 three days earlier), so it is the hard floor of every
+    visible track record -- see "Trap 7" in SKILL.md.
+    """
+    path = os.path.join(snap_dir, f'{exchange}_list.json')
+    if not os.path.exists(path):
+        return {}
+    try:
+        data = json.load(open(path))
+    except (ValueError, OSError):
+        return {}
+    key = 'leadPortfolioId' if exchange == 'binance' else 'userId'
+    return {str(r[key]): r['startTime'] for r in data
+            if isinstance(r, dict) and r.get(key) is not None and r.get('startTime')}
+
+
 def ingest_snapshot(con, snap_dir, snapshot_date):
     snap_dir = str(snap_dir)
     counts = {}
@@ -28,6 +48,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
         if not os.path.exists(path):
             counts[ex] = 0
             continue
+        starts = _start_times(snap_dir, ex)
         traders, pos_rows, trader_rows = set(), [], {}
         for r in csv.DictReader(open(path)):
             if ex == 'binance':
@@ -41,7 +62,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['avg_cost']), _f(r['avg_close'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'], _f(r['p_roi']),
                                     _f(r['p_pnl']), _f(r['aum']), _f(r['win_rate']),
-                                    _f(r['mdd']))
+                                    _f(r['mdd']), _i(starts.get(tid)))
             else:
                 tid = r['trader_id']
                 marg, oval = _f(r['margin'], 0), _f(r['open_val'], 0)
@@ -54,14 +75,15 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['realized_pnl']), 0,
                                  _f(r['open_price']), _f(r['close_price'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'],
-                                    None, None, None, None, None)
+                                    None, None, None, None, None,
+                                    _i(starts.get(tid)))
             traders.add(tid)
         con.executemany(
             "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
             "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
             "avg_cost,avg_close) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", pos_rows)
         con.executemany(
-            "INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?,?)",
             list(trader_rows.values()))
         con.execute("INSERT INTO snapshots VALUES (?,?,?,?,'')",
                     (snapshot_date, ex, len(traders), len(pos_rows)))

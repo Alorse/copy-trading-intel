@@ -10,14 +10,14 @@ def _tm(con, tid, **kw):
                 conc_top1=20.0, ruin=-100.0, mdd=20.0, lev_med=5, lev_p90=10,
                 marg_med=500.0, dur_med=4.0, months_active=4, alpha_h1=0.01,
                 alpha_h2=0.012, monthly_alpha='{"2025-04":0.01,"2025-05":0.012}')
-    base.update(kw)
+    base.update({k: v for k, v in kw.items() if k != "start_time"})
     cols = ",".join(base)
     con.execute(
         f"INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,{cols}) "
         f"VALUES (?,?,?,?,{','.join('?'*len(base))})",
         (D, EX, tid, tid, *base.values()))
-    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
-                (D, EX, tid, tid, 50.0, 0, 0, 0, base["mdd"]))
+    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (D, EX, tid, tid, 50.0, 0, 0, 0, base["mdd"], kw.get("start_time")))
     # a recent position so `inactive` is not triggered
     con.execute(
         "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
@@ -97,3 +97,24 @@ def test_flags_persisted(con):
     row = con.execute(
         "SELECT flags FROM trader_metrics WHERE trader_id='gg'").fetchone()
     assert "loss_hider" in json.loads(row["flags"])
+
+
+def test_fresh_start_warns_on_young_portfolio(con):
+    # 2026-06-07: the real startTime of 梭哈到世界尽头, 86 days before the snapshot.
+    # Nothing he traded before it is served by the API any more.
+    _tm(con, "fresh", start_time=1780876800000)
+    f = detect.run(con, D, EX)["fresh"]
+    assert "fresh_start" in f
+    assert "fresh_start" in detect.WARNINGS       # a warning, never disqualifying
+    assert not (set(f) & detect.DISQUALIFYING)
+
+
+def test_fresh_start_silent_on_old_portfolio(con):
+    _tm(con, "veteran", start_time=1735689600000)          # 2025-01-01
+    assert "fresh_start" not in detect.run(con, D, EX)["veteran"]
+
+
+def test_fresh_start_silent_without_start_time(con):
+    # Phemex has no startTime in its listing: absence must not fabricate a flag
+    _tm(con, "nostart", start_time=None)
+    assert "fresh_start" not in detect.run(con, D, EX)["nostart"]

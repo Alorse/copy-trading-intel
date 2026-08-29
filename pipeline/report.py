@@ -1,5 +1,5 @@
 """Generates the human-readable TOP_YYYY-MM.md report."""
-import json, os
+import datetime as dt, json, os
 
 CAVEATS = """## Standing caveats
 - **Single regime window**: the data covers few months and one cycle only; \
@@ -12,6 +12,10 @@ alpha shown.
 loss-hider's latent losses may never show up.
 - **i.i.d. t-stat**: alphas correlated by (symbol, month, side) inflate the t by \
 ~10-15%; clustered, no roster case falls below 2.5.
+- **The record starts where the trader chose**: Binance serves nothing opened \
+before a portfolio's startTime, so no pre-public history is verifiable. Of the \
+portfolios whose pre-startTime record was still visible on 2026-08-25, 86% were \
+net negative before going public. See "portfolio opened" below and Trap 7.
 
 > **Not financial advice.** Automated output of a statistical analysis over public \
 data; the flags describe the shape of a track record, not a person's conduct. \
@@ -53,6 +57,34 @@ def _reconciliation(con, snapshot_date, exchange, snap_dir):
     return "**Universe**: " + " → ".join(steps)
 
 
+def _portfolio_ages(con, snapshot_date, exchange, roster):
+    """When each roster portfolio went public, and how old that makes its record.
+
+    The whole visible track record starts at startTime -- nothing before it is
+    served -- so its age is the age of the evidence. Trap 7 in SKILL.md.
+    """
+    ids = tuple(t["portfolio_id"] for t in roster.get("traders", []))
+    if not ids:
+        return ""
+    q = ",".join("?" * len(ids))
+    rows = {r["trader_id"]: r["start_time"] for r in con.execute(
+        f"SELECT trader_id, start_time FROM trader_snapshot WHERE snapshot_date=? "
+        f"AND exchange=? AND trader_id IN ({q})", (snapshot_date, exchange, *ids))}
+    if not any(rows.values()):
+        return ""
+    snap = dt.datetime.fromisoformat(snapshot_date).replace(tzinfo=dt.UTC)
+    out = ["**Portfolio opened** (the record cannot start earlier — Trap 7):"]
+    for t in roster["traders"]:
+        st = rows.get(t["portfolio_id"])
+        if not st:
+            out.append(f"- {t['nick']}: unknown")
+            continue
+        d = dt.datetime.fromtimestamp(st / 1000, dt.UTC)
+        out.append(f"- {t['nick']}: {d:%Y-%m-%d} "
+                   f"({(snap - d).days}d of visible track record)")
+    return "\n".join(out)
+
+
 def write(con, snapshot_date, exchange, roster, diff, out_dir, snap_dir=None):
     month = snapshot_date[:7]
     path = os.path.join(str(out_dir), f"TOP_{month}.md")
@@ -70,6 +102,7 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir, snap_dir=None):
                  f"| {m.get('n_alpha', '—')} "
                  f"| {', '.join(t['warnings']) or '—'} |")
     L += ["", _reconciliation(con, snapshot_date, exchange, snap_dir)]
+    L += ["", _portfolio_ages(con, snapshot_date, exchange, roster)]
     if roster.get("unallocated"):
         L.append(f"\n**Unallocated weight: {roster['unallocated']:.0%}** "
                  f"(roster is all tier B — 10% cap per trader)")

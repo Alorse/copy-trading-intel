@@ -1,18 +1,28 @@
 """Anti-inflation battery. Each rule emits one flag per trader.
 Reference cases: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
-import json
+import datetime as dt, json
 
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
                  "ruin_risk", "not_copyable", "insufficient", "no_alpha"}
-WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high"}
+WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high",
+            "fresh_start"}
+
+# A portfolio younger than this has no verifiable pre-history at all: Binance
+# serves nothing opened before startTime, and what it used to serve is gone.
+# 120d is the observed ceiling of the closed-position window, so below it not
+# even the old retention could have exposed the pre-public record.
+FRESH_START_DAYS = 120
 
 
 def run(con, snapshot_date, exchange='binance'):
     ms = con.execute("SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
                      (snapshot_date, exchange)).fetchall()
-    roi = {r['trader_id']: r['roi'] for r in con.execute(
-        "SELECT trader_id, roi FROM trader_snapshot WHERE snapshot_date=? AND exchange=?",
-        (snapshot_date, exchange))}
+    snap = {r['trader_id']: r for r in con.execute(
+        "SELECT trader_id, roi, start_time FROM trader_snapshot "
+        "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
+    roi = {k: v['roi'] for k, v in snap.items()}
+    snap_ms = dt.datetime.fromisoformat(snapshot_date).replace(
+        tzinfo=dt.UTC).timestamp() * 1000
     maxclose = con.execute(
         "SELECT MAX(closed_ms) FROM positions WHERE snapshot_date=? AND exchange=?",
         (snapshot_date, exchange)).fetchone()[0] or 0
@@ -66,6 +76,13 @@ def run(con, snapshot_date, exchange='binance'):
         lc = last_close.get(tid)
         if lc is not None and maxclose and lc < maxclose - 30 * 86400000:
             f.append('inactive')
+        # the public record starts where the trader chose to start it, and what
+        # came before is unverifiable: of 177 portfolios whose pre-startTime
+        # history was still visible on 2026-08-25, 86% were net NEGATIVE before
+        # going public (p=4e-20). Trap 7 in SKILL.md.
+        st = (snap.get(tid) or {})['start_time'] if snap.get(tid) else None
+        if st is not None and (snap_ms - st) < FRESH_START_DAYS * 86400000:
+            f.append('fresh_start')
         monthly = json.loads(m['monthly_alpha'] or '{}')
         if len(monthly) >= 2:
             pos = sum(1 for v in monthly.values() if v > 0)

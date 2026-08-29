@@ -28,6 +28,9 @@ def snap_dir(tmp_path):
                            "closedPnl": "100", "realizedPnl": "99", "exchangeFee": "1",
                            "fundingFee": "0", "openedTime": 1756000000000,
                            "updatedTime": 1756007200000}]}
+    # the real scrape also saves the listing; startTime lives only there
+    (d / "binance_list.json").write_text(json.dumps(
+        [{"leadPortfolioId": "P1", "startTime": 1735689600000}]))   # 2025-01-01
     (d / "binance_raw.jsonl").write_text(json.dumps(brec) + "\n")
     (d / "phemex_raw.jsonl").write_text(json.dumps(prec) + "\n")
     return d
