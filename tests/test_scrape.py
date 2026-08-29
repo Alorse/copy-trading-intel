@@ -92,3 +92,30 @@ def test_phemex_network_error_does_not_mark_trader_done(tmp_path):
     raw = tmp_path / "phemex_raw.jsonl"
     assert not raw.exists() or raw.read_text().strip() == ""
     assert scrape.run(tmp_path, exchanges=("phemex",), http_get=_fake_get)["phemex"] == 1
+
+
+def test_api_error_code_does_not_mark_trader_done(tmp_path):
+    """A non-ERR API failure used to break the loop and return ok=True, writing a
+    truncated history that the resume would never retry."""
+    def _bad_code_post(url, body):
+        if "query-list" in url:
+            return _fake_post(url, body)
+        return {"code": "000002", "message": "rate limited"}
+    counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_bad_code_post)
+    assert counts["binance"] == 0
+    raw = tmp_path / "binance_raw.jsonl"
+    assert not raw.exists() or raw.read_text().strip() == ""
+    counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
+    assert counts["binance"] == 1
+
+
+def test_empty_data_is_a_genuine_end_not_a_failure(tmp_path):
+    """code 000000 with no payload = a trader with no history: write them as done."""
+    def _empty_post(url, body):
+        if "query-list" in url:
+            return _fake_post(url, body)
+        return {"code": "000000", "data": None}
+    counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_empty_post)
+    assert counts["binance"] == 1
+    rec = json.loads((tmp_path / "binance_raw.jsonl").read_text().strip())
+    assert rec["positions"] == [] and rec["n_pos"] == 0

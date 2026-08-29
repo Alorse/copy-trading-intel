@@ -64,6 +64,10 @@ def _fetch_portfolios(pages, post, time_range='90D', data_type='ROI'):
                 'portfolioType': 'PUBLIC'}
         d = post(LIST_URL, body)
         if d.get('code') != '000000' or not d.get('data'):
+            # a mid-pagination failure silently halves the universe; say so
+            if p > 1:
+                print(f'  WARN binance listing: page {p} returned '
+                      f'{d.get("code")!r} - universe may be truncated', flush=True)
             break
         lst = d['data'].get('list') or []
         for r in lst:
@@ -75,15 +79,18 @@ def _fetch_portfolios(pages, post, time_range='90D', data_type='ROI'):
 
 
 def _fetch_history(pid, post):
-    """Returns (rows, ok). ok=False if an ERR hit mid-pagination — in that case
-    the caller does NOT write the record (the resume retries it).
-    Do NOT copy the bug in scripts/scrape_binance.py (ERR -> [] -> 'done')."""
+    """Returns (rows, ok). ok=False on ANY API failure mid-pagination — in that
+    case the caller does NOT write the record (the resume retries it).
+    Do NOT copy the bug in scripts/scrape_binance.py (error -> [] -> 'done')."""
     all_rows, page = [], 1
     while page <= 40:
         d = post(HIST_URL, {'portfolioId': pid, 'pageNumber': page, 'pageSize': 50})
-        if d.get('code') == 'ERR':
+        # ANY non-success code is a failure, not an end of data. Breaking here
+        # would return ok=True and mark a truncated history as complete, and the
+        # resume would never retry it.
+        if d.get('code') != '000000':
             return all_rows, False
-        if d.get('code') != '000000' or not d.get('data'):
+        if not d.get('data'):        # success with no payload = genuine end
             break
         rows = d['data'].get('list') or []
         all_rows += rows
