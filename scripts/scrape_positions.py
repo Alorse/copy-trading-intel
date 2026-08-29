@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Scrape posiciones cerradas de traders de copy-trading Phemex (historial publico).
+"""Scrapes closed positions of Phemex copy-trading traders (public history).
 
 Endpoints:
-  - Lista:    GET /phemex-lb/public/data/v3/user/recommend  (guardada en data/all_traders.json)
-  - Historial GET /phemex-lb/public/data/position/closed/v2?pageNum&pageSize&userId
+  - Listing: GET /phemex-lb/public/data/v3/user/recommend  (saved to data/all_traders.json)
+  - History: GET /phemex-lb/public/data/position/closed/v2?pageNum&pageSize&userId
 
-Resumable: salta los userId ya presentes en data/positions_all.jsonl.
-Uso: python3 scripts/scrape_positions.py  (~6 min, sleep 0.4s entre requests)
+Resumable: skips userIds already present in data/positions_all.jsonl.
+Usage: python3 scripts/scrape_positions.py  (~6 min, 0.4s sleep between requests)
 """
 import json, time, urllib.request, urllib.error, os
 
 UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       'Accept': 'application/json', 'Origin': 'https://phemex.com', 'Referer': 'https://phemex.com/'}
 BASE = 'https://api.phemex.com/phemex-lb/public/data/position/closed/v2'
-# api10.phemex.com devuelve 403 (CloudFront) — usar api.phemex.com
+# api10.phemex.com returns 403 (CloudFront) — use api.phemex.com
 
 
 def get(url, tries=3):
@@ -29,7 +29,7 @@ def get(url, tries=3):
 
 
 def fetch_trader_list(pages=7):
-    """Refresca data/all_traders.json desde el endpoint recommend."""
+    """Refreshes data/all_traders.json from the recommend endpoint."""
     rec_url = 'https://api.phemex.com/phemex-lb/public/data/v3/user/recommend?hideFullyCopied=false&keyword=&pageNum={}&pageSize=50&showChart=false&sortBy=PnlRate30d'
     rows = {}
     for p in range(1, pages + 1):
@@ -52,12 +52,12 @@ def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(root)
 
-    # refrescar lista de traders si no existe o si se pide --refresh
+    # refresh the trader listing if it is missing or --refresh is requested
     if not os.path.exists('data/all_traders.json') or '--refresh' in os.sys.argv:
         traders_list = fetch_trader_list()
         os.makedirs('data', exist_ok=True)
         json.dump(traders_list, open('data/all_traders.json', 'w'), indent=1)
-        print(f'lista refrescada: {len(traders_list)} traders', flush=True)
+        print(f'listing refreshed: {len(traders_list)} traders', flush=True)
 
     traders = [t for t in json.load(open('data/all_traders.json')) if t['showPosition']]
     done_ids = set()
@@ -67,7 +67,7 @@ def main():
                 done_ids.add(json.loads(line)['userId'])
             except Exception:
                 pass
-    print(f'a scrapear: {len(traders)}, ya hechos: {len(done_ids)}', flush=True)
+    print(f'to scrape: {len(traders)}, already done: {len(done_ids)}', flush=True)
 
     out = open('data/positions_all.jsonl', 'a')
     fetched = 0
@@ -92,10 +92,10 @@ def main():
         out.flush()
         fetched += 1
         if fetched % 25 == 0:
-            print(f'  {fetched} traders nuevos', flush=True)
+            print(f'  {fetched} new traders', flush=True)
         time.sleep(0.4)
     n = sum(1 for _ in open('data/positions_all.jsonl'))
-    print(f'LISTO: {fetched} traders nuevos | {n} lineas totales', flush=True)
+    print(f'DONE: {fetched} new traders | {n} lines total', flush=True)
 
 
 if __name__ == '__main__':

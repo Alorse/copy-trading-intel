@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Scrape copy-trading publico de Binance Futures (lead portfolios + position history).
+"""Scrapes Binance Futures public copy-trading (lead portfolios + position history).
 
-Endpoints (POST JSON, sin auth):
-  - Lista:    /bapi/futures/v1/friendly/future/copy-trade/home-page/query-list
-  - Historial /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history
-    (la variante /public/ devuelve 0 rows — usar /friendly/)
+Endpoints (POST JSON, no auth):
+  - Listing: /bapi/futures/v1/friendly/future/copy-trade/home-page/query-list
+  - History: /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history
+    (the /public/ variant returns 0 rows — use /friendly/)
 
-Resumable: salta los portfolioId ya presentes en data/binance_positions.jsonl.
-Uso: python3 scripts/scrape_binance.py [--refresh] [--pages N]
+Resumable: skips portfolioIds already present in data/binance_positions.jsonl.
+Usage: python3 scripts/scrape_binance.py [--refresh] [--pages N]
 """
 import json, time, urllib.request, os, sys
 
@@ -71,7 +71,7 @@ def main():
     if not os.path.exists('data/binance_portfolios.json') or '--refresh' in sys.argv:
         pf = fetch_portfolios()
         json.dump(pf, open('data/binance_portfolios.json', 'w'), indent=1)
-        print(f'lista: {len(pf)} portfolios', flush=True)
+        print(f'listing: {len(pf)} portfolios', flush=True)
     portfolios = json.load(open('data/binance_portfolios.json'))
 
     done = set()
@@ -82,7 +82,7 @@ def main():
             except Exception:
                 pass
     todo = [p for p in portfolios if p['leadPortfolioId'] not in done]
-    print(f'a scrapear: {len(todo)} | ya hechos: {len(done)}', flush=True)
+    print(f'to scrape: {len(todo)} | already done: {len(done)}', flush=True)
 
     out = open('data/binance_positions.jsonl', 'a')
     fetched = 0
@@ -98,7 +98,7 @@ def main():
         if fetched % 25 == 0:
             print(f'  {fetched} portfolios', flush=True)
         time.sleep(0.5)
-    print(f'LISTO: {fetched} nuevos | {sum(1 for _ in open("data/binance_positions.jsonl"))} lineas', flush=True)
+    print(f'DONE: {fetched} new | {sum(1 for _ in open("data/binance_positions.jsonl"))} lines', flush=True)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# scripts/probe_open_positions.py — spike: ¿posiciones abiertas publicas?
+# scripts/probe_open_positions.py — spike: are open positions public?
 import json, urllib.request
 
 BUA = {'User-Agent': 'Mozilla/5.0', 'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ def try_binance(pid):
                 with urllib.request.urlopen(req, timeout=15) as r:
                     d = json.load(r)
                 print(f"BINANCE {c}: code={d.get('code')} "
-                      f"data={'SI' if d.get('data') else 'vacio'}")
+                      f"data={'YES' if d.get('data') else 'empty'}")
                 if d.get('data'):
                     print(json.dumps(d['data'], ensure_ascii=False)[:800])
             except Exception as e:
@@ -46,7 +46,7 @@ def try_phemex(uid):
 
 if __name__ == '__main__':
     import sys
-    # ids reales: sacarlos de data/snapshots/<ultimo>/binance_list.json y
-    # phemex_list.json (o data/binance_portfolios.json / all_traders.json)
+    # real ids: take them from data/snapshots/<latest>/binance_list.json and
+    # phemex_list.json (or data/binance_portfolios.json / all_traders.json)
     try_binance(sys.argv[1] if len(sys.argv) > 1 else '')
     try_phemex(sys.argv[2] if len(sys.argv) > 2 else '')

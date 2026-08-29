@@ -1,13 +1,13 @@
-=== 1. DERROTERO ===
-portfolios con historial: 594
-posiciones cerradas: 108616
-rango: 2024-12-06 -> 2026-08-25
-n_pos por portfolio: mediana=73 max=2000 (cap API 2000)
-leverage usado: mediana=10x p90=51x max=150x
-margen: 6% isolated / 94% cross
+=== 1. OVERVIEW ===
+portfolios with history: 594
+closed positions: 108616
+range: 2024-12-06 -> 2026-08-25
+n_pos per portfolio: median=73 max=2000 (API cap 2000)
+leverage used: median=10x p90=51x max=150x
+margin: 6% isolated / 94% cross
 
-=== 2. MEJOR PAR POR PORTFOLIO (top 25 por PnL del par) ===
-nick                    par               n        pnl    wr  pnl_total
+=== 2. BEST PAIR PER PORTFOLIO (top 25 by the pair's PnL) ===
+nick                    pair              n        pnl    wr  pnl_total
 道亦有道 1994               SOXLUSDT         48   174920.4  0.90   706773.7
 风雪哥                     ETHUSDT           8   133961.9  0.50   238339.1
 知危                      SOXLUSDT         36   105256.8  1.00   192109.9
@@ -34,10 +34,10 @@ AB Alpha G              ETHUSDT          21    22323.2  0.29    52001.4
 重返地球京津冀                 SKHYNIXUSDT       9    18118.9  0.89    28180.0
 陆观潮                     BTCUSDT          47    17031.6  0.30   -20554.3
 
-pares mas frecuentes como mejor par: {'BTCUSDT': 91, 'ETHUSDT': 76, 'SNDKUSDT': 26, 'SKHYNIXUSDT': 15, 'MUUSDT': 15, 'HYPEUSDT': 13, 'SOXLUSDT': 10, 'AKEUSDT': 10, 'SOLUSDT': 9, 'ZECUSDT': 9}
+most frequent best pairs: {'BTCUSDT': 91, 'ETHUSDT': 76, 'SNDKUSDT': 26, 'SKHYNIXUSDT': 15, 'MUUSDT': 15, 'HYPEUSDT': 13, 'SOXLUSDT': 10, 'AKEUSDT': 10, 'SOLUSDT': 9, 'ZECUSDT': 9}
 
-=== 3. PnL NETO POR PAR (todas las posiciones) ===
-par                   n     pnl_net     wr
+=== 3. NET PnL BY PAIR (all positions) ===
+pair                  n     pnl_net     wr
 BTCUSDT            7204   1177926.3   0.56
 SOXLUSDT           1216    410843.0   0.68
 KORUUSDT            883    391351.4   0.71
@@ -60,10 +60,10 @@ SOLUSDT            2150    -32229.1   0.61
 
 === 4. XRPUSDT DEEP DIVE ===
 n=760 pnl=-3966.2 | Long: n=441 pnl=-11965.7 | Short: n=319 pnl=6726.7
-wr=0.59 | dur ganadores med=7.1h vs perdedores med=12.9h
+wr=0.59 | dur winners med=7.1h vs losers med=12.9h
 avg_win=98.1 avg_loss=-157.6 ratio=1.61
 
-buckets duracion:
+duration buckets:
   <1h     n= 169 pnl=   -1944.5 wr=0.65
   1-4h    n= 124 pnl=    3948.9 wr=0.65
   4-12h   n= 127 pnl=    1350.2 wr=0.59
@@ -72,13 +72,13 @@ buckets duracion:
   3-7d    n=  64 pnl=    -979.6 wr=0.61
   >7d     n=  68 pnl=    2224.8 wr=0.62
 
-por leverage:
+by leverage:
   <=5x    n= 107 pnl=    1366.0
   6-20x   n= 372 pnl=   -6418.9
   21-50x  n= 100 pnl=    -231.8
   >50x    n= 181 pnl=      45.7
 
-hora apertura (Bogota) pnl neto:
+opening hour (UTC-5) net pnl:
   00:00    -2273.3
   01:00    -1352.9
   02:00    -1623.8
@@ -104,7 +104,7 @@ hora apertura (Bogota) pnl neto:
   22:00     5545.6
   23:00      663.8
 
-top traders XRP:
+top XRP traders:
   电脑玩家                      n=   4 pnl=    2726.3
   青衣与白叟                     n=   1 pnl=    2316.6
   Feed-Creator-4bc0690bb    n=   1 pnl=    1037.1
