@@ -1,40 +1,38 @@
-# analysis/ — scripts del análisis auditado (2026-08-25)
+# analysis/ — scripts of the audited analysis (2026-08-25)
 
-Cada `.py` de este directorio reproduce números concretos de `FINDINGS_v2.md`,
-`RULES.md` y `TOP5.md`. Son **one-offs de investigación**, no una librería: se
-conservan como evidencia de que cada afirmación es re-derivable, no como código
-mantenido. El pipeline de `pipeline/` copió su lógica; no los importa.
+Every `.py` in this directory reproduces specific figures from `FINDINGS_v2.md`, `RULES.md` and
+`TOP5.md`. They are **research one-offs**, not a library: they are kept as evidence that each
+claim is re-derivable, not as maintained code. The pipeline in `pipeline/` copied their logic; it
+does not import them.
 
-## Cómo correrlos
+## How to run them
 
-1. **Necesitas un snapshot crudo.** La data no se versiona (dumps de las APIs de
-   Binance/Phemex, no se redistribuyen). Genera el tuyo:
+1. **You need a raw snapshot.** The data is not versioned (dumps of the Binance/Phemex APIs, not
+   redistributed). Generate your own:
 
    ```bash
    python3 pipeline.py scrape --date $(date +%F)
    ```
 
-   Los scripts esperan los `.jsonl` en `data/` con los nombres originales
+   The scripts expect the `.jsonl` files in `data/` under their original names
    (`binance_positions.jsonl`, `positions_all.jsonl`).
 
-2. **Aplana primero.** `flatten.py` produce los CSV que leen todos los demás:
+2. **Flatten first.** `flatten.py` produces the CSVs every other script reads:
 
    ```bash
    python3 analysis/flatten.py       # -> analysis/binance_positions.csv, phemex_positions.csv
    ```
 
-3. **Los demás corren desde este directorio**, no desde la raíz — abren rutas
-   relativas como `binance_positions.csv` y `ohlc/btcusdt_1h.csv`:
+3. **The rest run from this directory**, not from the repo root — they open relative paths like
+   `binance_positions.csv` and `ohlc/btcusdt_1h.csv`:
 
    ```bash
    cd analysis && python3 elite_btc.py
    ```
 
-4. Los que necesitan velas (`regime.py`, `entry_rules.py`, `exit_rules.py`,
-   `rule_backtest.py`, `rules_oos.py`, `forward_test.py`) requieren correr antes
-   `fetch_ohlc.py` y/o `fetch_ohlc_long.py`, que descargan OHLC de BTCUSDT a
-   `analysis/ohlc/`.
+4. The ones needing candles (`regime.py`, `entry_rules.py`, `exit_rules.py`, `rule_backtest.py`,
+   `rules_oos.py`, `forward_test.py`) require running `fetch_ohlc.py` and/or `fetch_ohlc_long.py`
+   first, which download BTCUSDT OHLC into `analysis/ohlc/`.
 
-⚠️ Sobre un snapshot nuevo los números **no** coincidirán con los de
-`FINDINGS_v2.md`: aquellos son del snapshot del 2026-08-25, que cubre un único
-ciclo de régimen. Ver los caveats de `SKILL.md`.
+⚠️ On a new snapshot the numbers will **not** match those in `FINDINGS_v2.md`: those come from the
+2026-08-25 snapshot, which covers a single regime cycle. See the caveats in `SKILL.md`.

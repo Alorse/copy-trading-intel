@@ -1,183 +1,185 @@
 ---
 name: copy-trading-intel
 version: 3.0.0
-author: Alfredo Ortegón Sepúlveda — con asistencia de agentes LLM y auditoría adversarial
+author: Alfredo Ortegón Sepúlveda — with LLM agent assistance and adversarial audit
 license: MIT
-description: "Scrape Phemex+Binance copy-trading public data for patterns. v3: hallazgos corregidos tras auditoría."
+description: "Scrape Phemex+Binance copy-trading public data for patterns. v3: findings corrected after audit."
 ---
 
-> **Versión 3.0.0 — vigente.** Reemplaza a `SKILL.v2.md`, que conservamos como registro:
-> contiene seis afirmaciones que la auditoría del 2026-08-25 demostró falsas contra su propia
-> data. La tabla "Lo que v2 afirma y la data desmiente" (más abajo) es el diff entre ambas.
+> **Version 3.0.0 — current.** Supersedes `SKILL.v2.md`, kept as a record: it contains six claims
+> the 2026-08-25 audit proved false against its own data. The table "What v2 claims and the data
+> denies" (below) is the diff between the two.
 >
-> Todo lo de aquí es reproducible con los scripts de `analysis/` sobre un snapshot propio.
-> Evidencia completa en `analysis/FINDINGS_v2.md`, `analysis/RULES.md` y `analysis/TOP5.md`.
+> Everything here is reproducible with the scripts in `analysis/` over your own snapshot.
+> Full evidence in `analysis/FINDINGS_v2.md`, `analysis/RULES.md` and `analysis/TOP5.md`.
 
 # copy-trading-intel
 
 ## When to Use
-- Analizar copy-trading público de Phemex o Binance (traders, PnL, mejores pares).
-- Buscar/validar patrones para una estrategia mono-par.
-- Seleccionar traders a copiar (ver `analysis/TOP5.md`).
+- Analysing public copy-trading on Phemex or Binance (traders, PnL, best pairs).
+- Finding/validating patterns for a single-pair strategy.
+- Selecting traders to copy (see `analysis/TOP5.md`).
 
-## Endpoints Phemex (públicos, GET, sin auth)
+## Phemex endpoints (public, GET, no auth)
 
-⚠️ **Usar `api.phemex.com`** — `api10.phemex.com` devuelve 403 (CloudFront) desde algunos hosts.
-Headers: `User-Agent` browser, `Origin: https://phemex.com`, `Referer: https://phemex.com/`, `Accept: application/json`.
+⚠️ **Use `api.phemex.com`** — `api10.phemex.com` returns 403 (CloudFront) from some hosts.
+Headers: browser `User-Agent`, `Origin: https://phemex.com`, `Referer: https://phemex.com/`, `Accept: application/json`.
 
-- **Lista de traders:** `GET /phemex-lb/public/data/v3/user/recommend?hideFullyCopied=false&keyword=&pageNum=1&pageSize=50&showChart=false&sortBy=PnlRate30d`
-  - `data.rows[]`: `userId`, `nickName`, `pnlRate30d`, `pnl30d`, `tradeWinRate30d`, `mdd30d`, `aum`, `followerCount`, **`showPosition`** (true = historial visible → único escrapeable).
-- **Posiciones cerradas:** `GET /phemex-lb/public/data/position/closed/v2?pageNum=1&pageSize=100&userId=<id>`
-  - `data.rows[]`: `symbol`, `side`, `size`, `openPositionVal`, `margin`, `roi`, `closedPnl`, `realizedPnl` (**neto**), `openedTime`/`updatedTime` (ms), `fundingFee`, `exchangeFee`. Paginar hasta `rows < pageSize`.
-  - ✅ Verificado: `realizedPnl = closedPnl − exchangeFee − fundingFee`, exacto.
-- Otros: `/phemex-lb/public/data/v3/user/symbol-metric`, `user/pnl-chart`, `user/pnl-rate-chart`, `position/current/v2`, `v3/user/leaders`.
-- **Posiciones ABIERTAS (sonda 2026-08-28):** `GET /phemex-lb/public/data/position/current/v2?userId=<id>` — ✅ **DISPONIBLE** (`code:0`, `data.total`, `data.rows[]`).
-  - Campos: `symbol`, `side` (Buy/Sell), `posSide` (Long/Short), `size`, `value` (notional), `positionMargin`, `avgEntryPrice`, `leverage`, `liquidationPrice`, `realizedPnl`, `positionId`, `transactTime`.
-  - ⚠️ **No trae PnL no realizado ni mark price** → `open_loss_divergence` no se puede calcular sin un feed de precios. Por eso NO está integrado en el pipeline v1 (que además solo rankea Binance).
+- **Trader listing:** `GET /phemex-lb/public/data/v3/user/recommend?hideFullyCopied=false&keyword=&pageNum=1&pageSize=50&showChart=false&sortBy=PnlRate30d`
+  - `data.rows[]`: `userId`, `nickName`, `pnlRate30d`, `pnl30d`, `tradeWinRate30d`, `mdd30d`, `aum`, `followerCount`, **`showPosition`** (true = history visible → the only scrapeable ones).
+- **Closed positions:** `GET /phemex-lb/public/data/position/closed/v2?pageNum=1&pageSize=100&userId=<id>`
+  - `data.rows[]`: `symbol`, `side`, `size`, `openPositionVal`, `margin`, `roi`, `closedPnl`, `realizedPnl` (**net**), `openedTime`/`updatedTime` (ms), `fundingFee`, `exchangeFee`. Paginate until `rows < pageSize`.
+  - ✅ Verified: `realizedPnl = closedPnl − exchangeFee − fundingFee`, exactly.
+- Others: `/phemex-lb/public/data/v3/user/symbol-metric`, `user/pnl-chart`, `user/pnl-rate-chart`, `position/current/v2`, `v3/user/leaders`.
+- **OPEN positions (probed 2026-08-28):** `GET /phemex-lb/public/data/position/current/v2?userId=<id>` — ✅ **AVAILABLE** (`code:0`, `data.total`, `data.rows[]`).
+  - Fields: `symbol`, `side` (Buy/Sell), `posSide` (Long/Short), `size`, `value` (notional), `positionMargin`, `avgEntryPrice`, `leverage`, `liquidationPrice`, `realizedPnl`, `positionId`, `transactTime`.
+  - ⚠️ **No unrealised PnL and no mark price** → `open_loss_divergence` cannot be computed without a price feed. That is why it is NOT wired into pipeline v1 (which ranks Binance only anyway).
 
-## Endpoints Binance (públicos, POST JSON, sin auth)
+## Binance endpoints (public, POST JSON, no auth)
 
-Headers: `User-Agent` browser, `Content-Type: application/json`, `clienttype: web`, `Origin`/`Referer` binance.com.
+Headers: browser `User-Agent`, `Content-Type: application/json`, `clienttype: web`, binance.com `Origin`/`Referer`.
 
-- **Lista de portfolios:** `POST /bapi/futures/v1/friendly/future/copy-trade/home-page/query-list`
+- **Portfolio listing:** `POST /bapi/futures/v1/friendly/future/copy-trade/home-page/query-list`
   - Body: `{"pageNumber":1,"pageSize":30,"timeRange":"90D","dataType":"ROI","favoriteOnly":false,"hideFull":true,"nickname":"","order":"DESC","userAsset":0,"portfolioType":"PUBLIC"}`
-  - ⚠️ pageSize se ignora (cap 30/página). `total` ~8,520 portfolios.
-- **Historial de posiciones:** `POST /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history`
+  - ⚠️ pageSize is ignored (cap of 30/page). `total` ~8,520 portfolios.
+- **Position history:** `POST /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history`
   - Body: `{"portfolioId":"<leadPortfolioId>","pageNumber":1,"pageSize":50}`
-  - ⚠️ La variante `/public/` devuelve 0 rows — usar `/friendly/`.
-  - ⚠️ **Solo devuelve posiciones CERRADAS.** Las abiertas (y sus pérdidas latentes) son invisibles. Ver "Trampa 1".
-  - ✖ **Posiciones ABIERTAS: verificado NO disponible el 2026-08-28.** Sonda `scripts/probe_open_positions.py` sobre `/friendly/future/copy-trade/lead-portfolio/{positions,position-list,current-position,open-positions}` con `portfolioId` real: **HTTP 404 en los 4 candidatos** (con y sin paginación). No hay endpoint público de posiciones abiertas por lead-trader.
-  - ✅ `closingPnl` es **NETO** de fees. Verificado sobre 96,994 cierres completos: residuo contra el PnL de precio = **−7.85 bps del notional**, 93.7% negativo (≈ taker ida y vuelta). Fees ≈ **8 bps por round-trip**.
+  - ⚠️ The `/public/` variant returns 0 rows — use `/friendly/`.
+  - ⚠️ **Returns CLOSED positions only.** Open ones (and their latent losses) are invisible. See "Trap 1".
+  - ✖ **OPEN positions: verified NOT available on 2026-08-28.** The `scripts/probe_open_positions.py` probe against `/friendly/future/copy-trade/lead-portfolio/{positions,position-list,current-position,open-positions}` with a real `portfolioId`: **HTTP 404 on all 4 candidates** (with and without pagination). There is no public per-lead-trader open-positions endpoint.
+  - ✅ `closingPnl` is **NET** of fees. Verified over 96,994 complete closes: residual against the price PnL = **−7.85 bps of notional**, 93.7% negative (≈ taker in and out). Fees ≈ **8 bps per round-trip**.
 
 ## Scripts
 
 - `scripts/scrape_positions.py` — Phemex (resumable).
 - `scripts/scrape_binance.py` — Binance (resumable).
-- `analysis/flatten.py` — **empieza por aquí.** Aplana los `.jsonl` anidados a CSV planos. Sin red, ~10s.
-- `analysis/*.py` — 14 scripts que reproducen cada número de `FINDINGS_v2.md` y `RULES.md`.
-- `pipeline.py` — pipeline permanente (ver `docs/specs/2026-08-28-copy-trading-refresh-design.md`). Runbook de invocación: `docs/specs/2026-08-28-copy-trading-refresh-design.md`.
+- `analysis/flatten.py` — **start here.** Flattens the nested `.jsonl` into flat CSVs. No network, ~10s.
+- `analysis/*.py` — 14 scripts reproducing every figure in `FINDINGS_v2.md` and `RULES.md`.
+- `pipeline.py` — the permanent pipeline (see `docs/specs/2026-08-28-copy-trading-refresh-design.md`).
 
-## Dataset (data/) — snapshot 2026-08-25
+## Dataset (data/) — 2026-08-25 snapshot
 
-- `positions_all.jsonl` — Phemex: **192 traders** (no 196), 7,467 posiciones.
-- `binance_positions.jsonl` — Binance: 594 portfolios con posiciones (600 líneas), 108,616 posiciones.
-- `analysis/ohlc/` — velas de BTCUSDT: `btcusdt_1h.csv` (ventana del dataset) y `btcusdt_1h_long.csv` (2019-2026, para walk-forward).
+- `positions_all.jsonl` — Phemex: **192 traders** (not 196), 7,467 positions.
+- `binance_positions.jsonl` — Binance: 594 portfolios with positions (600 lines), 108,616 positions.
+- `analysis/ohlc/` — BTCUSDT candles: `btcusdt_1h.csv` (the dataset's window) and `btcusdt_1h_long.csv` (2019-2026, for the walk-forward).
 
-⚠️ **RANGO TEMPORAL REAL: 5 MESES, NO 20.** v2 dice "dic-2024→ago-2026". **Cero** posiciones
-cerraron antes de abril 2026. Cierres por mes: abr 996 · may 12,171 · jun 21,751 · jul 29,417 ·
-ago 43,477. El rango largo de v2 sale de fechas de *apertura* de unos pocos swings largos.
-**Hay un solo ciclo de régimen**: crash may–jun, pump jul–ago (BTC +25.8% en 7 semanas).
-No hay régimen lateral ni bajista prolongado. Todo claim de "estabilidad temporal" es, como
-máximo, "consistencia dentro de un ciclo".
+⚠️ **REAL TIME RANGE: 5 MONTHS, NOT 20.** v2 says "Dec-2024→Aug-2026". **Zero** positions closed
+before April 2026. Closes per month: Apr 996 · May 12,171 · Jun 21,751 · Jul 29,417 ·
+Aug 43,477. v2's long range comes from the *opening* dates of a handful of long swings.
+**There is a single regime cycle**: the May–June crash, the July–August pump (BTC +25.8% in 7
+weeks). No sideways or prolonged bear regime. Every "temporal stability" claim is, at most,
+"consistency within one cycle".
 
 ---
 
-# Hallazgos corregidos (2026-08-25)
+# Corrected findings (2026-08-25)
 
-## Lo que v2 afirma y la data desmiente
+## What v2 claims and the data denies
 
-| claim de v2 | realidad verificada |
+| v2's claim | verified reality |
 |---|---|
-| "XRP la excepción: 64 traders, +38k **distribuido**" | DugEFresh = **91.3%** del PnL; mediana por trader **−1.5**; ganan 27/64 |
-| "12-24h pierde **SIEMPRE** (XRP, BTC, ETH)" | Es el **mejor** bucket en Phemex-XRP (+41.1k) y Binance-XRP (+5.0k). Solo pierde en BTC/ETH |
-| "La élite **flippea con el régimen**" | El lado coincide con la tendencia (MA200h) en **50.9%** — moneda al aire. El mix de lado apenas se mueve: 48→47→48→42% |
-| "shorts BTC +235k con longs −186k" | Son **dos meses distintos** empalmados: +235k es mayo, −186k es junio |
-| "**6-20x** concentra el PnL; >50x neutral" | Artefacto de rankear por ROI, que premia leverage por aritmética. Majors 30x, resto **10x** (v2 dice 5x) |
-| "dic-2024 → ago-2026" | 5 meses reales (ver arriba) |
+| "XRP the exception: 64 traders, +38k **distributed**" | DugEFresh = **91.3%** of the PnL; median per trader **−1.5**; 27/64 win |
+| "12-24h **always** loses (XRP, BTC, ETH)" | It is the **best** bucket on Phemex-XRP (+41.1k) and Binance-XRP (+5.0k). It only loses on BTC/ETH |
+| "The elite **flips with the regime**" | The side matches the trend (MA200h) **50.9%** of the time — a coin flip. The side mix barely moves: 48→47→48→42% |
+| "BTC shorts +235k with longs −186k" | Those are **two different months** spliced together: +235k is May, −186k is June |
+| "**6-20x** concentrates the PnL; >50x neutral" | An artefact of ranking by ROI, which rewards leverage arithmetically. Majors 30x, the rest **10x** (v2 says 5x) |
+| "Dec-2024 → Aug-2026" | 5 real months (see above) |
 
-## Lo que sí se sostiene de v2
+## What does hold from v2
 
-- Tokenized stocks de semiconductores concentran PnL real y distribuido (SKHYNIX, MU, SNDK).
-- BTC es el par menos concentrado: 437 traders, top-1 solo 15.8% del PnL.
-- La masa de Phemex pierde consistente (expectancy −190 USD/trade).
-- El "mejor par" de un trader suele ser lotería: revisar concentración siempre.
+- Semiconductor tokenized stocks concentrate real, distributed PnL (SKHYNIX, MU, SNDK).
+- BTC is the least concentrated pair: 437 traders, top-1 only 15.8% of the PnL.
+- The Phemex crowd loses consistently (expectancy −190 USD/trade).
+- A trader's "best pair" is usually a lottery: always check concentration.
 
-## Hallazgos nuevos
+## New findings
 
-**H1 — La habilidad SÍ persiste, pero solo medida sobre el historial multi-par completo.**
-Split por calendario, retorno neto, demean por símbolo×lado×mitad: **rho = +0.36 a +0.42, p=0.0001**.
-Dentro de un solo par la fiabilidad del estimador es **~0.13** — puro ruido. **Nunca rankees a un
-trader por sus operaciones de un par.**
+**H1 — Skill DOES persist, but only measured over the full multi-pair track record.**
+Calendar split, net return, demeaned by symbol×side×half: **rho = +0.36 to +0.42, p=0.0001**.
+Within a single pair the estimator's reliability is **~0.13** — pure noise. **Never rank a trader
+on their trades in one pair.**
 
-**H2 — Seleccionar élite compra consistencia, no retorno medio.** Tercil top vs bottom en BTC
-out-of-sample: mediana +0.277% vs −0.138% (MWU z=+8.28), pero **media +0.261% vs +0.284%
-(p=0.881)**. Aciertan más seguido con ganancias más chicas.
+**H2 — Selecting the elite buys consistency, not mean return.** Top vs bottom tercile on BTC
+out-of-sample: median +0.277% vs −0.138% (MWU z=+8.28), but **mean +0.261% vs +0.284%
+(p=0.881)**. They are right more often, for smaller gains.
 
-**H3 — Una fila NO es una operación atómica.** Contrastando `avgCost` contra la vela de 1h de su
-apertura: 13.4% cae fuera del rango, y esas tienen duración mediana **54.2h vs 3.8h** y **42.1%
-de cierres parciales vs 5.2%**. Son agregados de scale-ins/scale-outs. Todo "win rate por fila"
-mide la política de cierre parcial tanto como el acierto.
+**H3 — A row is NOT an atomic trade.** Contrasting `avgCost` against the 1h candle of its
+opening: 13.4% falls outside the range, and those have a median duration of **54.2h vs 3.8h** and
+**42.1% partial closes vs 5.2%**. They are scale-in/scale-out aggregates. Any "win rate per row"
+measures the partial-close policy as much as being right.
 
-**H4 — El leverage alto es riesgo de ruina, no gestión.** % de posiciones que consumieron >80%
-del margen: ≤10x **2.4%** · 11-25x **5.7%** · 26-60x **18.6%** · >60x **46.7%**. El MAE mediano
-es ~0.7% en todos los tramos: el apalancado no arriesga menos por operación.
+**H4 — High leverage is ruin risk, not management.** % of positions that consumed >80% of margin:
+≤10x **2.4%** · 11-25x **5.7%** · 26-60x **18.6%** · >60x **46.7%**. The median MAE is ~0.7% in
+every band: the leveraged trader does not risk less per trade.
 
-**H5 — Los stops fijos restan.** Walk-forward 2019-2026 (7 años, 3 ciclos): ningún nivel de stop
-mejora el retorno; uno de 5% es peor en 6 de 8 años. **Esto invalida el "SL temprano + trailing"
-que recomienda v2.** El control de riesgo sale del leverage (H4), no de los stops. Un stop muy
-ajustado (2%) sí baja el drawdown de 55% a 43%, pagando retorno: es un intercambio, no una mejora.
+**H5 — Fixed stops subtract.** Walk-forward 2019-2026 (7 years, 3 cycles): no stop level improves
+the return; a 5% one is worse in 6 of 8 years. **This invalidates the "early SL + trailing" that
+v2 recommends.** Risk control comes from leverage (H4), not from stops. A very tight stop (2%)
+does cut the drawdown from 55% to 43%, paying for it in return: a trade-off, not an improvement.
 
-**H6 — Entrar por momentum NO es un edge.** La regla "long con momentum fuerte + sobre MA200h"
-parecía funcionar dentro del dataset. En walk-forward 2019-2026: **p=0.244 contra entradas
-aleatorias**, equity ×5.59 contra **×7.72 de comprar y aguantar**, y +0.966%/op en años alcistas
-de BTC contra **−0.322% en los bajistas**. Es beta direccional. Parecía edge porque el dataset es
-un único ciclo alcista.
+**H6 — Entering on momentum is NOT an edge.** The "long on strong momentum + above MA200h" rule
+appeared to work within the dataset. In the 2019-2026 walk-forward: **p=0.244 against random
+entries**, equity ×5.59 against **×7.72 for buy and hold**, and +0.966%/trade in BTC bull years
+against **−0.322% in bear years**. It is directional beta. It looked like an edge because the
+dataset is a single bull cycle.
 
 ---
 
-# Trampas (leer antes de cualquier análisis nuevo)
+# Traps (read before any new analysis)
 
-**Trampa 1 — Traders que esconden las perdedoras.** El historial solo muestra posiciones
-**cerradas**. Un trader que nunca cierra una perdedora se ve perfecto y acumula pérdida no
-realizada. **Firma: win rate de cerradas ≥95% junto a un `mdd` de portfolio alto.**
-Ejemplos reales: GGbond哦 (98.5% aciertos, mdd 50.5%), 无人在稻 (98.9%, payoff 0.39),
-Una躺平记_ (**0 perdedoras en 174 cierres**, mdd 63.7%), NepNeptune (0 en 43, mdd 42.4%).
-**Encabezan cualquier ranking ingenuo.** Filtra `win_rate_cerradas ≤ 92%` y `payoff ≥ 0.5`.
+**Trap 1 — Traders who hide their losers.** The record shows **closed** positions only. A trader
+who never closes a loser looks perfect while accumulating unrealised loss.
+**Signature: closed-position win rate ≥95% alongside a high portfolio `mdd`.**
+Real examples: GGbond哦 (98.5% hit rate, mdd 50.5%), 无人在稻 (98.9%, payoff 0.39),
+Una躺平记_ (**0 losers in 174 closes**, mdd 63.7%), NepNeptune (0 in 43, mdd 42.4%).
+**They top any naive ranking.** Filter `closed_win_rate ≤ 92%` and `payoff ≥ 0.5`.
 
-**Trampa 2 — El ROI y el PnL en USD no miden habilidad.** Los tres mejores por ROI del dataset:
+**Trap 2 — ROI and PnL in USD do not measure skill.** The dataset's three best by ROI:
 VickyKaushal (**+5,436%** → alpha **−0.72%**, t=−2.88), Omofun (+4,844% → alpha **−1.23%**),
-龟兔赛跑985 (+2,382% → **96.9% de su PnL es UN trade** a 145x). Por PnL absoluto:
-道亦有道 1994 ($551k → alpha +0.11%, t=0.46), 风雪哥 ($207k → alpha −0.16%, top-3 = 93% del PnL),
+龟兔赛跑985 (+2,382% → **96.9% of its PnL is ONE trade** at 145x). By absolute PnL:
+道亦有道 1994 ($551k → alpha +0.11%, t=0.46), 风雪哥 ($207k → alpha −0.16%, top-3 = 93% of the PnL),
 geddong ($228k → alpha **−1.50%, t=−12.11**).
-**Usa alpha desapalancado contra la mediana de su mismo símbolo×mes×lado.**
+**Use de-leveraged alpha against the median of the same symbol×month×side.**
 
-**Trampa 3 — Rankear pares por rentabilidad es circular.** Desapalancando, **188/197 pares (95%)**
-tienen retorno mediano por trader positivo: el dataset son los top-600 por ROI, ganan en todo.
-El ranking mide supervivencia, no edge del par.
+**Trap 3 — Ranking pairs by profitability is circular.** De-leveraged, **188/197 pairs (95%)**
+have a positive median return per trader: the dataset is the top-600 by ROI, they win at
+everything. The ranking measures survival, not the pair's edge.
 
-**Trampa 4 — Agregar en USD deja que el tamaño de cuenta decida.** SOL: agregado −32,229 pero
-mediana por trader **+21.2**. XRP: −3,966 con mediana **+3.0**. El trader típico ganó.
+**Trap 4 — Aggregating in USD lets account size decide.** SOL: aggregate −32,229 but median per
+trader **+21.2**. XRP: −3,966 with a median of **+3.0**. The typical trader won.
 
-**Trampa 5 — `mdd` es porcentaje, no fracción** (mediana 30.2, máx 102.7). Y el campo `win_rate`
-de Binance **no** es comparable con el win rate de posiciones cerradas: mide otra ventana.
+**Trap 5 — `mdd` is a percentage, not a fraction** (median 30.2, max 102.7). And Binance's
+`win_rate` field is **not** comparable with the win rate of closed positions: it measures a
+different window.
 
-**Trampa 6 — Sesgo de supervivencia sin control.** Top-600 por ROI 90D. La selección es sobre
-rendimiento reciente, lo que **atenúa** las correlaciones H1→H2 (juega a favor de H1, en contra
-de cualquier nivel absoluto).
+**Trap 6 — Survivorship with no control.** Top-600 by 90D ROI. The selection is on recent
+performance, which **attenuates** the H1→H2 correlations (working in H1's favour, against any
+absolute level).
 
 ---
 
-# Reglas operativas
+# Operating rules
 
-- ⚠️ **NUNCA renombrar/mover/borrar este árbol mientras un scraper background esté escribiendo.**
-  Hacer `process(list)` primero; esperar o matar y relanzar (son resumables). Incidente 2026-08-25:
-  rename con scraper corriendo → 440 portfolios perdidos y 45 min de re-scrape. Un `cp` no salva:
-  crea inodos nuevos y lo que el proceso escriba después muere con el original.
-- **NO re-scrapear por defecto.** v2 decía "re-scrapear antes de cualquier análisis nuevo"; eso
-  destruiría la base reproducible de `analysis/`. Re-scrapea solo cuando necesites datos **nuevos**,
-  y a un directorio nuevo. Para reproducir lo existente: `python3 analysis/flatten.py`.
-- **SIEMPRE revisar concentración** antes de declarar ganador a un par **o a un trader**
-  (lecciones SUI/ONDO y DugEFresh). Umbral usado: top-1 trade < 30% del PnL neto.
-- **Nunca rankear por ROI ni por PnL en USD.** Ver Trampa 2.
-- **Nunca evaluar a un trader por un solo par.** Ver H1.
-- **Declarar siempre si una cifra es neta o bruta**, y qué columna se usó.
-- Cualquier regla con expectancy **< 0.10-0.15% del notional es inoperable**: se la comen las fees
-  (8 bps round-trip). Por eso los scalps de <1h (+0.04%) no son viables.
+- ⚠️ **NEVER rename/move/delete this tree while a background scraper is writing.**
+  Run `process(list)` first; wait, or kill and relaunch (they are resumable). Incident 2026-08-25:
+  a rename with the scraper running → 440 portfolios lost and 45 min of re-scraping. A `cp` does
+  not save you: it creates new inodes, and whatever the process writes afterwards dies with the
+  original.
+- **Do NOT re-scrape by default.** v2 said "re-scrape before any new analysis"; that would destroy
+  the reproducible base of `analysis/`. Re-scrape only when you need **new** data, and into a new
+  directory. To reproduce what exists: `python3 analysis/flatten.py`.
+- **ALWAYS check concentration** before declaring a pair **or a trader** a winner (the SUI/ONDO
+  and DugEFresh lessons). Threshold used: top-1 trade < 30% of net PnL.
+- **Never rank by ROI or by PnL in USD.** See Trap 2.
+- **Never judge a trader on a single pair.** See H1.
+- **Always state whether a figure is net or gross**, and which column was used.
+- Any rule with expectancy **below 0.10-0.15% of notional is unusable**: fees eat it
+  (8 bps round-trip). That is why sub-1h scalps (+0.04%) are not viable.
 
-# Estado del proyecto
+# Project status
 
-- `analysis/FINDINGS_v2.md` — la auditoría completa, con lo que se sostiene y lo que se cae.
-- `analysis/RULES.md` — reglas candidatas para BTCUSDT + resultado del walk-forward.
-- `analysis/TOP5.md` — 5 traders a copiar, consenso de 4 análisis independientes, con descartados.
-- **Lo que falta**: forward-test real con datos nuevos (todo lo anterior vive en un solo ciclo de
-  régimen), una regla de salida validada, y observar a los candidatos en un bajista prolongado.
+- `analysis/FINDINGS_v2.md` — the full audit, with what holds and what collapses.
+- `analysis/RULES.md` — candidate rules for BTCUSDT + the walk-forward result.
+- `analysis/TOP5.md` — 5 traders to copy, the consensus of 4 independent analyses, with the rejects.
+- **What is missing**: a real forward test on new data (everything above lives in a single regime
+  cycle), a validated exit rule, and observing the candidates through a prolonged bear market.

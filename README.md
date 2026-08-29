@@ -1,111 +1,112 @@
 # copy-trading-intel
 
-Análisis del copy-trading público de **Binance y Phemex**: quién gana de verdad, quién solo
-lo parece, y por qué casi todo "trader top" no lo es.
+Analysis of public copy-trading data from **Binance and Phemex**: who actually wins, who only
+looks like it, and why almost every "top trader" isn't one.
 
-Las dos plataformas exponen públicamente el historial de sus lead-traders. Este repo scrapea
-esa data, la audita contra sus propios sesgos y produce un roster reproducible de candidatos a
-copiar — junto con el registro de los hallazgos que se cayeron al verificarlos.
+Both platforms publish their lead traders' track records. This repo scrapes that data, audits it
+against its own biases, and produces a reproducible roster of candidates to copy — along with a
+record of the findings that fell apart once verified.
 
-> ⚠️ **Esto no es asesoría financiera ni una recomendación de inversión.** Lee
-> [DISCLAIMER.md](DISCLAIMER.md) antes de usar nada de aquí.
+> ⚠️ **This is not financial advice or an investment recommendation.** Read
+> [DISCLAIMER.md](DISCLAIMER.md) before using any of this.
 
-## La idea en una línea
+## The idea in one line
 
-**ROI y PnL en USD no miden habilidad.** Premian apalancamiento, tamaño de cuenta y suerte de
-régimen. La métrica del repo es:
+**ROI and PnL in USD do not measure skill.** They reward leverage, account size and luck of
+regime. The metric this repo uses is:
 
 ```
-alpha = retorno de precio desapalancado − mediana de su misma celda (símbolo × mes × lado)
+alpha = de-leveraged price return − median of its cell (symbol × month × side)
 ```
 
-Neutraliza las tres injusticias a la vez. Ir long en el pump de agosto puntúa **cero** por
-construcción: solo cuenta ganarle a todos los que hicieron exactamente lo mismo.
+It neutralises all three unfairnesses at once. Going long in the August pump scores **zero** by
+construction: the only thing that counts is beating everyone who did exactly the same.
 
-Los tres mejores traders por ROI del snapshot auditado, medidos así: **alpha −0.72%, −1.23% y
-un 96.9% del PnL en un solo trade a 145x.**
+The three highest-ROI traders in the audited snapshot, measured this way: **alpha −0.72%, −1.23%,
+and 96.9% of PnL from a single trade at 145x.**
 
-## Qué hay aquí
+## What's here
 
-| ruta | qué es |
+| path | what it is |
 |---|---|
-| `pipeline/` + `pipeline.py` | pipeline permanente: `scrape → SQLite → métricas → flags → tendencia → roster` |
-| `SKILL.md` | referencia viva: endpoints de ambos exchanges, hallazgos vigentes y las 6 trampas de esta data |
-| `SKILL.v2.md` | versión anterior, **archivada**: seis de sus hallazgos resultaron falsos contra su propia data |
-| `analysis/FINDINGS_v2.md` | la auditoría completa: qué se sostuvo, qué se cayó y con qué evidencia |
-| `analysis/TOP5.md` | los 5 traders del consenso, con el razonamiento y los descartados |
-| `analysis/RULES.md` | reglas candidatas para BTCUSDT y el resultado del walk-forward 2019-2026 |
-| `analysis/*.py` | los one-offs que reproducen cada número (ver `analysis/README.md`) |
-| `scripts/` | scrapers originales + la sonda de posiciones abiertas |
-| `docs/specs`, `docs/plans` | diseño e implementación del pipeline (documentos históricos) |
+| `pipeline/` + `pipeline.py` | the permanent pipeline: `scrape → SQLite → metrics → flags → trend → roster` |
+| `SKILL.md` | living reference: both exchanges' endpoints, current findings, and the 6 traps in this data |
+| `SKILL.v2.md` | previous version, **archived**: six of its findings turned out false against its own data |
+| `analysis/FINDINGS_v2.md` | the full audit: what held, what collapsed, and on what evidence |
+| `analysis/TOP5.md` | the 5 consensus traders, with the reasoning and the rejects |
+| `analysis/RULES.md` | candidate rules for BTCUSDT and the 2019-2026 walk-forward result |
+| `analysis/*.py` | the one-offs that reproduce every figure (see `analysis/README.md`) |
+| `scripts/` | the original scrapers + the open-positions probe |
+| `docs/specs`, `docs/plans` | the pipeline's design and implementation (historical documents) |
 
-## Requisitos
+## Requirements
 
-- **Python ≥ 3.11** (el motor usa `datetime.UTC`).
-- **Cero dependencias de runtime**: solo stdlib (`sqlite3`, `json`, `csv`, `urllib`, `statistics`).
-- `pytest` únicamente para los tests: `pip install -r requirements-dev.txt`.
+- **Python ≥ 3.11** (the engine uses `datetime.UTC`).
+- **Zero runtime dependencies**: stdlib only (`sqlite3`, `json`, `csv`, `urllib`, `statistics`).
+- `pytest` for the tests only: `pip install -r requirements-dev.txt`.
 
 ## Quickstart
 
 ```bash
 git clone https://github.com/Alorse/copy-trading-intel.git
 cd copy-trading-intel
-pytest                                    # 46 tests; los 4 de regresión son opt-in (ver abajo)
+pytest                                    # 46 tests; the 4 regression ones are opt-in (see below)
 
-python3 pipeline.py scrape  --date $(date +%F)   # ~600 portfolios Binance + Phemex (lento, resumable)
-python3 pipeline.py analyze --date $(date +%F)   # -> analysis/runs/<fecha>/{TOP_YYYY-MM.md,roster.json,diff.json}
-python3 pipeline.py publish --date $(date +%F)   # único paso que toca analysis/roster.json
+python3 pipeline.py scrape  --date $(date +%F)   # ~600 Binance portfolios + Phemex (slow, resumable)
+python3 pipeline.py analyze --date $(date +%F)   # -> analysis/runs/<date>/{TOP_YYYY-MM.md,roster.json,diff.json}
+python3 pipeline.py publish --date $(date +%F)   # the only step that touches analysis/roster.json
 ```
 
-`analyze` **valida antes de ingerir**: si el snapshot trae ±50% de traders o posiciones respecto
-del anterior, sale con código 2 sin tocar la base de datos. `--force` lo salta; que un exchange
-con snapshot previo no traiga CSV hoy, no.
+`analyze` **validates before ingesting**: if the snapshot comes in ±50% off the previous one on
+traders or positions, it exits with code 2 without touching the database. `--force` skips that;
+an exchange that had a previous snapshot and brings no CSV today is not skippable.
 
-Subcomandos granulares (`metrics`, `detect`, `trend`, `rank`, `report`) en ese orden obligatorio:
-`metrics` resetea flags y `trend_bonus`, así que un `rank` sin `detect` previo rankea sin flags.
+Granular subcommands (`metrics`, `detect`, `trend`, `rank`, `report`) run in that mandatory order:
+`metrics` resets flags and `trend_bonus`, so a `rank` without a preceding `detect` ranks with no
+flags.
 
-## La data no está en el repo
+## The data is not in the repo
 
-Los dumps crudos de las APIs de Binance/Phemex **no se versionan** — no redistribuimos data de
-terceros. Genera la tuya con `pipeline.py scrape`. Lo que sí está versionado son los agregados
-del análisis (`data/SUMMARY.json`, `data/aggregate_*.json`) y los reportes de cada corrida.
+Raw dumps of the Binance/Phemex APIs are **not versioned** — we don't redistribute third-party
+data. Generate your own with `pipeline.py scrape`. What *is* versioned are the analysis
+aggregates (`data/SUMMARY.json`, `data/aggregate_*.json`) and each run's reports.
 
-Consecuencia: los 4 tests de `tests/test_regression.py` — los que verifican que el pipeline
-reproduce el análisis auditado del 2026-08-25 — se **saltan** salvo que coloques un snapshot en
-`data/snapshots/2026-08-25/`. Ese snapshot concreto ya no es re-obtenible: las APIs solo sirven
-historial reciente.
+Consequence: the 4 tests in `tests/test_regression.py` — the ones verifying that the pipeline
+reproduces the audited 2026-08-25 analysis — **skip** unless you place a snapshot in
+`data/snapshots/2026-08-25/`. That particular snapshot is no longer obtainable: the APIs only
+serve recent history.
 
-## Las trampas de esta data
+## The traps in this data
 
-Seis formas documentadas de engañarse, cada una con casos reales en `SKILL.md`:
+Six documented ways to fool yourself, each with real cases in `SKILL.md`:
 
-1. **Los loss-hiders.** Solo se ven posiciones **cerradas**. Quien nunca cierra una perdedora
-   aparece con 98-100% de aciertos y encabeza cualquier ranking ingenuo. Un caso real del
-   snapshot: **0 perdedoras en 174 cierres**, con un drawdown de portfolio del 63.7%.
-2. **El ROI no mide habilidad.** Ver arriba.
-3. **Rankear pares por rentabilidad es circular.** Desapalancando, 188/197 pares (95%) dan
-   retorno mediano positivo: el universo son los top-600 por ROI, ganan en todo.
-4. **Agregar en USD deja que decida el tamaño de cuenta.** SOL agrega −32,229 pero su mediana
-   por trader es **+21.2**.
-5. **`mdd` de Binance es porcentaje**, no fracción (mediana ~30). Y su `winRate` de portada no
-   es comparable con el win rate de posiciones cerradas: mide otra ventana.
-6. **Survivorship sin grupo de control.** El universo se selecciona por rendimiento reciente.
+1. **Loss hiders.** Only **closed** positions are visible. Someone who never closes a loser shows
+   a 98-100% hit rate and tops any naive ranking. A real case from the snapshot: **0 losers in
+   174 closes**, with a 63.7% portfolio drawdown.
+2. **ROI doesn't measure skill.** See above.
+3. **Ranking pairs by profitability is circular.** De-leveraged, 188/197 pairs (95%) show a
+   positive median return: the universe is the top-600 by ROI, they win at everything.
+4. **Aggregating in USD lets account size decide.** SOL aggregates to −32,229 but its median per
+   trader is **+21.2**.
+5. **Binance's `mdd` is a percentage**, not a fraction (median ~30). And its headline `winRate`
+   is not comparable to the win rate of closed positions: it measures a different window.
+6. **Survivorship with no control group.** The universe is selected on recent performance.
 
-Y tres más, de método: una fila **no** es una operación atómica (13.4% son agregados de
-scale-in/scale-out); nunca rankees a un trader por un solo par (la fiabilidad del estimador
-dentro de un par es ~0.13, ruido); cualquier regla con expectancy < 0.10% del notional es
-inoperable, se la comen las fees (~8 bps por round-trip).
+And three more, of method: a row is **not** an atomic trade (13.4% are scale-in/scale-out
+aggregates); never rank a trader on a single pair (within-pair estimator reliability is ~0.13,
+noise); any rule with expectancy below 0.10% of notional is unusable, fees eat it (~8 bps
+round-trip).
 
-## Límites conocidos
+## Known limits
 
-- **Un solo ciclo de régimen.** El snapshot auditado cubre ~5 meses: crash may-jun, pump
-  jul-ago. No hay lateral ni bajista prolongado. Todo "esto es estable" significa, como mucho,
-  "consistente dentro de un ciclo".
-- **Winner's curse.** Con cientos de candidatos filtrados, espera ~la mitad del alpha mostrado.
-- **v1 rankea solo Binance.** Phemex se scrapea e ingiere como archivo histórico, pero no entra
-  a `metrics`/`rank`.
-- **Falta el forward-test real** con datos nuevos, y una regla de salida validada.
+- **A single regime cycle.** The audited snapshot covers ~5 months: the May-June crash, the
+  July-August pump. No prolonged sideways or bear market. Every "this is stable" means, at most,
+  "consistent within one cycle".
+- **Winner's curse.** With hundreds of candidates filtered down, expect ~half the alpha shown.
+- **v1 ranks Binance only.** Phemex is scraped and ingested as a historical archive, but does not
+  enter `metrics`/`rank`.
+- **The real forward test is missing**, as is a validated exit rule.
 
-## Licencia
+## Licence
 
-MIT — ver [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
