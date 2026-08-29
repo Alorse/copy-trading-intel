@@ -1,117 +1,117 @@
-# Reglas soft para BTCUSDT — derivadas y validadas fuera de muestra
+# Soft rules for BTCUSDT — derived and validated out of sample
 
-> ## ⚠️ LEE ESTO ANTES QUE NADA
+> ## ⚠️ READ THIS FIRST
 >
-> **Estas NO son reglas validadas. Son hipótesis con evidencia preliminar.**
+> **These are NOT validated rules. They are hypotheses with preliminary evidence.**
 >
-> El dataset **no** cubre dic-2024 → ago-2026 como afirma la SKILL. **Cero** posiciones cerraron
-> antes de abril 2026: las 107,812 se cierran en una ventana de **5 meses** (abr–ago 2026), con
-> el 40% solo en agosto. El rango largo de la SKILL sale de fechas de *apertura* de unos pocos
-> swings largos.
+> The dataset does **not** cover Dec-2024 → Aug-2026 as the SKILL claims. **Zero** positions
+> closed before April 2026: all 107,812 close within a **5-month** window (Apr–Aug 2026), 40% of
+> them in August alone. The SKILL's long range comes from the *opening* dates of a few long
+> swings.
 >
-> Por tanto mis "dos períodos de calendario" **no son dos muestras independientes**. Son las dos
-> fases de un mismo ciclo:
+> So my "two calendar periods" **are not two independent samples**. They are the two phases of
+> one cycle:
 >
 > | | P1 | P2 |
 > |---|---|---|
-> | apertura mediana | 5-jun-2026 | 3-ago-2026 |
-> | ventana real | ~mayo–junio (crash) | **7 semanas** (jul–ago) |
-> | movimiento de BTC | +2.6% | **+25.8%** |
+> | median opening | 5 Jun 2026 | 3 Aug 2026 |
+> | real window | ~May–June (crash) | **7 weeks** (Jul–Aug) |
+> | BTC move | +2.6% | **+25.8%** |
 >
-> Validar "long con momentum fuerte" en un tramo de +25.8% es casi tautológico. **No hay ningún
-> régimen lateral ni bajista prolongado en los datos.** Que R-1 aguante también en P1 (que
-> contiene el crash) es lo único que la salva de ser pura beta — y es una base delgada.
+> Validating "long on strong momentum" across a +25.8% stretch is close to tautological. **There
+> is no sideways or prolonged bear regime in the data at all.** That R-1 also holds in P1 (which
+> contains the crash) is the only thing saving it from being pure beta — and that is a thin base.
 >
-> **Trátalas como candidatas a forward-test, no como reglas listas para arriesgar capital.**
+> **Treat them as forward-test candidates, not as rules ready to risk capital on.**
 
 
-Todo lo de aquí se fijó mirando **solo el período 1** (hasta 2026-07-06) y se evaluó en el
-**período 2**. Métrica: retorno neto sobre notional (`closing_pnl/notional`, fees incluidos),
-peso igual por posición. Scripts: `entry_rules.py`, `exit_rules.py`, `rule_backtest.py`.
+Everything here was fixed looking at **period 1 only** (up to 2026-07-06) and evaluated on
+**period 2**. Metric: net return on notional (`closing_pnl/notional`, fees included), equal weight
+per position. Scripts: `entry_rules.py`, `exit_rules.py`, `rule_backtest.py`.
 
-**Qué son estas reglas.** Son un filtro de contexto, no un sistema de trading. Dicen *cuándo
-las condiciones se parecen a aquellas en las que este universo de traders ganó*, no *qué
-operación abrir*. No hay señal de entrada precisa ni objetivo de precio.
+**What these rules are.** A context filter, not a trading system. They say *when conditions
+resemble those in which this universe of traders won*, not *what trade to open*. There is no
+precise entry signal and no price target.
 
 ---
 
-## R-1 · Entrada: solo long, y solo en tendencia fuerte ✅ validada
+## R-1 · Entry: long only, and only in a strong trend ✅ validated
 
-Abrir long únicamente cuando **las tres** se cumplen a la vez, medidas sobre velas de 1h:
+Open long only when **all three** hold at once, measured on 1h candles:
 
-| condición | umbral (fijado en P1) |
+| condition | threshold (fixed on P1) |
 |---|---|
-| momentum 24h | > +0.55% |
-| momentum 72h | > +0.63% |
-| precio vs MA200h | > −0.02% (es decir, por encima de la media) |
+| 24h momentum | > +0.55% |
+| 72h momentum | > +0.63% |
+| price vs MA200h | > −0.02% (i.e. above the average) |
 
-| | filtradas | resto | p |
+| | filtered | rest | p |
 |---|---|---|---|
 | P1 Long | **+0.492%** | −0.099% | 0.0092 |
 | P2 Long | **+1.048%** | +0.539% | 0.0004 |
 
-Funciona en ambos períodos, **incluido el crash de mayo-junio que cae en P1** — por eso no es
-simplemente "el precio subió". El efecto aparece además en cinco ventanas independientes
-(4h, 24h, 72h, distancia a MA200h, posición en el rango de 7 días), todas en la misma dirección.
+It works in both periods, **including the May-June crash that falls in P1** — which is why it is
+not simply "the price went up". The effect also shows up across five independent windows (4h, 24h,
+72h, distance to MA200h, position in the 7-day range), all in the same direction.
 
-⚠️ **No hay regla de short validada.** El mismo filtro aplicado a shorts no aporta nada
-(p=0.62 en P1, p=0.51 en P2). El espejo correcto sería exigir momentum negativo, y eso no se
-probó. Mientras no se pruebe, la regla es long-only.
+⚠️ **There is no validated short rule.** The same filter applied to shorts adds nothing (p=0.62
+on P1, p=0.51 on P2). The correct mirror would require negative momentum, and that was not
+tested. Until it is, the rule is long-only.
 
-⚠️ **Los umbrales deben ser ABSOLUTOS, no relativos.** Probé la misma regla con percentiles
-móviles (momentum en el percentil ≥67 de los últimos 30 días): el efecto **desaparece en P1**
-(p=0.534) y solo sobrevive en P2 (p=0.0002). Con umbrales absolutos aguanta en ambos (p=0.0092
-y p=0.0004). Lectura: el edge está en la fuerza **absoluta** de la tendencia — estar en el
-tercil alto de un mes malo no sirve. La consecuencia práctica es que en régimen bajista la
-regla casi no dispara, y eso es precisamente lo que la hace funcionar. Contrapartida: los
-umbrales llevan información sobre el régimen de volatilidad de BTC y habría que recalibrarlos
-si ese régimen cambia materialmente.
+⚠️ **The thresholds must be ABSOLUTE, not relative.** I tested the same rule with rolling
+percentiles (momentum in the ≥67th percentile of the last 30 days): the effect **disappears on
+P1** (p=0.534) and survives only on P2 (p=0.0002). With absolute thresholds it holds in both
+(p=0.0092 and p=0.0004). Reading: the edge lies in the **absolute** strength of the trend — being
+in the top tercile of a bad month is worthless. The practical consequence is that in a bear regime
+the rule almost never fires, and that is precisely what makes it work. The trade-off: the
+thresholds carry information about BTC's volatility regime and would need recalibrating if that
+regime changed materially.
 
-⚠️ El tercil **medio** de tendencia es consistentemente el peor (z entre −2.8 y −4.2), peor
-incluso que el tercil bajo. El enemigo es el **rango sin dirección**, no la caída.
+⚠️ The **middle** trend tercile is consistently the worst (z between −2.8 and −4.2), worse even
+than the bottom tercile. The enemy is the **directionless range**, not the fall.
 
-## R-2 · Leverage ≤ 25x ✅ validada (para sobrevivir, no para rendir)
+## R-2 · Leverage ≤ 25x ✅ validated (to survive, not to perform)
 
-| leverage | MAE mediana | % que consumió >80% del margen |
+| leverage | median MAE | % that consumed >80% of margin |
 |---|---|---|
 | ≤10x | 0.78% | 2.4% |
 | 11-25x | 0.79% | **5.7%** |
 | 26-60x | 0.71% | 18.6% |
 | >60x | 0.63% | **46.7%** |
 
-El MAE mediano es prácticamente idéntico en todos los tramos (~0.7%): el leverage alto **no**
-viene con mejor gestión de riesgo, solo multiplica la probabilidad de ruina. Casi la mitad de
-las posiciones a >60x rozaron la liquidación.
+The median MAE is practically identical across bands (~0.7%): high leverage does **not** come with
+better risk management, it only multiplies the probability of ruin. Nearly half the positions
+above 60x brushed liquidation.
 
-Coherente con el comportamiento observado: los traders élite usan **25x** mediana; el resto, **50x**.
+Consistent with observed behaviour: elite traders use a **25x** median; the rest, **50x**.
 
-Esta regla **no mejora el retorno medio por operación** — es puro control de ruina. Y es la que
-hace viable a R-3.
+This rule **does not improve mean return per trade** — it is pure ruin control. And it is what
+makes R-3 viable.
 
-## R-3 · Sin stop-loss fijo ✅ validada (contraintuitiva)
+## R-3 · No fixed stop-loss ✅ validated (counterintuitive)
 
-| stop | media P2 | vs sin stop |
+| stop | P2 mean | vs no stop |
 |---|---|---|
-| **sin stop** | **+0.317%** | — |
+| **no stop** | **+0.317%** | — |
 | 10.0% | +0.297% | −0.019 pp |
 | 5.0% | +0.255% | −0.062 pp |
 | 3.0% | +0.156% | −0.161 pp |
 | 2.4% | +0.111% | −0.206 pp |
 | 1.0% | −0.001% | −0.318 pp |
 
-Monotónico: **cuanto más ajustado el stop, peor el resultado**, en ambos períodos. Un stop en
-2.4% preserva el 90% de las ganadoras (p90 del MAE de ganadoras = 2.38%) pero el 10% que mata,
-más las recuperaciones que convierte en pérdidas realizadas, cuestan más de lo que ahorra.
+Monotonic: **the tighter the stop, the worse the outcome**, in both periods. A stop at 2.4%
+preserves 90% of the winners (p90 of the winners' MAE = 2.38%) but the 10% it kills, plus the
+recoveries it turns into realised losses, cost more than it saves.
 
-Esto contradice el *"SL temprano + trailing"* que recomienda la SKILL actual.
+This contradicts the *"early SL + trailing"* the current SKILL recommends.
 
-**El control de riesgo viene de R-2 (leverage), no de stops.** Las dos reglas son un paquete:
-sin stop y con 50x te liquidan; sin stop y con ≤25x, sobrevives el drawdown.
+**Risk control comes from R-2 (leverage), not from stops.** The two rules are a package: no stop
+at 50x and you get liquidated; no stop at ≤25x and you survive the drawdown.
 
-⚠️ Caveat: la simulación asume que cualquier toque del nivel cierra la posición — es el caso
-pesimista. Y las posiciones observadas ya incluyen la gestión de riesgo propia de cada trader.
+⚠️ Caveat: the simulation assumes any touch of the level closes the position — the pessimistic
+case. And the observed positions already include each trader's own risk management.
 
-## R-4 · Duración mínima 1h; el dinero está en 1-3 días ✅ validada
+## R-4 · Minimum duration 1h; the money is in 1-3 days ✅ validated
 
 | bucket | P1 med | P2 med | z (P2) |
 |---|---|---|---|
@@ -123,94 +123,94 @@ pesimista. Y las posiciones observadas ya incluyen la gestión de riesgo propia 
 | 3-7d | +0.666% | +0.378% | +3.04 |
 | >7d | +1.073% | +0.449% | +2.92 |
 
-Los scalps de menos de 1 hora son el peor bucket y el más poblado (~25% de las posiciones).
-Esto **confirma** la mitad del claim de la SKILL ("scalps <1h pierden") y **refuta** la otra
-mitad ("12-24h pierde siempre" — es positivo y consistente).
+Sub-hour scalps are the worst bucket and the most populated (~25% of positions). This **confirms**
+half the SKILL's claim ("sub-1h scalps lose") and **refutes** the other half ("12-24h always
+loses" — it is positive and consistent).
 
-MFE/MAE se mantiene en ~1.4 en todos los buckets salvo >3d (1.15): el recorrido favorable es
-consistentemente ~40% mayor que el adverso.
+MFE/MAE stays around 1.4 in every bucket except >3d (1.15): the favourable excursion is
+consistently ~40% larger than the adverse one.
 
-## R-5 · Salida: el mayor margen de mejora disponible ⚠️ diagnóstico, no regla
+## R-5 · Exit: the largest available margin for improvement ⚠️ diagnosis, not a rule
 
-Captura mediana del recorrido favorable (MFE): **24.7%** (p25 = −38%, p75 = 57%).
-Es decir: dejan tres cuartas partes del movimiento sobre la mesa, y en el cuartil inferior
-convierten un movimiento a favor en pérdida.
+Median capture of the favourable excursion (MFE): **24.7%** (p25 = −38%, p75 = 57%).
+That is: they leave three quarters of the move on the table, and in the bottom quartile they turn
+a favourable move into a loss.
 
-No derivé una regla de salida validada — **no la inventes**. Lo que dice el dato es que
-existe margen, no cómo capturarlo. Requiere probar reglas de trailing contra el OHLC, que es
-trabajo pendiente.
-
----
-
-## Lo que NO debe llegar a las reglas
-
-- **Cualquier cosa derivada de DugEFresh** o de XRP en Phemex: es un solo hombre (91.3% del PnL).
-- **El "sweet spot 12-24h"** de la SKILL: era el bucket de DugEFresh, no un patrón.
-- **Flipear el lado según el régimen**: el lado coincide con la tendencia en 50.9% de los casos
-  — moneda al aire. El claim de la SKILL empalma dos meses distintos.
-- **Día de la semana y hora del día**: sobreviven algún z>2 aislado, pero es multiplicidad de
-  tests, no señal. No los uses.
-- **Copiar el leverage de nadie**: ver R-2.
-- **Seleccionar el par por rentabilidad**: 95% de los pares "ganan" en este dataset (supervivientes).
-- **Cualquier objetivo de precio**: no hay nada en la data que lo soporte.
-
-## Cómo seleccionar de quién copiar (si vas a copiar)
-
-La habilidad **sí** persiste (rho +0.36 con controles, p=0.0001), pero solo se mide bien sobre
-el **historial multi-par completo** del trader, nunca sobre sus operaciones de un solo par
-(ahí la fiabilidad del estimador es ~0.13: puro ruido).
-
-**Pero seleccionar élite en BTC compra consistencia, no retorno medio**: mediana +0.277% vs
-−0.138% (z=+8.28), pero **media +0.261% vs +0.284% (p=0.881)**. Aciertan mucho más seguido con
-ganancias más chicas. Sirve para la forma de la curva de equity y para sizing, no es alpha gratis.
-
-## Qué falta antes de arriesgar dinero
-
-1. **Forward-test — no es opcional.** Toda la evidencia vive en una ventana de 5 meses con un
-   solo ciclo de régimen, sobre un snapshot de supervivientes. Sin forward-test en régimen
-   lateral y bajista, estas reglas no están probadas.
-2. **Una regla de salida real** (R-5 solo dice que hay margen).
-3. **Costos de ejecución propios**: slippage y fees de tu cuenta, no los de ellos. Referencia
-   medida: las fees de estos traders son ~**8 bps del notional** por round-trip (taker ida y
-   vuelta). Ya están dentro de los retornos que reporto (`closing_pnl` es NETO, verificado sobre
-   96,994 cierres completos). Implicación dura: **cualquier regla cuya expectancy sea <0.10-0.15%
-   del notional es inoperable** — por eso R-4 descarta los scalps <1h (+0.04%).
-4. **Un short-side validado**, o asumir long-only explícitamente.
-5. **Recalibrar los umbrales de R-1 si cambia el régimen de volatilidad de BTC.** Ya verifiqué
-   que expresarlos en percentiles móviles NO funciona (el efecto se cae en P1): tienen que ser
-   absolutos. Eso los ata al rango de volatilidad de 2025-2026.
+I did not derive a validated exit rule — **do not invent one**. What the data says is that room
+exists, not how to capture it. It requires testing trailing rules against the OHLC, which is
+pending work.
 
 ---
 
-# RESULTADO DEL FORWARD-TEST (2019-2026, 61,036 velas, 6.9 años)
+## What must NOT make it into the rules
 
-R-1, R-3 y R-4 se probaron como reglas de precio autónomas sobre `ohlc/btcusdt_1h_long.csv`,
-que cubre tres ciclos completos incluyendo el bear de 2022 (−64%) y 2025 (−6%).
-Fees de 8 bps round-trip incluidas (medidas sobre 96,994 cierres reales). Script: `forward_test.py`.
+- **Anything derived from DugEFresh** or from XRP on Phemex: it is one man (91.3% of the PnL).
+- **The SKILL's "12-24h sweet spot"**: that was DugEFresh's bucket, not a pattern.
+- **Flipping side with the regime**: the side matches the trend 50.9% of the time — a coin flip.
+  The SKILL's claim splices two different months.
+- **Day of week and hour of day**: an isolated z>2 survives here and there, but that is test
+  multiplicity, not signal. Do not use them.
+- **Copying anyone's leverage**: see R-2.
+- **Selecting the pair by profitability**: 95% of pairs "win" in this dataset (survivors).
+- **Any price target**: there is nothing in the data supporting one.
 
-## ❌ R-1 NO SOBREVIVE — es beta direccional, no alpha
+## How to choose who to copy (if you are going to copy)
 
-| | resultado |
+Skill **does** persist (rho +0.36 with controls, p=0.0001), but it is only measured well over the
+trader's **full multi-pair track record**, never over their trades in a single pair (there the
+estimator's reliability is ~0.13: pure noise).
+
+**But selecting the elite on BTC buys consistency, not mean return**: median +0.277% vs −0.138%
+(z=+8.28), yet **mean +0.261% vs +0.284% (p=0.881)**. They are right far more often for smaller
+gains. Useful for the shape of the equity curve and for sizing; it is not free alpha.
+
+## What is missing before risking money
+
+1. **A forward test — not optional.** All the evidence lives in a 5-month window with a single
+   regime cycle, over a snapshot of survivors. Without a forward test in sideways and bear
+   regimes, these rules are unproven.
+2. **A real exit rule** (R-5 only says room exists).
+3. **Your own execution costs**: your account's slippage and fees, not theirs. Measured reference:
+   these traders' fees are ~**8 bps of notional** per round-trip (taker in and out). They are
+   already inside the returns I report (`closing_pnl` is NET, verified over 96,994 complete
+   closes). Hard implication: **any rule whose expectancy is below 0.10-0.15% of notional is
+   unusable** — which is why R-4 discards sub-1h scalps (+0.04%).
+4. **A validated short side**, or explicitly assuming long-only.
+5. **Recalibrating R-1's thresholds if BTC's volatility regime changes.** I already verified that
+   expressing them as rolling percentiles does NOT work (the effect collapses on P1): they have to
+   be absolute. That ties them to the 2025-2026 volatility range.
+
+---
+
+# FORWARD-TEST RESULT (2019-2026, 61,036 candles, 6.9 years)
+
+R-1, R-3 and R-4 were tested as standalone price rules on `ohlc/btcusdt_1h_long.csv`, which covers
+three full cycles including the 2022 bear (−64%) and 2025 (−6%).
+8 bps round-trip fees included (measured over 96,994 real closes). Script: `forward_test.py`.
+
+## ❌ R-1 DOES NOT SURVIVE — it is directional beta, not alpha
+
+| | result |
 |---|---|
-| vs 200 simulaciones de entrada aleatoria | supera a 152/200, **p ≈ 0.244 (no significativo)** |
-| equity 6.9 años | ×5.59 contra **×7.72 de comprar y aguantar** |
-| drawdown máximo | 54.7% (buy & hold: 77.2%) |
-| media/operación en años **alcistas** de BTC (2020, 21, 23, 24) | **+0.966%** |
-| media/operación en años **bajistas** de BTC (2019, 22, 25, 26) | **−0.322%** |
+| vs 200 random-entry simulations | beats 152/200, **p ≈ 0.244 (not significant)** |
+| 6.9-year equity | ×5.59 against **×7.72 for buy and hold** |
+| maximum drawdown | 54.7% (buy & hold: 77.2%) |
+| mean/trade in BTC **bull** years (2020, 21, 23, 24) | **+0.966%** |
+| mean/trade in BTC **bear** years (2019, 22, 25, 26) | **−0.322%** |
 
-Pierde dinero en **todos** los años bajistas y rinde menos que comprar y aguantar. Lo que
-parecía un edge era el reflejo de haberse derivado dentro de un único ciclo alcista de 7 semanas.
+It loses money in **every** bear year and underperforms buy and hold. What looked like an edge was
+the reflection of having been derived inside a single 7-week bull cycle.
 
-**R-1 queda retirada como estrategia.** Puede seguir teniendo valor como *filtro* sobre
-posiciones copiadas (el test intra-trader mostró que 67% de los traders mejoran en condiciones
-filtradas contra sus propias no filtradas), pero **no es una fuente de rentabilidad por sí sola**
-y no debe usarse para decidir cuándo entrar al mercado por cuenta propia.
+**R-1 is withdrawn as a strategy.** It may still have value as a *filter* over copied positions
+(the intra-trader test showed 67% of traders improve under filtered conditions against their own
+unfiltered ones), but it is **not a source of return on its own** and must not be used to decide
+when to enter the market by yourself.
 
-## ✅ R-3 SOBREVIVE — los stops fijos restan, y no solo en 2026
+## ✅ R-3 SURVIVES — fixed stops subtract, and not only in 2026
 
-| stop | media/op | equity | MDD |
+| stop | mean/trade | equity | MDD |
 |---|---|---|---|
-| **sin stop** | **+0.485%** | **5.59** | 54.7% |
+| **no stop** | **+0.485%** | **5.59** | 54.7% |
 | 2% | +0.376% | 4.37 | **42.8%** |
 | 3% | +0.331% | 3.23 | 56.3% |
 | 5% | +0.432% | 4.77 | 59.6% |
@@ -218,35 +218,36 @@ y no debe usarse para decidir cuándo entrar al mercado por cuenta propia.
 | 12% | +0.407% | 3.79 | 54.2% |
 | 20% | +0.434% | 4.14 | 59.4% |
 
-Ningún nivel de stop mejora el retorno, en 7 años y tres regímenes. Comparado año a año, un
-stop de 5% es peor en **6 de 8 años**. El resultado de la ventana de 2026 no era un artefacto.
+No stop level improves the return, across 7 years and three regimes. Compared year by year, a 5%
+stop is worse in **6 of 8 years**. The 2026 window's result was not an artefact.
 
-Matiz honesto: un stop **muy ajustado (2%)** sí reduce el drawdown de 54.7% a 42.8%. Eso es un
-intercambio real —pagas retorno por dormir mejor—, no una mejora. Elígelo con los ojos abiertos.
+Honest nuance: a **very tight stop (2%)** does cut the drawdown from 54.7% to 42.8%. That is a
+real trade-off — you pay return for sleeping better — not an improvement. Choose it with your
+eyes open.
 
-## ✅ R-2 no necesita forward-test
+## ✅ R-2 needs no forward test
 
-Es aritmética, no una hipótesis de mercado: el leverage multiplica el MAE contra el margen.
-Con MAE mediano de ~0.7% igual en todos los tramos, pasar de 25x a 60x multiplica por 3 la
-probabilidad de tocar liquidación (5.7% → 18.6% → 46.7% a >60x). Se sostiene sola.
+It is arithmetic, not a market hypothesis: leverage multiplies the MAE against the margin. With a
+median MAE of ~0.7% identical across bands, going from 25x to 60x triples the probability of
+touching liquidation (5.7% → 18.6% → 46.7% above 60x). It stands on its own.
 
-## ~ R-4 parcialmente confirmada
+## ~ R-4 partially confirmed
 
-Sensibilidad al holding en 7 años (media por operación): 24h +0.128%, 48h +0.286%,
-**72h +0.485%**, 120h +0.816% pero con mediana **−0.313%** (unos pocos aciertos grandes).
-Los holdings cortos rinden peor, consistente con lo observado en la data de copy-trading.
-El 72h (≈3 días) es el mejor punto por media con mediana positiva.
+Holding sensitivity over 7 years (mean per trade): 24h +0.128%, 48h +0.286%, **72h +0.485%**,
+120h +0.816% but with a median of **−0.313%** (a few large wins). Short holdings perform worse,
+consistent with what was observed in the copy-trading data. 72h (≈3 days) is the best point by
+mean with a positive median.
 
 ---
 
-## Qué queda en pie, honestamente
+## What stands, honestly
 
-1. **No hay regla de entrada validada.** R-1 murió en el forward-test. Entrar por momentum es
-   trend-following con peor rendimiento que comprar y aguantar.
-2. **Sí hay reglas de gestión validadas**: leverage ≤25x (R-2) y no usar stops fijos (R-3),
-   más holdings de días y no de minutos (R-4).
-3. **La habilidad de los traders sí persiste** (rho +0.36) — pero medida sobre su historial
-   multi-par completo, y compra consistencia más que retorno medio.
+1. **There is no validated entry rule.** R-1 died in the forward test. Entering on momentum is
+   trend-following that underperforms buy and hold.
+2. **There are validated management rules**: leverage ≤25x (R-2) and no fixed stops (R-3), plus
+   holdings of days rather than minutes (R-4).
+3. **Trader skill does persist** (rho +0.36) — but measured over their full multi-pair track
+   record, and it buys consistency more than mean return.
 
-La lectura práctica: **el valor no está en encontrar cuándo entrar, sino en a quién copiar y
-cómo gestionar la posición una vez dentro.**
+The practical reading: **the value is not in finding when to enter, but in whom to copy and how to
+manage the position once you are in.**
