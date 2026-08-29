@@ -17,7 +17,9 @@
     "payoff": 1.2735474609343398,
     "lev_med": 5.0,
     "mdd": 20.131065,
-    "n": 286
+    "n": 286,
+    "n_alpha": 189,
+    "roi": 139.64836868
    },
    "warnings": [
     "alpha_decay"
@@ -41,7 +43,9 @@
     "payoff": 0.6399759651166184,
     "lev_med": 10.0,
     "mdd": 31.916563,
-    "n": 128
+    "n": 128,
+    "n_alpha": 103,
+    "roi": 1183.40860369
    },
    "warnings": [
     "alpha_decay"
@@ -58,16 +62,20 @@
    "nick": "重生之我在币圈捡垃圾-",
    "tier": "B",
    "weight": 0.1,
-   "score": 2.029,
+   "score": 1.826,
    "metrics": {
     "alpha": 0.006927812263726515,
     "t": 3.974335280103096,
     "payoff": 1.104776596042798,
     "lev_med": 8.0,
     "mdd": 63.833696,
-    "n": 251
+    "n": 251,
+    "n_alpha": 250,
+    "roi": 1209.23233001
    },
-   "warnings": [],
+   "warnings": [
+    "mdd_high"
+   ],
    "trend": {
     "rank_prev": null,
     "rank_now": 3,
