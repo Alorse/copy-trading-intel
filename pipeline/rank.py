@@ -65,6 +65,9 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     prev_date = con.execute(
         "SELECT MAX(snapshot_date) FROM snapshots WHERE exchange=? AND snapshot_date<?",
         (exchange, snapshot_date)).fetchone()[0]
+    roi = {r['trader_id']: r['roi'] for r in con.execute(
+        "SELECT trader_id, roi FROM trader_snapshot WHERE snapshot_date=? AND exchange=?",
+        (snapshot_date, exchange))}
     prev_m = {}
     if prev_date:
         prev_m = {r['trader_id']: r for r in con.execute(
@@ -122,7 +125,9 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
             'metrics': {'alpha': m['alpha'], 't': m['t_stat'], 'payoff': m['payoff'],
                         'lev_med': m['lev_med'], 'mdd': m['mdd'], 'n': m['n'],
                         # el t descansa sobre n_alpha (<= n): divulgarlo
-                        'n_alpha': m['n_alpha']},
+                        'n_alpha': m['n_alpha'],
+                        # ROI de portada del elegido, no solo el del excluido
+                        'roi': roi.get(c['tid'])},
             'warnings': sorted(c['warns']),
             'trend': {'rank_prev': prev_rank.get(c['tid']), 'rank_now': i + 1,
                       'alpha_delta': (round(m['alpha'] - p['alpha'], 6)

@@ -17,13 +17,14 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
     month = snapshot_date[:7]
     path = os.path.join(str(out_dir), f"TOP_{month}.md")
     L = [f"# Roster copy-trading — {snapshot_date} ({exchange})", ""]
-    L += ["| nick | tier | peso | score | alpha% | t | payoff | lev | mdd | n "
-          "| n_alpha | warnings |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    L += ["| nick | tier | peso | score | roi% | alpha% | t | payoff | lev | mdd "
+          "| n | n_alpha | warnings |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for t in roster["traders"]:
         m = t["metrics"]
         fmt = lambda x, k=2: f"{x:.{k}f}" if isinstance(x, (int, float)) else "—"
         L.append(f"| {t['nick']} | {t['tier']} | {t['weight']:.0%} | {t['score']:.2f} "
+                 f"| {fmt(m.get('roi'), 1)} "
                  f"| {fmt((m['alpha'] or 0)*100)} | {fmt(m['t'])} | {fmt(m['payoff'])} "
                  f"| {fmt(m['lev_med'],0)} | {fmt(m['mdd'])} | {m['n']} "
                  f"| {m.get('n_alpha', '—')} "

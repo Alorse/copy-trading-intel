@@ -34,6 +34,17 @@ def test_metrics_block_exposes_n_alpha(con):
     assert m["n"] == 400 and m["n_alpha"] == 120
 
 
+def test_metrics_block_exposes_roi(con):
+    # el ROI de portada del propio roster: sin el, el reporte exige mirar el
+    # ROI de los excluidos y no el de los elegidos
+    _tm(con, "vet")
+    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
+                (D, EX, "vet", "vet", 412.5, 0, 0, 0, 20.0))
+    con.commit()
+    m = rank.run(con, D, EX)["traders"][0]["metrics"]
+    assert m["roi"] == 412.5
+
+
 def test_disqualified_excluded_and_cap5(con):
     for i in range(7):
         _tm(con, f"t{i}", t=5.0 - i*0.2)
