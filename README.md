@@ -7,9 +7,9 @@ y pipeline `copy-trading-refresh` para mantener un roster de traders a copiar.
 
 **Empieza aquí:**
 
-1. **Plan de implementación**: `docs/superpowers/plans/2026-08-28-copy-trading-refresh.md`
+1. **Plan de implementación**: `docs/plans/2026-08-28-copy-trading-refresh.md`
    — 14 tasks TDD con código y tests completos. Ejecutar task por task, en orden.
-2. **Spec (el yardstick)**: `docs/superpowers/specs/2026-08-28-copy-trading-refresh-design.md`
+2. **Spec (el yardstick)**: `docs/specs/2026-08-28-copy-trading-refresh-design.md`
 3. Ambos ya pasaron **revisión adversarial** (Fable/Kimi/GLM, 2026-08-28); las
    correcciones están incorporadas. La sección "Self-Review + Revisión adversarial"
    del plan lista los 11 cambios mayores — no re-litigar esas decisiones.

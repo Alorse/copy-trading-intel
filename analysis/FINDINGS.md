@@ -1,6 +1,6 @@
 # Auditoría de `copy-trading-intel` SKILL.md vs la data — 2026-08-25
 
-Snapshot local: `~/Projects/trading/copy-trading-intel`.
+Snapshot local: la raíz de este repo.
 Reproducible: `flatten.py` → `phemex_positions.csv` (7,467 filas) / `binance_positions.csv` (108,616 filas).
 Luego `pair_select.py`, `pair_select2.py`, `btc_behavior.py`, `persistence.py`, `style_vs_skill.py`.
 No se re-scrapeó nada.

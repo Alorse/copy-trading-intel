@@ -11,11 +11,11 @@ lead-traders de copy-trading (Binance principal; **Phemex se archiva pero NO se 
 repetible que: scrapea data fresca, la analiza con el motor estadístico ya auditado,
 detecta traders que inflan sus números, mide quién mejora/empeora entre corridas, y
 publica un roster machine-readable + un reporte humano. El mirror-bot (VPS) consume el
-roster cuando the operator lo apunte — el pipeline **no** ejecuta ni configura trading por sí solo.
+roster cuando el operador lo apunte — el pipeline **no** ejecuta ni configura trading por sí solo.
 
-## Decisiones tomadas (con the operator)
+## Decisiones tomadas (con el operador)
 
-1. **Salida:** `TOP_YYYY-MM.md` (reporte humano) + `roster.json` (machine-readable). the operator conecta el mirror-bot manualmente.
+1. **Salida:** `TOP_YYYY-MM.md` (reporte humano) + `roster.json` (machine-readable). El operador conecta el mirror-bot manualmente.
 2. **Tendencia:** snapshots fechados + diff entre corridas, **y** buckets mensuales intra-snapshot (funciona desde la corrida #1).
 3. **Motor:** determinista siempre; consejo adversarial LLM (Fable/Kimi/GLM vía skill `adversarial-review`) **solo** si el roster cambia materialmente.
 4. **Ejecución:** local en la Mac, manual, vía skill `/copy-trading-refresh`. Portabilidad futura al VPS deseable → **cero dependencias**: Python stdlib + **SQLite** (descartado DuckDB explícitamente por footprint/deps en VPS).
@@ -176,16 +176,16 @@ Altas/bajas por tier, Δweight por titular, flags nuevos sobre titulares, y un b
 
 ## Skill orquestadora — `/copy-trading-refresh`
 
-Skill personal en `~/.claude/skills/copy-trading-refresh/SKILL.md`. Runbook para el agente:
+Skill personal en una skill de agente (fuera del repo). Runbook para el agente:
 
 1. `cd ~/Projects/trading/copy-trading-intel`
 2. `python3 pipeline.py scrape` — si falla a mitad, re-correr (resumable). Un trader cuyo historial falló por red NO se marca como hecho (se reintenta en el resume).
-3. `python3 pipeline.py analyze` — valida **ANTES de ingerir** (desde los CSV): snapshot dir existente y no vacío, y n_traders/n_posiciones dentro de ±50% del snapshot previo (un exchange con snapshot previo que hoy no trae CSV también falla). Si la validación falla → exit 2 **sin tocar la DB**; reportar a the operator, `--force` solo con su aprobación. `analyze` NUNCA escribe `analysis/roster.json` (el latest).
+3. `python3 pipeline.py analyze` — valida **ANTES de ingerir** (desde los CSV): snapshot dir existente y no vacío, y n_traders/n_posiciones dentro de ±50% del snapshot previo (un exchange con snapshot previo que hoy no trae CSV también falla). Si la validación falla → exit 2 **sin tocar la DB**; reportar al operador, `--force` solo con su aprobación. `analyze` NUNCA escribe `analysis/roster.json` (el latest).
 4. Leer `analysis/runs/<hoy>/diff.json`.
 5. **Gate**: `material == true` → lanzar consejo (skill `adversarial-review`: Fable, Kimi, GLM; cada uno recibe diff + CSVs + pregunta concreta, con mandato de refutar y re-derivar números). `material == false` → publicar directo (paso 7).
-6. Merge de veredictos del consejo al `TOP_*.md` (columna confirma/objeta). Si el consejo objeta una promoción a tier A, **no publicar** ese cambio sin decisión de the operator.
-7. **Publicar**: `python3 pipeline.py publish --date <hoy>` — copia el roster de la corrida a `analysis/roster.json`. Es el ÚNICO paso que toca el latest, y solo se ejecuta tras pasar el gate (o tras la decisión de the operator si hubo objeciones).
-8. Presentar a the operator: tabla, ▲▼, altas/bajas, objeciones del consejo si las hubo.
+6. Merge de veredictos del consejo al `TOP_*.md` (columna confirma/objeta). Si el consejo objeta una promoción a tier A, **no publicar** ese cambio sin decisión del operador.
+7. **Publicar**: `python3 pipeline.py publish --date <hoy>` — copia el roster de la corrida a `analysis/roster.json`. Es el ÚNICO paso que toca el latest, y solo se ejecuta tras pasar el gate (o tras la decisión del operador si hubo objeciones).
+8. Presentar al operador: tabla, ▲▼, altas/bajas, objeciones del consejo si las hubo.
 
 ### Cambio material (dispara consejo) — cualquiera de:
 - Alta o baja en tier A.
@@ -209,13 +209,13 @@ Si no → el proxy WR/mdd queda como titular. El resultado del spike se document
 ## Manejo de errores
 
 - Scrape interrumpido → resumable dentro del snapshot del día.
-- Endpoint roto (Binance rota APIs sin aviso) → el stage falla ruidoso con HTTP status; la skill reporta a the operator en lugar de publicar roster con data parcial.
+- Endpoint roto (Binance rota APIs sin aviso) → el stage falla ruidoso con HTTP status; la skill reporta al operador en lugar de publicar roster con data parcial.
 - `analyze` nunca toca red; siempre reproducible desde la capa cruda.
 
 ## Fuera de alcance (YAGNI explícito)
 
 - Ejecución automática por cron (diseñado portable al VPS, pero no se instala ahora).
-- Integración directa con el mirror-bot (the operator conecta el roster a mano).
+- Integración directa con el mirror-bot (el operador conecta el roster a mano).
 - Más exchanges que Binance + Phemex.
 - Dashboard web (el reporte es Markdown).
 - DuckDB / cualquier dependencia fuera del stdlib de Python.

@@ -1,7 +1,7 @@
 ---
 name: copy-trading-intel
 version: 3.0.0-candidate
-author: Alfredo Ortegón Sepúlveda + auditoría adversarial (Fable/Kimi/GLM/Claude)
+author: Alfredo Ortegón Sepúlveda — con asistencia de agentes LLM y auditoría adversarial
 license: MIT
 description: "Scrape Phemex+Binance copy-trading public data for patterns. v3: hallazgos corregidos tras auditoría."
 ---
@@ -60,7 +60,7 @@ Headers: `User-Agent` browser, `Content-Type: application/json`, `clienttype: we
 - `scripts/scrape_binance.py` — Binance (resumable).
 - `analysis/flatten.py` — **empieza por aquí.** Aplana los `.jsonl` anidados a CSV planos. Sin red, ~10s.
 - `analysis/*.py` — 14 scripts que reproducen cada número de `FINDINGS_v2.md` y `RULES.md`.
-- `pipeline.py` — pipeline permanente (ver `docs/superpowers/specs/2026-08-28-copy-trading-refresh-design.md`). Skill de invocación: `~/.claude/skills/copy-trading-refresh/`.
+- `pipeline.py` — pipeline permanente (ver `docs/specs/2026-08-28-copy-trading-refresh-design.md`). Runbook de invocación: `docs/specs/2026-08-28-copy-trading-refresh-design.md`.
 
 ## Dataset (data/) — snapshot 2026-08-25
 

@@ -1,6 +1,8 @@
 # copy-trading-refresh — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Documento histórico.** Este es el plan de implementación que se ejecutó (task por task,
+> TDD) para construir `pipeline/`. Se conserva como registro de diseño: el código y los tests
+> que describe ya están en el repo. Los checkboxes `- [ ]` son del formato original de tracking.
 
 **Goal:** Pipeline repetible (scrape → SQLite → métricas → detección anti-inflado → tendencia → roster) que mantiene actualizado el listado de lead-traders a copiar, invocable por la skill `/copy-trading-refresh`.
 
@@ -8,7 +10,7 @@
 
 **Tech Stack:** Python 3 stdlib únicamente (`sqlite3`, `json`, `csv`, `urllib`, `statistics`, `argparse`). Tests con `pytest` (dev-only). **Cero dependencias de runtime** (portabilidad a VPS).
 
-**Spec:** `docs/superpowers/specs/2026-08-28-copy-trading-refresh-design.md`
+**Spec:** `docs/specs/2026-08-28-copy-trading-refresh-design.md`
 
 ## Global Constraints
 
@@ -24,7 +26,7 @@
 - **v1 analiza SOLO Binance.** Phemex se scrapea/aplana/ingiere (archivo histórico) pero no entra a metrics/detect/trend/rank/report. En Phemex el lado real es `pos_side` (Long/Short/Merged), no `side` (Buy/Sell) — ingest lo mapea para el futuro.
 - Matching de titulares entre corridas por `portfolio_id`, nunca por nick.
 - `analyze` no publica el latest (`analysis/roster.json`); eso lo hace `publish`, tras el gate.
-- Todos los paths relativos a la raíz del proyecto: `~/Projects/trading/copy-trading-intel`.
+- Todos los paths relativos a la raíz del proyecto: la raíz de este repo.
 - Endpoints/headers exactos: los de `SKILL.v3.md` (Binance `/friendly/`, Phemex `api.phemex.com`).
 - Commits en español, formato convencional, trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
@@ -49,7 +51,7 @@ tests/
   test_db.py test_flatten.py test_ingest.py test_metrics.py
   test_detect.py test_trend.py test_rank.py test_report.py test_cli.py
   test_regression.py         ← contra el snapshot real 2026-08-25 (marcado slow)
-~/.claude/skills/copy-trading-refresh/SKILL.md   ← runbook del agente
+(fuera del repo)              ← runbook del agente que lo invoca
 ```
 
 Los scripts históricos (`scripts/scrape_*.py`, `analysis/*.py`) NO se tocan ni borran: son la evidencia reproducible de FINDINGS_v2. El pipeline nuevo copia su lógica, no los importa.
@@ -1947,7 +1949,7 @@ if __name__ == '__main__':
 ### Task 13: Skill `/copy-trading-refresh`
 
 **Files:**
-- Create: `~/.claude/skills/copy-trading-refresh/SKILL.md`
+- Create: una skill de agente (fuera del repo)
 
 **Interfaces:**
 - Consumes: el CLI de Task 10, el gate de materialidad de `diff.json`, la skill `adversarial-review` existente.
@@ -1963,7 +1965,7 @@ description: Refresca el roster de lead-traders a copiar (Binance+Phemex). Scrap
 # copy-trading-refresh
 
 Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
-`docs/superpowers/specs/2026-08-28-copy-trading-refresh-design.md`.
+`docs/specs/2026-08-28-copy-trading-refresh-design.md`.
 
 ## Runbook
 
@@ -1973,12 +1975,12 @@ Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
    - Si falla a mitad (red, rate-limit): re-correr el mismo comando — salta lo ya
      bajado; un trader cuyo historial falló por red NO quedó marcado como hecho.
    - Si un endpoint devuelve error persistente (HTTP 4xx/5xx repetido): PARAR y
-     reportar a the operator el status exacto. Binance rota APIs sin aviso; no improvisar
+     reportar al operador el status exacto. Binance rota APIs sin aviso; no improvisar
      endpoints nuevos sin confirmar.
 3. **Analyze** (segundos, sin red):
    `python3 pipeline.py analyze`
    - Valida ANTES de ingerir; si falla (exit 2) la DB queda intacta. Revisar el
-     stderr, reportar a the operator, y solo usar `--force` si the operator lo aprueba (un
+     stderr, reportar al operador, y solo usar `--force` si el operador lo aprueba (un
      snapshot sin binance.csv ni con --force pasa — produciría roster vacío).
    - `analyze` NUNCA escribe `analysis/roster.json` — eso es el paso 7.
 4. Leer `analysis/runs/<hoy>/diff.json`.
@@ -1990,23 +1992,23 @@ Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
      desde el CSV y refuta o confirma cada cambio del diff. No apruebes por cortesía."
 6. **Merge de veredictos**: añadir al `TOP_*.md` una sección `## Consejo adversarial`
    con confirma/objeta por cambio. Si el consejo OBJETA una promoción a tier A:
-   NO publicar ese cambio — presentar la objeción a the operator y esperar su decisión.
+   NO publicar ese cambio — presentar la objeción al operador y esperar su decisión.
 7. **Publicar**: `python3 pipeline.py publish --date <hoy>` — el ÚNICO comando que
    escribe `analysis/roster.json` (lo que consume el mirror-bot). Solo tras pasar
-   el gate (o tras la decisión de the operator si hubo objeciones).
-8. **Presentar a the operator**: tabla del roster, ▲▼ del diff (cada trader trae
+   el gate (o tras la decisión del operador si hubo objeciones).
+8. **Presentar al operador**: tabla del roster, ▲▼ del diff (cada trader trae
    `trend.rank_prev/rank_now/alpha_delta`), altas/bajas con motivo, `unallocated`
    si el roster es todo-B, objeciones del consejo si las hubo. Recordar el caveat
    fijo: espera ~la mitad del alpha mostrado (winner's curse).
 
 ## Qué NO hace
-- No configura el mirror-bot (the operator conecta `analysis/roster.json` a mano).
+- No configura el mirror-bot (el operador conecta `analysis/roster.json` a mano).
 - No corre por cron (invocación manual, 1-2x/mes).
 - No borra snapshots viejos: `data/snapshots/` es la fuente de verdad histórica.
 ```
 
 - [ ] **Step 2: Verificar** — nueva sesión de Claude Code: `/copy-trading-refresh` aparece y carga.
-- [ ] **Step 3: Commit del proyecto** (la skill vive fuera del repo; commitear la referencia): añadir al final de `SKILL.v3.md` una línea en Scripts: `- pipeline.py — pipeline permanente (ver docs/superpowers/specs/2026-08-28-...). Skill de invocación: ~/.claude/skills/copy-trading-refresh/`. `git commit -m "docs: referencia al pipeline y skill copy-trading-refresh"`
+- [ ] **Step 3: Commit del proyecto** (la skill vive fuera del repo; commitear la referencia): añadir al final de `SKILL.v3.md` una línea en Scripts: `- pipeline.py — pipeline permanente (ver docs/specs/2026-08-28-...). Runbook de invocación: docs/specs/2026-08-28-...`. `git commit -m "docs: referencia al pipeline y skill copy-trading-refresh"`
 
 ---
 
@@ -2015,7 +2017,7 @@ Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
 - [ ] **Step 1:** `python3 pipeline.py scrape` (real, ~10-20 min). Verificar `data/snapshots/<hoy>/` con los dos `_raw.jsonl`.
 - [ ] **Step 2:** `python3 pipeline.py analyze`. Primera corrida → `material: true` esperado.
 - [ ] **Step 3:** Revisar `TOP_<mes>.md` manualmente: ¿el roster se parece al Top 5 auditado (con la data nueva puede variar)? ¿Los excluidos notables tienen sentido?
-- [ ] **Step 4:** Presentar el resultado a the operator con el diff vs el Top 5 del 2026-08-25. the operator decide si lanzar el consejo adversarial en esta primera corrida (es material por definición).
+- [ ] **Step 4:** Presentar el resultado al operador con el diff vs el Top 5 del 2026-08-25. El operador decide si lanzar el consejo adversarial en esta primera corrida (es material por definición).
 - [ ] **Step 5: Commit** — `git add analysis/runs/ && git commit -m "chore: primera corrida del pipeline"` (los runs SÍ se versionan; solo la data cruda está gitignored — verificar que `.gitignore` no excluya `analysis/runs/`).
 
 ---

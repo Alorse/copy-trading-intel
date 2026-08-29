@@ -4,7 +4,7 @@ Reemplaza a `FINDINGS.md`. Cuatro revisores independientes (Fable, Kimi, Qwen, G
 verificación propia de primera mano. **Todo número aquí fue re-derivado por mí después de
 que un revisor lo señalara** — no se relata ningún hallazgo ajeno como hecho.
 
-Snapshot: `~/Projects/trading/copy-trading-intel`. No se re-scrapeó nada.
+Snapshot: la raíz de este repo. No se re-scrapeó nada.
 Único download autorizado: OHLC de BTCUSDT (`ohlc/`, vía `fetch_ohlc.py`).
 
 ---

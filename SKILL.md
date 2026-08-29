@@ -2,7 +2,7 @@
 name: copy-trading-intel
 description: "Scrape Phemex+Binance copy-trading public data for patterns."
 version: 2.0.0
-author: Alfredo Ortegón Sepúlveda
+author: Alfredo Ortegón Sepúlveda — con asistencia de agentes LLM
 license: MIT
 ---
 
