@@ -1,6 +1,19 @@
+# --- data cruda scrapeada: NO se versiona ---
+# Son dumps de las APIs públicas de Binance/Phemex. No se redistribuyen:
+# cada quien genera su propio snapshot con `python3 pipeline.py scrape`.
 data/snapshots/
+data/*.jsonl
+data/binance_portfolios.json
+data/all_traders.json
 data/copytrade.sqlite
+
+# --- derivados del análisis ---
 analysis/ohlc/
 analysis/*.csv
+
+# --- python ---
 __pycache__/
+*.py[cod]
+.pytest_cache/
 .venv/
+venv/

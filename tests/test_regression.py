@@ -6,8 +6,15 @@ from pipeline import db as dbmod, flatten, ingest, metrics, detect, rank
 ROOT = pathlib.Path(__file__).parent.parent
 SNAP = ROOT / "data" / "snapshots" / "2026-08-25"
 
+# La data cruda NO se versiona (ver .gitignore): son dumps de las APIs de
+# Binance/Phemex y no se redistribuyen. Estos 4 tests son opt-in: corren si
+# colocas un snapshot en data/snapshots/2026-08-25/. Sin el, se saltan.
 pytestmark = pytest.mark.skipif(
-    not (SNAP / "binance_raw.jsonl").exists(), reason="data real no disponible")
+    not (SNAP / "binance_raw.jsonl").exists(),
+    reason=f"opt-in: requiere un snapshot crudo en {SNAP.relative_to(ROOT)}/ "
+           "(binance_raw.jsonl / phemex_raw.jsonl). Genera el tuyo con "
+           "`python3 pipeline.py scrape --date <YYYY-MM-DD>`; los valores "
+           "esperados aqui son los del snapshot auditado 2026-08-25.")
 
 
 @pytest.fixture(scope="module")

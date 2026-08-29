@@ -1,0 +1,3 @@
+# El runtime no tiene dependencias: Python >= 3.11 y stdlib.
+# Esto es solo para correr los tests.
+pytest>=8.0

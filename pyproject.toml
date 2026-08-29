@@ -1,0 +1,8 @@
+# El pipeline no es un paquete instalable: se corre desde la raiz del repo con
+# `python3 pipeline.py <subcomando>` y usa solo la stdlib. Este archivo existe
+# para configurar pytest.
+[tool.pytest.ini_options]
+# Sin esto, pytest recoge analysis/forward_test.py (matchea *_test.py), lo
+# importa, y el script se ejecuta al importarse contra CSVs que no estan en el
+# repo -> error de coleccion. analysis/ son scripts one-off, no tests.
+testpaths = ["tests"]
