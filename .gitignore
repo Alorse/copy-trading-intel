@@ -1,6 +1,4 @@
 data/snapshots/
-data/*.jsonl
-data/binance_portfolios.json
 data/copytrade.sqlite
 analysis/ohlc/
 analysis/*.csv
