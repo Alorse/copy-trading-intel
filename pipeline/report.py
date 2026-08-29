@@ -13,7 +13,41 @@ perdidas latentes de un loss-hider pueden no aparecer.
 """
 
 
-def write(con, snapshot_date, exchange, roster, diff, out_dir):
+def _scraped(snap_dir, exchange):
+    """Cuantos portfolios trajo el listado del scrape, o None si no esta."""
+    if not snap_dir:
+        return None
+    path = os.path.join(str(snap_dir), f"{exchange}_list.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        data = json.load(open(path))
+    except (ValueError, OSError):
+        return None
+    return len(data) if isinstance(data, list) else None
+
+
+def _reconciliation(con, snapshot_date, exchange, snap_dir):
+    """Embudo del universo: scrapeados -> con posiciones -> con metricas.
+    Cada escalon se pierde traders (sin cerradas, sin alpha computable) y sin
+    esta linea el reporte no deja auditar cuantos."""
+    row = con.execute(
+        "SELECT n_traders FROM snapshots WHERE snapshot_date=? AND exchange=?",
+        (snapshot_date, exchange)).fetchone()
+    n_met = con.execute(
+        "SELECT COUNT(DISTINCT trader_id) FROM trader_metrics "
+        "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange)).fetchone()[0]
+    steps = []
+    scraped = _scraped(snap_dir, exchange)
+    if scraped:
+        steps.append(f"{scraped} portfolios scrapeados")
+    if row and row["n_traders"]:
+        steps.append(f"{row['n_traders']} con posiciones")
+    steps.append(f"{n_met} con métricas")
+    return "**Universo**: " + " → ".join(steps)
+
+
+def write(con, snapshot_date, exchange, roster, diff, out_dir, snap_dir=None):
     month = snapshot_date[:7]
     path = os.path.join(str(out_dir), f"TOP_{month}.md")
     L = [f"# Roster copy-trading — {snapshot_date} ({exchange})", ""]
@@ -29,6 +63,7 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
                  f"| {fmt(m['lev_med'],0)} | {fmt(m['mdd'])} | {m['n']} "
                  f"| {m.get('n_alpha', '—')} "
                  f"| {', '.join(t['warnings']) or '—'} |")
+    L += ["", _reconciliation(con, snapshot_date, exchange, snap_dir)]
     if roster.get("unallocated"):
         L.append(f"\n**Peso sin asignar: {roster['unallocated']:.0%}** "
                  f"(roster todo tier B — cap del 10% por trader)")

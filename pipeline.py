@@ -141,7 +141,8 @@ def main(argv=None, project_root=None):
                       indent=1, ensure_ascii=False)
             json.dump(diff, open(os.path.join(P['run'], 'diff.json'), 'w'),
                       indent=1, ensure_ascii=False)
-            p = report.write(con, a.date, 'binance', roster, diff, P['run'])
+            p = report.write(con, a.date, 'binance', roster, diff, P['run'],
+                             snap_dir=P['snap'])
             # NO se copia a analysis/roster.json aqui: eso es `publish`, tras el gate
             print('reporte:', p)
             print('material:', diff['material'])
@@ -164,7 +165,7 @@ def main(argv=None, project_root=None):
                       file=sys.stderr)
                 return 1
             print(report.write(con, a.date, 'binance', json.load(open(rp)),
-                               json.load(open(dp)), P['run']))
+                               json.load(open(dp)), P['run'], snap_dir=P['snap']))
             return 0
     finally:
         con.close()
