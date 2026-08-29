@@ -120,7 +120,9 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
             'exchange': exchange, 'portfolio_id': c['tid'], 'nick': c['nick'],
             'tier': c['tier'], 'weight': c['weight'], 'score': round(c['score'], 3),
             'metrics': {'alpha': m['alpha'], 't': m['t_stat'], 'payoff': m['payoff'],
-                        'lev_med': m['lev_med'], 'mdd': m['mdd'], 'n': m['n']},
+                        'lev_med': m['lev_med'], 'mdd': m['mdd'], 'n': m['n'],
+                        # el t descansa sobre n_alpha (<= n): divulgarlo
+                        'n_alpha': m['n_alpha']},
             'warnings': sorted(c['warns']),
             'trend': {'rank_prev': prev_rank.get(c['tid']), 'rank_now': i + 1,
                       'alpha_delta': (round(m['alpha'] - p['alpha'], 6)

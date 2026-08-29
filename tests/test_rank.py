@@ -22,6 +22,18 @@ def test_score_formula_and_warning_penalty(con):
     assert abs(sb - expected*0.9) < 1e-9
 
 
+def test_metrics_block_exposes_n_alpha(con):
+    # el t-stat descansa sobre n_alpha (posiciones con alpha calculable),
+    # que puede ser mucho menor que n — el roster debe divulgarlo
+    con.execute(
+        "INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,n,n_alpha,"
+        "alpha,t_stat,payoff,trend_bonus,flags) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        (D, EX, "gap", "gap", 400, 120, 0.015, 4.0, 1.2, 0.5, '[]'))
+    con.commit()
+    m = rank.run(con, D, EX)["traders"][0]["metrics"]
+    assert m["n"] == 400 and m["n_alpha"] == 120
+
+
 def test_disqualified_excluded_and_cap5(con):
     for i in range(7):
         _tm(con, f"t{i}", t=5.0 - i*0.2)
