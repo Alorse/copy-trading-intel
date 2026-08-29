@@ -1,7 +1,7 @@
-"""Es estilo o es habilidad?
- A) winrate vs payoff entre traders -> si correlacionan negativo, es un eje de ESTILO.
- B) persiste la EXPECTANCY (lo unico que paga) o solo el winrate?
- C) hay rastro de cierre parcial (closedVolume vs maxOpenInterest)?"""
+"""Style or skill?
+ A) winrate vs payoff across traders -> a negative correlation means a STYLE axis.
+ B) does EXPECTANCY persist (the only thing that pays) or only the winrate?
+ C) is there any trace of partial closes (closedVolume vs maxOpenInterest)?"""
 import csv, collections, statistics as st
 
 SYM = 'BTCUSDT'
@@ -39,7 +39,7 @@ def prof(P):
     wr=len(w)/len(P)
     return wr, st.mean(w)/abs(st.mean(l)), st.mean(P)   # winrate, payoff, expectancy
 
-print(f"C) filas con cierre parcial (|closedVol-maxOI|>2%): {partial}/{tot} = {partial/tot*100:.1f}%\n")
+print(f"C) rows with a partial close (|closedVol-maxOI|>2%): {partial}/{tot} = {partial/tot*100:.1f}%\n")
 
 WR,PO,EX = [],[],[]
 for tid,v in D.items():
@@ -59,7 +59,7 @@ for tid,v in D.items():
     a,b = prof([x[1] for x in v[:k]]), prof([x[1] for x in v[k:]])
     if not a or not b: continue
     w1.append(a[0]); w2.append(b[0]); p1.append(a[1]); p2.append(b[1]); e1.append(a[2]); e2.append(b[2])
-print(f"B) persistencia H1->H2 (traders con >=30 pos: {len(e1)})")
+print(f"B) H1->H2 persistence (traders with >=30 pos: {len(e1)})")
 print(f"   winrate    rho {spear(w1,w2):+.3f}")
 print(f"   payoff     rho {spear(p1,p2):+.3f}")
-print(f"   EXPECTANCY rho {spear(e1,e2):+.3f}   <-- lo unico que paga")
+print(f"   EXPECTANCY rho {spear(e1,e2):+.3f}   <-- the only thing that pays")

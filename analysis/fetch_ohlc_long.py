@@ -1,5 +1,5 @@
-"""Historia larga de BTCUSDT perpetuo para el walk-forward.
-Cubre 2019-09 (inicio del perp) hasta hoy: varios ciclos, incluido el bear de 2022."""
+"""Long history of the BTCUSDT perpetual for the walk-forward.
+Covers 2019-09 (the perp's start) to today: several cycles, including the 2022 bear."""
 import json, time, csv, sys, urllib.request
 
 URL='https://fapi.binance.com/fapi/v1/klines'
@@ -34,4 +34,4 @@ with open('ohlc/btcusdt_1h_long.csv','w',newline='') as f:
     for r in out: w.writerow(r[:6])
 import datetime as dt
 f_=lambda ms: dt.datetime.fromtimestamp(ms/1000, dt.UTC).strftime('%Y-%m-%d')
-print(f"{len(out)} velas | {f_(out[0][0])} -> {f_(out[-1][0])}")
+print(f"{len(out)} candles | {f_(out[0][0])} -> {f_(out[-1][0])}")

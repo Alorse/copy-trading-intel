@@ -1,8 +1,8 @@
-"""WALK-FORWARD de R-1 como regla de precio autonoma, 2019-2026.
-Regla: entrar LONG cuando mom24h>0.55%, mom72h>0.63% y precio>MA200h.
-Salir tras H horas. Sin solapamiento. Fees 8 bps round-trip (medidas en la data real).
-Baseline: entradas aleatorias con la misma frecuencia y el mismo holding.
-La pregunta: ¿sobrevive fuera del unico ciclo donde se derivo (may-ago 2026)?"""
+"""WALK-FORWARD of R-1 as a standalone price rule, 2019-2026.
+Rule: go LONG when mom24h>0.55%, mom72h>0.63% and price>MA200h.
+Exit after H hours. No overlap. Fees 8 bps round-trip (measured on the real data).
+Baseline: random entries at the same frequency and the same holding period.
+The question: does it survive outside the one cycle it was derived from (May-Aug 2026)?"""
 import csv, statistics as st, datetime as dt, random, collections
 random.seed(42)
 
@@ -18,7 +18,7 @@ for i,c in enumerate(cl):
     if i>=200: run-=cl[i-200]
     if i>=199: ma[i]=run/200
 
-FEE=0.0008   # 8 bps round-trip, medido sobre 96,994 cierres reales
+FEE=0.0008   # 8 bps round-trip, measured over 96,994 real closes
 TH24, TH72 = 0.0055, 0.0063
 
 def fires(i):
@@ -35,22 +35,22 @@ def run_strategy(H, signal):
     return trades
 
 def stats(tr, label):
-    if not tr: print(f"{label}: sin operaciones"); return None
+    if not tr: print(f"{label}: no trades"); return None
     r=[x[1] for x in tr]
     eq=1.0; peak=1.0; mdd=0.0
     for x in r:
         eq*=(1+x); peak=max(peak,eq); mdd=max(mdd,(peak-eq)/peak)
     w=[x for x in r if x>0]
-    print(f"{label:<26}n={len(r):>5}  media {st.mean(r)*100:+6.3f}%  mediana {st.median(r)*100:+6.3f}%"
+    print(f"{label:<26}n={len(r):>5}  mean {st.mean(r)*100:+6.3f}%  median {st.median(r)*100:+6.3f}%"
           f"  wr {len(w)/len(r)*100:5.1f}%  equity x{eq:6.2f}  MDD {mdd*100:5.1f}%")
     return dict(n=len(r), mean=st.mean(r), eq=eq, mdd=mdd)
 
-print("=== Sensibilidad al holding period ===")
+print("=== Sensitivity to the holding period ===")
 for H in (24,48,72,120):
     tr=run_strategy(H, fires)
     stats(tr, f"R-1, hold {H}h")
 
-print("\n=== Baseline: entradas ALEATORIAS, mismo n y mismo holding (hold 72h) ===")
+print("\n=== Baseline: RANDOM entries, same n and same holding (hold 72h) ===")
 H=72
 real=run_strategy(H, fires)
 target=len(real)
@@ -63,18 +63,18 @@ for s in range(200):
         if i-last>=H: picked.append(i); last=i
     r=[cl[i+H]/cl[i]-1-FEE for i in picked]
     if r: sims.append(st.mean(r))
-print(f"  regla real: media {st.mean(x[1] for x in real)*100:+.3f}%  (n={len(real)})")
-print(f"  aleatorio : media {st.mean(sims)*100:+.3f}%  p5 {sorted(sims)[10]*100:+.3f}%  p95 {sorted(sims)[189]*100:+.3f}%")
+print(f"  real rule: mean {st.mean(x[1] for x in real)*100:+.3f}%  (n={len(real)})")
+print(f"  random   : mean {st.mean(sims)*100:+.3f}%  p5 {sorted(sims)[10]*100:+.3f}%  p95 {sorted(sims)[189]*100:+.3f}%")
 better=sum(1 for s in sims if s>=st.mean(x[1] for x in real))
-print(f"  -> la regla supera a {200-better}/200 simulaciones aleatorias  (p ≈ {(better+1)/201:.3f})")
+print(f"  -> the rule beats {200-better}/200 random simulations  (p ≈ {(better+1)/201:.3f})")
 
-print("\n=== POR AÑO (la prueba que importa: ¿sobrevive el bear de 2022?) ===")
+print("\n=== BY YEAR (the test that matters: does it survive the 2022 bear?) ===")
 byyear=collections.defaultdict(list)
 for t,r in real: byyear[dt.datetime.fromtimestamp(t/1000, dt.UTC).year].append(r)
-# retorno de BTC por año para comparar
+# BTC return per year for comparison
 bh=collections.defaultdict(list)
 for i in range(1,n): bh[dt.datetime.fromtimestamp(ts[i]/1000, dt.UTC).year].append(cl[i]/cl[i-1]-1)
-print(f"{'año':<6}{'n':>5}{'media%':>9}{'mediana%':>10}{'wr%':>7}{'equity':>9}{'BTC año%':>10}")
+print(f"{'year':<6}{'n':>5}{'mean%':>9}{'median%':>10}{'wr%':>7}{'equity':>9}{'BTC year%':>10}")
 for y in sorted(byyear):
     r=byyear[y]; eq=1.0
     for x in r: eq*=(1+x)

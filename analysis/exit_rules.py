@@ -1,6 +1,6 @@
-"""REGLAS DE SALIDA: reconstruye el recorrido de cada posicion con OHLC 1h.
-MAE = maxima excursion en contra; MFE = maxima a favor (ambas en % de precio).
-De ahi salen stop-loss y take-profit con base empirica, no inventados."""
+"""EXIT RULES: reconstructs each position's path from 1h OHLC.
+MAE = maximum adverse excursion; MFE = maximum favourable (both in % of price).
+Stop-loss and take-profit come out of this empirically, not invented."""
 import csv, bisect, statistics as st, collections
 
 K=[]
@@ -16,7 +16,7 @@ def path(o,c,entry,side):
     hh=max(x[1] for x in seg); ll=min(x[2] for x in seg)
     if side==1: mfe=(hh/entry-1); mae=(ll/entry-1)
     else:       mfe=(1-ll/entry); mae=(1-hh/entry)
-    return mae, mfe        # mae<=0, mfe>=0 tipicamente
+    return mae, mfe        # typically mae<=0, mfe>=0
 
 rows=[]
 for r in csv.DictReader(open('binance_positions.csv')):
@@ -33,26 +33,26 @@ for r in csv.DictReader(open('binance_positions.csv')):
     if not p: continue
     rows.append(dict(mae=p[0], mfe=p[1], net=net, dur=d, side=side,
                      lev=float(r['leverage'])))
-print(f"posiciones BTC con recorrido reconstruido: {len(rows)}\n")
+print(f"BTC positions with a reconstructed path: {len(rows)}\n")
 
 W=[z for z in rows if z['net']>0]; L=[z for z in rows if z['net']<0]
-print("=== ¿Cuanto va en contra una ganadora antes de ganar? (define el stop) ===")
-for lab,G in (('GANADORAS',W),('PERDEDORAS',L)):
+print("=== How far does a winner go against you before winning? (sets the stop) ===")
+for lab,G in (('WINNERS',W),('LOSERS',L)):
     m=sorted(abs(z['mae']) for z in G)
     q=lambda p: m[int(p*len(m))]*100
-    print(f"  {lab:<12} n={len(G):>5}  MAE mediana {st.median(m)*100:6.2f}%"
+    print(f"  {lab:<12} n={len(G):>5}  median MAE {st.median(m)*100:6.2f}%"
           f"  p75 {q(.75):6.2f}%  p90 {q(.90):6.2f}%  p95 {q(.95):6.2f}%")
-print("\n  -> un stop por debajo del p90 de las GANADORAS mata operaciones que iban a ganar")
+print("\n  -> a stop below the WINNERS p90 kills trades that were going to win")
 
-print("\n=== Eficiencia de salida: cuanto del recorrido favorable capturan ===")
+print("\n=== Exit efficiency: how much of the favourable move is captured ===")
 cap=[]
 for z in rows:
     if z['mfe']>0.001:
         pr=z['net']
         cap.append(min(max(pr/z['mfe'],-1),2))
-print(f"  captura mediana del MFE: {st.median(cap)*100:.1f}%  (p25 {st.quantiles(cap,n=4)[0]*100:.0f}%, p75 {st.quantiles(cap,n=4)[2]*100:.0f}%)")
+print(f"  median MFE capture: {st.median(cap)*100:.1f}%  (p25 {st.quantiles(cap,n=4)[0]*100:.0f}%, p75 {st.quantiles(cap,n=4)[2]*100:.0f}%)")
 
-print("\n=== MFE por duracion: ¿hasta donde llega el movimiento? ===")
+print("\n=== MFE by duration: how far does the move get? ===")
 def db(d): return ('<1h' if d<1 else '1-4h' if d<4 else '4-12h' if d<12 else '12-24h' if d<24
                    else '1-3d' if d<72 else '>3d')
 g=collections.defaultdict(list)
@@ -65,10 +65,10 @@ for b in ('<1h','1-4h','4-12h','12-24h','1-3d','>3d'):
     print(f"{b:<9}{len(v):>6}{mf*100:>10.3f}{ma*100:>10.3f}{mf/ma if ma else 0:>8.2f}"
           f"{st.median(z['net'] for z in v)*100:>10.3f}")
 
-print("\n=== Riesgo de liquidacion por leverage (MAE vs margen) ===")
+print("\n=== Liquidation risk by leverage (MAE vs margin) ===")
 for lo,hisep,lab in ((0,10,'<=10x'),(10,25,'11-25x'),(25,60,'26-60x'),(60,999,'>60x')):
     v=[z for z in rows if lo<z['lev']<=hisep]
     if len(v)<30: continue
-    liq=[z for z in v if abs(z['mae'])*z['lev']>0.8]   # 80% del margen consumido
+    liq=[z for z in v if abs(z['mae'])*z['lev']>0.8]   # 80% of the margin consumed
     print(f"  {lab:<8} n={len(v):>5}  MAE med {st.median(abs(z['mae']) for z in v)*100:5.2f}%"
-          f"  |  {len(liq)/len(v)*100:5.1f}% llegaron a consumir >80% del margen")
+          f"  |  {len(liq)/len(v)*100:5.1f}% got to consume >80% of the margin")

@@ -1,8 +1,8 @@
-"""VERIFICACION INDEPENDIENTE del claim central de Fable:
-la expectancy persiste al agrupar TODOS los simbolos (no solo BTC).
-Implementado desde cero. Split por CALENDARIO. Retorno NETO (closing_pnl/notional).
-Control: demean por simbolo x lado x mitad -> compara a cada trader contra otros
-que hicieron LO MISMO (mismo par, mismo lado, mismo periodo)."""
+"""INDEPENDENT VERIFICATION of the central claim:
+expectancy persists when pooling ALL symbols (not just BTC).
+Implemented from scratch. CALENDAR split. NET return (closing_pnl/notional).
+Control: demean by symbol x side x half -> compares each trader against others
+who did THE SAME THING (same pair, same side, same period)."""
 import csv, statistics as st, collections, random, math
 random.seed(7)
 
@@ -40,17 +40,17 @@ for r in csv.DictReader(open('binance_positions.csv')):
         o=int(r['opened_ms']); notio=float(r['notional']); pnl=float(r['closing_pnl'])
     except: continue
     if notio<=0: continue
-    net = pnl/notio                     # retorno NETO sobre notional (fees dentro)
+    net = pnl/notio                     # NET return on notional (fees included)
     if abs(net)>3: continue
     rows.append((r['portfolio_id'], r['symbol'], r['side'], o, net))
 
 ts=sorted(x[3] for x in rows); CUT=ts[len(ts)//2]
 import datetime as dt
-print(f"posiciones: {len(rows)} | corte calendario: {dt.datetime.fromtimestamp(CUT/1000, dt.UTC):%Y-%m-%d}")
+print(f"positions: {len(rows)} | calendar cut: {dt.datetime.fromtimestamp(CUT/1000, dt.UTC):%Y-%m-%d}")
 
 def half(o): return 0 if o<CUT else 1
 
-# demean por (simbolo, lado, mitad)
+# demean by (symbol, side, half)
 grp=collections.defaultdict(list)
 for tid,sym,side,o,net in rows: grp[(sym,side,half(o))].append(net)
 gmean={k: st.mean(v) for k,v in grp.items() if len(v)>=10}
@@ -66,14 +66,14 @@ def build(demean):
         (A if h==0 else B)[tid].append(v)
     return A,B
 
-for label,demean in [('SIN control (crudo)',False), ('CON demean simbolo x lado x mitad',True)]:
+for label,demean in [('WITHOUT control (raw)',False), ('WITH demean symbol x side x half',True)]:
     A,B=build(demean)
     ids=[t for t in A if t in B and len(A[t])>=30 and len(B[t])>=30]
     e1=[st.mean(A[t]) for t in ids]; e2=[st.mean(B[t]) for t in ids]
     rho=spear(e1,e2); lo,hi=boot(e1,e2); p=perm_p(e1,e2)
-    print(f"\n=== {label} ===  n={len(ids)} traders (>=30 pos por mitad)")
-    print(f"  EXPECTANCY neta  rho={rho:+.3f}  IC95%[{lo:+.3f},{hi:+.3f}]  p={p:.4f}")
+    print(f"\n=== {label} ===  n={len(ids)} traders (>=30 pos per half)")
+    print(f"  net EXPECTANCY  rho={rho:+.3f}  CI95%[{lo:+.3f},{hi:+.3f}]  p={p:.4f}")
     o=sorted(range(len(ids)), key=lambda i:-e1[i]); k=len(o)//3
     top,bot=o[:k],o[-k:]
-    print(f"  tercil TOP en H1 -> mediana H2: {st.median([e2[i] for i in top])*100:+.4f}% / posicion")
-    print(f"  tercil BOT en H1 -> mediana H2: {st.median([e2[i] for i in bot])*100:+.4f}% / posicion")
+    print(f"  TOP tercile on H1 -> H2 median: {st.median([e2[i] for i in top])*100:+.4f}% / position")
+    print(f"  BOT tercile on H1 -> H2 median: {st.median([e2[i] for i in bot])*100:+.4f}% / position")

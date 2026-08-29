@@ -1,5 +1,5 @@
-"""Aplana los .jsonl anidados a CSV planos, una fila por posicion cerrada.
-No descarga nada: lee solo data/ local."""
+"""Flattens the nested .jsonl into flat CSVs, one row per closed position.
+Downloads nothing: reads only the local data/."""
 import json, csv, os
 
 BASE = os.path.join(os.path.dirname(__file__), '..')

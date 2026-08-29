@@ -1,9 +1,9 @@
-"""Candidatas a REGLA SOFT: cada feature estructural se evalua en el periodo 1 de
-calendario y se VALIDA en el periodo 2. Solo sobrevive lo que funciona en ambos.
-Metrica: retorno de precio desapalancado, peso igual por posicion."""
+"""SOFT RULE candidates: each structural feature is evaluated on calendar period 1
+and VALIDATED on period 2. Only what works in both survives.
+Metric: de-leveraged price return, equal weight per position."""
 import csv, bisect, statistics as st, collections, datetime as dt, math
 
-# regimen desde OHLC
+# regime from the OHLC
 K=[]
 for r in csv.DictReader(open('ohlc/btcusdt_1h.csv')):
     K.append((int(r['open_ms']), float(r['close'])))
@@ -39,22 +39,22 @@ for r in csv.DictReader(open('binance_positions.csv')):
 P.sort(key=lambda z: z['o'])
 CUT=P[len(P)//2]['o']
 A=[z for z in P if z['o']<CUT]; B=[z for z in P if z['o']>=CUT]
-print(f"periodo 1: {len(A)} pos hasta {dt.datetime.fromtimestamp(CUT/1000, dt.UTC):%Y-%m-%d}")
-print(f"periodo 2: {len(B)} pos\n")
+print(f"period 1: {len(A)} pos up to {dt.datetime.fromtimestamp(CUT/1000, dt.UTC):%Y-%m-%d}")
+print(f"period 2: {len(B)} pos\n")
 
 def durb(d): return ('<1h' if d<1 else '1-4h' if d<4 else '4-12h' if d<12 else '12-24h' if d<24
                      else '1-3d' if d<72 else '3-7d' if d<168 else '>7d')
 def levb(l): return ('<=5x' if l<=5 else '6-20x' if l<=20 else '21-50x' if l<=50 else '>50x')
 
 FEATURES = [
-  ('duracion',      lambda z: durb(z['dur'])),
+  ('duration',      lambda z: durb(z['dur'])),
   ('leverage',      lambda z: levb(z['lev'])),
-  ('lado',          lambda z: 'Long' if z['side']==1 else 'Short'),
-  ('regimen x lado',lambda z: ('alcista' if z['reg']==1 else 'bajista')+'+'+('Long' if z['side']==1 else 'Short')),
-  ('margen',        lambda z: z['iso']),
-  ('cierre parcial',lambda z: 'parcial' if z['partial'] else 'completo'),
-  ('dia semana',    lambda z: ['lun','mar','mie','jue','vie','sab','dom'][z['dow']]),
-  ('hora UTC',      lambda z: f"{z['hour']//6*6:02d}-{z['hour']//6*6+5:02d}h"),
+  ('side',          lambda z: 'Long' if z['side']==1 else 'Short'),
+  ('regime x side', lambda z: ('bull' if z['reg']==1 else 'bear')+'+'+('Long' if z['side']==1 else 'Short')),
+  ('margin',        lambda z: z['iso']),
+  ('partial close', lambda z: 'partial' if z['partial'] else 'full'),
+  ('day of week',   lambda z: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][z['dow']]),
+  ('hour UTC',      lambda z: f"{z['hour']//6*6:02d}-{z['hour']//6*6+5:02d}h"),
 ]
 
 def cells(rows, fn):
@@ -63,7 +63,7 @@ def cells(rows, fn):
     return d
 
 def mwu_z(a, b):
-    """Mann-Whitney aproximado: la celda vs el resto. z>2 ~ p<0.05."""
+    """Approximate Mann-Whitney: the cell vs the rest. z>2 ~ p<0.05."""
     na,nb=len(a),len(b)
     if na<20 or nb<20: return 0.0
     allv=sorted([(v,0) for v in a]+[(v,1) for v in b])
@@ -83,7 +83,7 @@ for name, fn in FEATURES:
     ca, cb = cells(A, fn), cells(B, fn)
     keys = sorted(set(ca) | set(cb))
     print(f"### {name}")
-    print(f"{'celda':<16}{'P1 n':>7}{'P1 medRet%':>12}{'P2 n':>7}{'P2 medRet%':>12}{'signo':>8}{'z(P2)':>8}")
+    print(f"{'cell':<16}{'P1 n':>7}{'P1 medRet%':>12}{'P2 n':>7}{'P2 medRet%':>12}{'sign':>8}{'z(P2)':>8}")
     for k in keys:
         a, b = ca.get(k, []), cb.get(k, [])
         if len(a) < 30 or len(b) < 30: continue

@@ -1,11 +1,11 @@
-"""Baja klines de BTCUSDT perpetuo (Binance futures, publico) para el periodo
-que cubren las posiciones. Unico download autorizado; nada de scripts/."""
+"""Downloads BTCUSDT perpetual klines (Binance futures, public) for the period
+the positions cover. The only authorised download; nothing from scripts/."""
 import json, time, csv, sys, os
 import urllib.request
 
 SYM   = 'BTCUSDT'
-START = 1738162800000   # 2025-01-29, un dia antes de la primera apertura
-END   = 1787774400000   # 2026-08-26, un dia despues del ultimo cierre
+START = 1738162800000   # 2025-01-29, one day before the first opening
+END   = 1787774400000   # 2026-08-26, one day after the last close
 URL   = 'https://fapi.binance.com/fapi/v1/klines'
 
 def fetch(interval, out):
@@ -36,7 +36,7 @@ def fetch(interval, out):
         w.writerow(['open_ms','open','high','low','close','volume','close_ms',
                     'quote_vol','trades','taker_buy_base','taker_buy_quote'])
         for r in ded: w.writerow(r[:11])
-    print(f'{interval}: {len(ded)} velas -> {out}')
+    print(f'{interval}: {len(ded)} candles -> {out}')
     return len(ded)
 
 for iv, fn in [('1h','ohlc/btcusdt_1h.csv'), ('15m','ohlc/btcusdt_15m.csv'), ('1d','ohlc/btcusdt_1d.csv')]:

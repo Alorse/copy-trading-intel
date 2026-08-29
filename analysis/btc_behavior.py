@@ -1,6 +1,6 @@
-"""Que separa a los buenos de los malos DENTRO del set de supervivientes, en BTCUSDT.
-Controla el sesgo de supervivencia: todos aqui son top-600, asi que la comparacion
-top-decil vs bottom-decil aisla comportamiento, no suerte de muestra."""
+"""What separates the good from the bad WITHIN the survivor set, on BTCUSDT.
+Controls for survivorship bias: everyone here is top-600, so the top-decile vs
+bottom-decile comparison isolates behaviour, not sampling luck."""
 import csv, collections, statistics as st, datetime as dt
 
 B = [r for r in csv.DictReader(open('binance_positions.csv')) if r['symbol'] == 'BTCUSDT']
@@ -22,7 +22,7 @@ for r in B:
                     side=r['side'], iso=r['isolated'], opened=o, closed=c,
                     notional=float(r['notional'])))
 
-# --- ranking de traders por ROI medio por posicion (>=10 pos para que sea senal) ---
+# --- traders ranked by mean ROI per position (>=10 pos so it is signal) ---
 tr = collections.defaultdict(list)
 for p in pos: tr[p['tid']].append(p)
 tr = {k: v for k, v in tr.items() if len(v) >= 10}
@@ -30,41 +30,41 @@ score = {k: st.mean(x['roi'] for x in v) for k, v in tr.items()}
 order = sorted(score, key=lambda k: -score[k])
 n = max(1, len(order) // 4)
 top, bot = order[:n], order[-n:]
-print(f"traders BTC con >=10 pos: {len(order)}  | cuartil = {n} c/u")
-print(f"score top  (ROI medio/pos): {st.median([score[k] for k in top])*100:.1f}%")
-print(f"score bot  (ROI medio/pos): {st.median([score[k] for k in bot])*100:.1f}%\n")
+print(f"BTC traders with >=10 pos: {len(order)}  | quartile = {n} each")
+print(f"top score  (mean ROI/pos): {st.median([score[k] for k in top])*100:.1f}%")
+print(f"bot score  (mean ROI/pos): {st.median([score[k] for k in bot])*100:.1f}%\n")
 
 def stats(group, label):
     P = [x for k in group for x in tr[k]]
     wins = [x['pr'] for x in P if x['pr'] > 0]; los = [x['pr'] for x in P if x['pr'] < 0]
     durs = [x['dur'] for x in P]
     longs = [x for x in P if x['side'] == 'Long']
-    # consistencia de tamano: CV del notional por trader, luego mediana
+    # size consistency: CV of the notional per trader, then median
     cvs = []
     for k in group:
         ns = [x['notional'] for x in tr[k] if x['notional'] > 0]
         if len(ns) > 3 and st.mean(ns) > 0: cvs.append(st.stdev(ns)/st.mean(ns))
     print(f"{label}")
-    print(f"  posiciones                {len(P):>8}")
+    print(f"  positions                 {len(P):>8}")
     print(f"  win rate                  {len(wins)/len(P)*100:>7.1f}%")
-    print(f"  payoff (gan/perd, precio) {st.mean(wins)/abs(st.mean(los)):>8.2f}")
-    print(f"  |perdida| mediana precio  {st.median([abs(x) for x in los])*100:>7.2f}%")
-    print(f"  ganancia mediana precio   {st.median(wins)*100:>7.2f}%")
-    print(f"  duracion mediana (h)      {st.median(durs):>8.1f}")
-    print(f"  duracion p90 (h)          {st.quantiles(durs, n=10)[8]:>8.1f}")
-    print(f"  leverage mediana          {st.median([x['lev'] for x in P]):>8.0f}")
-    print(f"  leverage p90              {st.quantiles([x['lev'] for x in P], n=10)[8]:>8.0f}")
+    print(f"  payoff (win/loss, price)  {st.mean(wins)/abs(st.mean(los)):>8.2f}")
+    print(f"  median |loss|, price      {st.median([abs(x) for x in los])*100:>7.2f}%")
+    print(f"  median gain, price        {st.median(wins)*100:>7.2f}%")
+    print(f"  median duration (h)       {st.median(durs):>8.1f}")
+    print(f"  p90 duration (h)          {st.quantiles(durs, n=10)[8]:>8.1f}")
+    print(f"  median leverage           {st.median([x['lev'] for x in P]):>8.0f}")
+    print(f"  p90 leverage              {st.quantiles([x['lev'] for x in P], n=10)[8]:>8.0f}")
     print(f"  %long                     {len(longs)/len(P)*100:>7.1f}%")
     print(f"  %cross                    {sum(1 for x in P if x['iso']=='Cross')/len(P)*100:>7.1f}%")
-    print(f"  pos/trader mediana        {st.median([len(tr[k]) for k in group]):>8.0f}")
-    print(f"  CV tamano mediano         {st.median(cvs) if cvs else float('nan'):>8.2f}")
+    print(f"  median pos/trader         {st.median([len(tr[k]) for k in group]):>8.0f}")
+    print(f"  median size CV            {st.median(cvs) if cvs else float('nan'):>8.2f}")
     print()
     return P
 
-Pt = stats(top, 'TOP cuartil')
-Pb = stats(bot, 'BOTTOM cuartil')
+Pt = stats(top, 'TOP quartile')
+Pb = stats(bot, 'BOTTOM quartile')
 
-# --- duracion: donde gana cada grupo ---
+# --- duration: where each group makes its money ---
 def bucket(d):
     return ('<1h' if d<1 else '1-4h' if d<4 else '4-12h' if d<12 else '12-24h' if d<24
             else '1-3d' if d<72 else '3-7d' if d<168 else '7-30d' if d<720 else '>30d')
