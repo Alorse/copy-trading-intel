@@ -12,6 +12,10 @@ alpha mostrado.
 perdidas latentes de un loss-hider pueden no aparecer.
 - **t-stat i.i.d.**: las alphas correlacionadas por (symbol, mes, lado) inflan \
 el t ~10-15%; clusterizado, ningun caso del roster cae bajo 2.5.
+
+> **No es asesoria financiera.** Salida automatica de un analisis estadistico \
+sobre data publica; los flags describen la forma de un historial, no la conducta \
+de una persona. Ver DISCLAIMER.md.
 """
 
 
