@@ -10,7 +10,7 @@ lead-traders de copy-trading (Binance principal; **Phemex se archiva pero NO se 
 — ver Alcance Phemex) mediante un pipeline
 repetible que: scrapea data fresca, la analiza con el motor estadístico ya auditado,
 detecta traders que inflan sus números, mide quién mejora/empeora entre corridas, y
-publica un roster machine-readable + un reporte humano. El mirror-bot (VPS) consume el
+publica un roster machine-readable + un reporte humano. El bot de mirroring consume el
 roster cuando el operador lo apunte — el pipeline **no** ejecuta ni configura trading por sí solo.
 
 ## Decisiones tomadas (con el operador)
@@ -18,7 +18,7 @@ roster cuando el operador lo apunte — el pipeline **no** ejecuta ni configura 
 1. **Salida:** `TOP_YYYY-MM.md` (reporte humano) + `roster.json` (machine-readable). El operador conecta el mirror-bot manualmente.
 2. **Tendencia:** snapshots fechados + diff entre corridas, **y** buckets mensuales intra-snapshot (funciona desde la corrida #1).
 3. **Motor:** determinista siempre; consejo adversarial LLM (Fable/Kimi/GLM vía skill `adversarial-review`) **solo** si el roster cambia materialmente.
-4. **Ejecución:** local en la Mac, manual, vía skill `/copy-trading-refresh`. Portabilidad futura al VPS deseable → **cero dependencias**: Python stdlib + **SQLite** (descartado DuckDB explícitamente por footprint/deps en VPS).
+4. **Ejecución:** local, manual, vía una skill de agente. Portabilidad futura a un servidor deseable → **cero dependencias**: Python stdlib + **SQLite** (descartado DuckDB explícitamente por footprint/deps en un host chico).
 5. **Enfoque:** A+C combinados — orquestación por stages (A) con capa analítica SQL (C, SQLite).
 
 ## Arquitectura
@@ -214,7 +214,7 @@ Si no → el proxy WR/mdd queda como titular. El resultado del spike se document
 
 ## Fuera de alcance (YAGNI explícito)
 
-- Ejecución automática por cron (diseñado portable al VPS, pero no se instala ahora).
+- Ejecución automática por cron (diseñado portable a un servidor, pero no se instala ahora).
 - Integración directa con el mirror-bot (el operador conecta el roster a mano).
 - Más exchanges que Binance + Phemex.
 - Dashboard web (el reporte es Markdown).

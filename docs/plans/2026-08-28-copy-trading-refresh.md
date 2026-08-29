@@ -8,7 +8,7 @@
 
 **Architecture:** Capa cruda inmutable en `data/snapshots/YYYY-MM-DD/` + capa analítica SQLite (`data/copytrade.sqlite`) reconstruible desde la cruda. Un entrypoint `pipeline.py` con subcomandos; cada stage un módulo en `pipeline/`. El consejo adversarial NO es código: lo orquesta el agente vía la skill.
 
-**Tech Stack:** Python 3 stdlib únicamente (`sqlite3`, `json`, `csv`, `urllib`, `statistics`, `argparse`). Tests con `pytest` (dev-only). **Cero dependencias de runtime** (portabilidad a VPS).
+**Tech Stack:** Python 3 stdlib únicamente (`sqlite3`, `json`, `csv`, `urllib`, `statistics`, `argparse`). Tests con `pytest` (dev-only). **Cero dependencias de runtime** (portabilidad a cualquier host).
 
 **Spec:** `docs/specs/2026-08-28-copy-trading-refresh-design.md`
 

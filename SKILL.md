@@ -22,7 +22,7 @@ description: "Scrape Phemex+Binance copy-trading public data for patterns. v3: h
 
 ## Endpoints Phemex (públicos, GET, sin auth)
 
-⚠️ **Usar `api.phemex.com`** — `api10.phemex.com` devuelve 403 (CloudFront) desde el VPS.
+⚠️ **Usar `api.phemex.com`** — `api10.phemex.com` devuelve 403 (CloudFront) desde algunos hosts.
 Headers: `User-Agent` browser, `Origin: https://phemex.com`, `Referer: https://phemex.com/`, `Accept: application/json`.
 
 - **Lista de traders:** `GET /phemex-lb/public/data/v3/user/recommend?hideFullyCopied=false&keyword=&pageNum=1&pageSize=50&showChart=false&sortBy=PnlRate30d`
