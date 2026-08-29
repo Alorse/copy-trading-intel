@@ -1,140 +1,141 @@
-# Auditoría `copy-trading-intel` — v2, tras revisión adversarial
+# `copy-trading-intel` audit — v2, after adversarial review
 
-Reemplaza a `FINDINGS.md`. Cuatro revisores independientes (Fable, Kimi, Qwen, GLM) más
-verificación propia de primera mano. **Todo número aquí fue re-derivado por mí después de
-que un revisor lo señalara** — no se relata ningún hallazgo ajeno como hecho.
+Supersedes `FINDINGS.md`. Four independent reviewers (Fable, Kimi, Qwen, GLM) plus first-hand
+verification of my own. **Every number here was re-derived by me after a reviewer flagged it** —
+no reviewer's finding is reported as fact without checking.
 
-Snapshot: la raíz de este repo. No se re-scrapeó nada.
-Único download autorizado: OHLC de BTCUSDT (`ohlc/`, vía `fetch_ohlc.py`).
+Snapshot: the root of this repo. Nothing was re-scraped.
+The only authorised download: BTCUSDT OHLC (`ohlc/`, via `fetch_ohlc.py`).
 
 ---
 
-## Correcciones a mi propia v1
+## Corrections to my own v1
 
-**C1 — R6 estaba mal planteado y su titular era insostenible.**
-v1 decía *"la habilidad no persiste"* con rho(expectancy)=+0.136 sobre BTC.
-Fable y Kimi calcularon **por separado** el techo de ruido de ese test: **0.13 / 0.137**.
-Es decir: con persistencia PERFECTA, ese test habría dado ~0.13. Midió su propio ruido.
-Yo declaré la limitación (L2) y aun así titulé en contra de ella — exactamente el sesgo
-que le achacaba a la SKILL.
+**C1 — R6 was badly framed and its headline was untenable.**
+v1 said *"skill does not persist"* with rho(expectancy)=+0.136 on BTC.
+Fable and Kimi **separately** computed that test's noise ceiling: **0.13 / 0.137**.
+That is: with PERFECT persistence, that test would have returned ~0.13. It measured its own
+noise. I declared the limitation (L2) and still headlined against it — exactly the bias I was
+charging the SKILL with.
 
-**C2 — La persistencia SÍ existe, medida sobre el historial completo.**
-Verificado por mí, implementación propia, split por calendario, retorno NETO:
+**C2 — Persistence DOES exist, measured over the full track record.**
+Verified by me, own implementation, calendar split, NET return:
 
-| test agrupado (todos los símbolos) | n | rho | IC 95% | p |
+| pooled test (all symbols) | n | rho | 95% CI | p |
 |---|---|---|---|---|
-| crudo | 193 | +0.422 | [+0.281, +0.549] | 0.0001 |
-| **demean símbolo × lado × mitad** | 190 | **+0.361** | [+0.213, +0.497] | 0.0001 |
+| raw | 193 | +0.422 | [+0.281, +0.549] | 0.0001 |
+| **demeaned symbol × side × half** | 190 | **+0.361** | [+0.213, +0.497] | 0.0001 |
 
-Tras controlar por qué par, qué lado y qué período: tercil top en H1 → **+0.855%/posición**
-en H2 vs **−0.116%** del tercil bottom. Y la selección por ROI-90D sesga rho **a la baja**
-(Berkson), así que +0.36 es un piso. Kimi concluyó "no identificable" pero nunca corrió el
-test agrupado. **Fable tenía razón; mi R6 se cae.**
+After controlling for which pair, which side and which period: the top tercile in H1 →
+**+0.855%/position** in H2 vs **−0.116%** for the bottom tercile. And selection by 90D ROI biases
+rho **downwards** (Berkson), so +0.36 is a floor. Kimi concluded "not identifiable" but never ran
+the pooled test. **Fable was right; my R6 falls.**
 
-**C3 — Omití la correlación que contradecía mi tesis.** Reporté corr(winrate, payoff)=−0.497
-y concluí "el estilo que persiste no paga", sin reportar **corr(winrate, expectancy)=+0.554**
-(verificado, n=108), que estaba impresa en la salida de mi propio script. Ambos revisores
-lo detectaron. Además Kimi mostró que el −0.497 es en buena parte **identidad contable**:
-si expectancy≈0 entonces payoff≈(1−wr)/wr. No era evidencia de nada.
+**C3 — I omitted the correlation that contradicted my thesis.** I reported
+corr(winrate, payoff)=−0.497 and concluded "the style that persists does not pay", without
+reporting **corr(winrate, expectancy)=+0.554** (verified, n=108), which was printed in my own
+script's output. Both reviewers caught it. Kimi further showed the −0.497 is largely an
+**accounting identity**: if expectancy≈0 then payoff≈(1−wr)/wr. It was evidence of nothing.
 
-**C4 — `closing_pnl` es NETO, no bruto.** Verificado: `closing_pnl − pnl_bruto_de_precio` =
-**−7.84 bps** del notional (p25 −10.0, p75 −4.2), **93% negativo** — el orden de fees taker +
-funding. L6 se cierra **al revés** de mi especulación: las expectancies no estaban infladas.
+**C4 — `closing_pnl` is NET, not gross.** Verified: `closing_pnl − gross_price_pnl` =
+**−7.84 bps** of notional (p25 −10.0, p75 −4.2), **93% negative** — the order of magnitude of
+taker fees + funding. L6 closes **the opposite way** to my speculation: the expectancies were not
+inflated.
 
-**C5 — Leverage de altcoins es 10x, no 5x.** Verificado: BTC 30x, ETH 30x, SOL 20x, XRP 20x,
-resto **10x**. El 5x solo aparece en el subgrupo de pares con mayor retorno mediano.
+**C5 — Altcoin leverage is 10x, not 5x.** Verified: BTC 30x, ETH 30x, SOL 20x, XRP 20x, the rest
+**10x**. The 5x only appears in the subgroup of pairs with the highest median return.
 
-**C6 — Phemex son 192 traders, no 196.** Marqué "196 ✅ exacto"; hay 192 `trader_id` únicos
-(196 es el conteo de la lista con `showPosition`). Falso positivo de mi auditoría.
+**C6 — Phemex is 192 traders, not 196.** I marked "196 ✅ exact"; there are 192 unique
+`trader_id` (196 is the count of the listing with `showPosition`). A false positive of my audit.
 
-**C7 — Mi hallazgo "bajista+Long es la única celda mala" NO sobrevive out-of-sample.**
-En el período 1 daba −0.033%; en el período 2 dio **+0.281%**. Cambió de signo. Lo retiro.
-
----
-
-## Lo que se sostiene contra la SKILL
-
-**R1 — El "patrón XRP" de Phemex es un solo hombre.** DugEFresh = **91.3%** del PnL
-(con `realized_pnl`; 85.9% con `closed_pnl`), mediana por trader **−1.5**, ganan 27/64.
-La SKILL sigue publicando *"XRP la excepción: 64 traders, +38k distribuido"* en sus
-"Hallazgos Phemex" pese a corregirlo en una sección posterior. Confirmado por los 3 revisores.
-
-**R2 — "12-24h pierde SIEMPRE (XRP, BTC, ETH)" es falso.** Es el **mejor** bucket en
-Phemex-XRP (+41.1k) y en Binance-XRP (+5.0k). Solo pierde en BTC y ETH. La SKILL
-sobre-corrigió su propio "sweet spot 12-24h": ninguna de sus dos versiones es cierta.
-
-**R3 — Agregar en USD deja que el tamaño de cuenta decida.** SOL: agregado −32,229 pero
-mediana por trader **+21.2**. XRP: −3,966 con mediana **+3.0**. El trader típico ganó; unas
-pocas cuentas enormes hundieron el agregado.
-
-**R4 — Elegir par por rentabilidad dentro de este dataset es circular.** Desapalancando,
-**188/197 pares (95%)** tienen retorno mediano por trader positivo. Son los top-600 por ROI:
-ganan en todo. El ranking mide supervivencia, no edge del par.
-
-**R5 — El ranking por ROI premia leverage por aritmética** (ROI es sobre margen).
-Corregido: majors 30x vs resto 10x, no 5x.
-
-**R7 (nuevo) — "La élite se voltea con el régimen" no se sostiene.** El lado coincide con la
-tendencia (precio vs MA200h, calculada desde el OHLC real) en **50.9%** de las posiciones BTC
-— una moneda al aire. Kimi además mostró que la SKILL empalmó dos meses distintos: el
-"+235k shorts" es de mayo y el "−186k longs" es de junio, y el mix de lado apenas se mueve
-(48% → 47% → 48% → 42%). Que los shorts ganen en una caída es beta mecánica.
-
-**R8 (nuevo) — Una fila NO es una operación atómica.** Contrastando `avg_cost` contra la vela
-de 1h de su propia apertura: 86.6% cae dentro del rango, 13.4% no. Y las que caen fuera tienen
-duración mediana **54.2h vs 3.8h** y **42.1% de cierres parciales vs 5.2%**. Son agregados de
-scale-ins/scale-outs. Cualquier "win rate por fila" mide la política de cierre parcial tanto
-como el acierto.
+**C7 — My finding "bear+Long is the only bad cell" does NOT survive out-of-sample.**
+In period 1 it gave −0.033%; in period 2 it gave **+0.281%**. It flipped sign. Withdrawn.
 
 ---
 
-## R6 reformulado (la conclusión que importa)
+## What holds against the SKILL
 
-**La habilidad persiste, pero solo es medible con el historial completo del trader.**
+**R1 — Phemex's "XRP pattern" is a single man.** DugEFresh = **91.3%** of the PnL (using
+`realized_pnl`; 85.9% with `closed_pnl`), median per trader **−1.5**, 27/64 win.
+The SKILL still publishes *"XRP the exception: 64 traders, +38k distributed"* in its "Phemex
+findings" despite correcting it in a later section. Confirmed by all 3 reviewers.
 
-- Dentro de un solo par, el estimador por trader tiene fiabilidad ~0.13: no sirve para rankear.
-- Agrupando todos sus pares: rho ≈ **+0.36 a +0.42**, p=0.0001, robusto a controles de
-  símbolo, lado, período y fees.
+**R2 — "12-24h ALWAYS loses (XRP, BTC, ETH)" is false.** It is the **best** bucket on Phemex-XRP
+(+41.1k) and on Binance-XRP (+5.0k). It only loses on BTC and ETH. The SKILL overcorrected its own
+"12-24h sweet spot": neither of its two versions is true.
 
-**Pero — y esto no lo produjo ningún revisor — la ventaja NO se traslada a BTC como retorno
-medio.** Seleccionando el tercil élite por expectancy multi-par en P1 y midiendo su BTC en P2:
+**R3 — Aggregating in USD lets account size decide.** SOL: aggregate −32,229 but median per trader
+**+21.2**. XRP: −3,966 with a median of **+3.0**. The typical trader won; a few enormous accounts
+sank the aggregate.
 
-| BTC out-of-sample | ELITE | RESTO | test |
+**R4 — Picking a pair by profitability within this dataset is circular.** De-leveraged,
+**188/197 pairs (95%)** have a positive median return per trader. They are the top-600 by ROI:
+they win at everything. The ranking measures survival, not the pair's edge.
+
+**R5 — The ROI ranking rewards leverage arithmetically** (ROI is on margin).
+Corrected: majors 30x vs the rest at 10x, not 5x.
+
+**R7 (new) — "The elite flips with the regime" does not hold.** The side matches the trend (price
+vs MA200h, computed from the real OHLC) on **50.9%** of BTC positions — a coin flip. Kimi further
+showed the SKILL spliced two different months: the "+235k shorts" is May and the "−186k longs" is
+June, and the side mix barely moves (48% → 47% → 48% → 42%). Shorts winning in a crash is
+mechanical beta.
+
+**R8 (new) — A row is NOT an atomic trade.** Contrasting `avg_cost` against the 1h candle of its
+own opening: 86.6% falls inside the range, 13.4% does not. And the ones falling outside have a
+median duration of **54.2h vs 3.8h** and **42.1% partial closes vs 5.2%**. They are
+scale-in/scale-out aggregates. Any "win rate per row" measures the partial-close policy as much as
+being right.
+
+---
+
+## R6 reformulated (the conclusion that matters)
+
+**Skill persists, but is only measurable with the trader's full track record.**
+
+- Within a single pair, the per-trader estimator has ~0.13 reliability: useless for ranking.
+- Pooling all their pairs: rho ≈ **+0.36 to +0.42**, p=0.0001, robust to controls for symbol,
+  side, period and fees.
+
+**But — and no reviewer produced this — the advantage does NOT carry over to BTC as mean return.**
+Selecting the elite tercile by multi-pair expectancy in P1 and measuring their BTC in P2:
+
+| BTC out-of-sample | ELITE | REST | test |
 |---|---|---|---|
-| retorno **mediano**/pos | +0.277% | −0.138% | MWU z=**+8.28** ✅ |
-| retorno **medio**/pos | +0.261% | +0.284% | permutación **p=0.881** ❌ |
+| **median** return/pos | +0.277% | −0.138% | MWU z=**+8.28** ✅ |
+| **mean** return/pos | +0.261% | +0.284% | permutation **p=0.881** ❌ |
 | win rate | 75.0% | 40.6% | |
 | payoff | 0.57 | 2.21 | |
-| leverage mediana | 25x | 50x | z=−2.75 ✅ |
+| median leverage | 25x | 50x | z=−2.75 ✅ |
 
-Seleccionar élite compra **consistencia**, no retorno medio. Aciertan mucho más seguido con
-ganancias más chicas; en expectativa por posición empatan. Eso cambia la forma de la curva de
-equity y habilita sizing más agresivo — no es alpha gratis.
+Selecting the elite buys **consistency**, not mean return. They are right far more often for
+smaller gains; in expectation per position they tie. That changes the shape of the equity curve
+and enables more aggressive sizing — it is not free alpha.
 
 ---
 
-**R9 (nuevo, hallado por GLM y verificado) — El rango temporal de la SKILL es falso.**
-La SKILL dice "dic-2024→ago-2026". **Cero** posiciones cerraron antes de abril 2026: las 107,812
-se cierran en 5 meses (abr 996, may 12,171, jun 21,751, jul 29,417, ago 43,477). El rango largo
-sale de fechas de *apertura* de unos pocos swings. Consecuencia: **todo claim de estabilidad
-temporal — de la SKILL y mío — se degrada a "consistencia dentro de un único ciclo de régimen"**.
+**R9 (new, found by GLM and verified) — The SKILL's time range is false.**
+The SKILL says "Dec-2024→Aug-2026". **Zero** positions closed before April 2026: all 107,812 close
+within 5 months (Apr 996, May 12,171, Jun 21,751, Jul 29,417, Aug 43,477). The long range comes
+from the *opening* dates of a few swings. Consequence: **every temporal-stability claim — the
+SKILL's and mine — degrades to "consistency within a single regime cycle"**.
 
-**Contradicción entre revisores, resuelta.** GLM concluyó que `closing_pnl` es BRUTO; Fable y
-Kimi, que es NETO. Verifiqué sobre 96,994 cierres completos: el residuo contra el PnL derivado de
-precio es −7.85 bps (93.7% negativo). Si fuera bruto el residuo sería ~0. **GLM midió lo mismo
-(−0.079%) e invirtió la inferencia.** Fable y Kimi tienen razón: es NETO. El ground truth de
-Phemex lo confirma (`closed_pnl − fee − funding = realized_pnl`, exacto).
+**Contradiction between reviewers, resolved.** GLM concluded `closing_pnl` is GROSS; Fable and Kimi
+that it is NET. I verified over 96,994 complete closes: the residual against the price-derived PnL
+is −7.85 bps (93.7% negative). If it were gross the residual would be ~0. **GLM measured the same
+thing (−0.079%) and inverted the inference.** Fable and Kimi are right: it is NET. Phemex's ground
+truth confirms it (`closed_pnl − fee − funding = realized_pnl`, exactly).
 
-## Limitaciones que siguen vivas
+## Limitations still standing
 
-- **Sesgo de supervivencia sin control**: los 594 portfolios son el top-600 por ROI 90D. No hay
-  grupo de traders fracasados en Binance. Sesga la persistencia a la baja (bueno para C2), pero
-  invalida cualquier nivel absoluto de rentabilidad.
-- **Identidad de traders**: el nick no identifica humanos; una persona con varios portfolios
-  infla el n efectivo.
-- **Una fila ≠ una operación** (R8): todo win rate y toda duración están contaminados por la
-  política de cierre parcial.
-- **Una sola ventana de régimen (R9)**: 5 meses, un crash seguido de un pump. Sin régimen
-  lateral ni bajista prolongado. Es la limitación más grave de todas.
-- **Sin OHLC no hay reglas de entrada técnicas.** Ya se bajó el de BTC; las reglas de entrada
-  siguen siendo proxies de timing, no señales validadas.
+- **Survivorship with no control**: the 594 portfolios are the top-600 by 90D ROI. There is no
+  group of failed Binance traders. It biases persistence downwards (good for C2), but invalidates
+  any absolute level of profitability.
+- **Trader identity**: the nick does not identify humans; one person with several portfolios
+  inflates the effective n.
+- **A row ≠ a trade** (R8): every win rate and every duration is contaminated by the partial-close
+  policy.
+- **A single regime window (R9)**: 5 months, a crash followed by a pump. No sideways or prolonged
+  bear regime. This is the gravest limitation of all.
+- **Without OHLC there are no technical entry rules.** BTC's has now been downloaded; the entry
+  rules are still timing proxies, not validated signals.
