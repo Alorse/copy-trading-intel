@@ -92,9 +92,9 @@ def test_weights_all_B_respects_cap_and_leaves_unallocated(con):
 
 
 def test_insufficient_only_goes_to_W_not_X(con):
-    _tm(con, "novato", n=30, flags='["insufficient"]')
-    _tm(con, "fraude", n=100, flags='["loss_hider"]')
+    _tm(con, "newbie_ins", n=30, flags='["insufficient"]')
+    _tm(con, "fraud", n=100, flags='["loss_hider"]')
     rank.run(con, D, EX)
     tiers = {r["trader_id"]: r["tier"] for r in con.execute(
         "SELECT trader_id, tier FROM trader_metrics WHERE snapshot_date=?", (D,))}
-    assert tiers["novato"] == "W" and tiers["fraude"] == "X"
+    assert tiers["newbie_ins"] == "W" and tiers["fraud"] == "X"

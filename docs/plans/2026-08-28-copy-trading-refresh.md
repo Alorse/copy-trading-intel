@@ -1,34 +1,34 @@
 # copy-trading-refresh — Implementation Plan
 
-> **Documento histórico.** Este es el plan de implementación que se ejecutó (task por task,
-> TDD) para construir `pipeline/`. Se conserva como registro de diseño: el código y los tests
-> que describe ya están en el repo. Los checkboxes `- [ ]` son del formato original de tracking.
+> **Historical document.** This is the implementation plan that was executed (task by task,
+> TDD) to build `pipeline/`. It is kept as a design record: the code and tests it describes are
+> already in the repo. The `- [ ]` checkboxes are from the original tracking format.
 
-**Goal:** Pipeline repetible (scrape → SQLite → métricas → detección anti-inflado → tendencia → roster) que mantiene actualizado el listado de lead-traders a copiar, invocable por la skill `/copy-trading-refresh`.
+**Goal:** A repeatable pipeline (scrape → SQLite → metrics → anti-inflation detection → trend → roster) keeping the list of lead traders to copy up to date, invocable from the `/copy-trading-refresh` skill.
 
-**Architecture:** Capa cruda inmutable en `data/snapshots/YYYY-MM-DD/` + capa analítica SQLite (`data/copytrade.sqlite`) reconstruible desde la cruda. Un entrypoint `pipeline.py` con subcomandos; cada stage un módulo en `pipeline/`. El consejo adversarial NO es código: lo orquesta el agente vía la skill.
+**Architecture:** An immutable raw layer in `data/snapshots/YYYY-MM-DD/` + a SQLite analytics layer (`data/copytrade.sqlite`) rebuildable from the raw one. A single `pipeline.py` entrypoint with subcommands; each stage a module in `pipeline/`. The adversarial council is NOT code: the agent orchestrates it via the skill.
 
-**Tech Stack:** Python 3 stdlib únicamente (`sqlite3`, `json`, `csv`, `urllib`, `statistics`, `argparse`). Tests con `pytest` (dev-only). **Cero dependencias de runtime** (portabilidad a cualquier host).
+**Tech Stack:** Python 3 stdlib only (`sqlite3`, `json`, `csv`, `urllib`, `statistics`, `argparse`). Tests with `pytest` (dev-only). **Zero runtime dependencies** (portable to any host).
 
 **Spec:** `docs/specs/2026-08-28-copy-trading-refresh-design.md`
 
 ## Global Constraints
 
-- Runtime = stdlib puro. `pytest` solo para tests. DuckDB explícitamente descartado.
-- La DB es derivada: todo debe poder reconstruirse re-ingiriendo `data/snapshots/`.
-- Ingest idempotente por `(snapshot_date, exchange)` — re-correr reemplaza, nunca duplica.
-- `analyze` (flatten→report) nunca toca la red.
-- Métrica central intacta del motor auditado: `alpha = price_return − mediana de celda (symbol, mes, side, n≥20)`.
-- Score: `0.40·t + 0.25·alpha·100 + 0.20·payoff + 0.15·trend_bonus`, −10% por warning. Solo scores >0 entran al roster.
-- Roster (A+B) capeado en 5 traders.
-- **Escala de mdd (Binance): PORCENTUAL** — mediana ~30.15, máx ~102.7 (GGbond哦=50.5). Umbrales de mdd SIEMPRE en esa escala (35/60). Verificado contra data real en revisión adversarial.
-- **Concentración = top-1** (mejor trade / PnL total), umbral >30% — el criterio auditado de `top5_final.py`. Top-3>30 fue refutado: descalificaba a 5/6 supervivientes auditados (梭哈 top-3=59.4%, top-1=26.1%).
-- **v1 analiza SOLO Binance.** Phemex se scrapea/aplana/ingiere (archivo histórico) pero no entra a metrics/detect/trend/rank/report. En Phemex el lado real es `pos_side` (Long/Short/Merged), no `side` (Buy/Sell) — ingest lo mapea para el futuro.
-- Matching de titulares entre corridas por `portfolio_id`, nunca por nick.
-- `analyze` no publica el latest (`analysis/roster.json`); eso lo hace `publish`, tras el gate.
-- Todos los paths relativos a la raíz del proyecto: la raíz de este repo.
-- Endpoints/headers exactos: los de `SKILL.md` (Binance `/friendly/`, Phemex `api.phemex.com`).
-- Commits en español, formato convencional, trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
+- Runtime = pure stdlib. `pytest` for tests only. DuckDB explicitly rejected.
+- The DB is derived: everything must be rebuildable by re-ingesting `data/snapshots/`.
+- Ingest idempotent per `(snapshot_date, exchange)` — re-running replaces, never duplicates.
+- `analyze` (flatten→report) never touches the network.
+- The audited engine's core metric, untouched: `alpha = price_return − cell median (symbol, month, side, n≥20)`.
+- Score: `0.40·t + 0.25·alpha·100 + 0.20·payoff + 0.15·trend_bonus`, −10% per warning. Only scores >0 enter the roster.
+- The roster (A+B) is capped at 5 traders.
+- **Binance's mdd scale: PERCENTAGE** — median ~30.15, max ~102.7 (GGbond哦=50.5). mdd thresholds ALWAYS on that scale (35/60). Verified against real data in adversarial review.
+- **Concentration = top-1** (best trade / total PnL), threshold >30% — the audited criterion from `top5_final.py`. Top-3>30 was refuted: it disqualified 5/6 of the audited survivors (梭哈 top-3=59.4%, top-1=26.1%).
+- **v1 analyses Binance ONLY.** Phemex is scraped/flattened/ingested (historical archive) but does not enter metrics/detect/trend/rank/report. On Phemex the real side is `pos_side` (Long/Short/Merged), not `side` (Buy/Sell) — ingest maps it for the future.
+- Incumbents are matched across runs by `portfolio_id`, never by nick.
+- `analyze` does not publish the latest (`analysis/roster.json`); `publish` does that, after the gate.
+- All paths relative to the project root: the root of this repo.
+- Exact endpoints/headers: those in `SKILL.md` (Binance `/friendly/`, Phemex `api.phemex.com`).
+- Conventional-format commits, with the trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
 ## File Structure
 
@@ -38,36 +38,36 @@ pipeline/
   __init__.py                ← vacío
   db.py                      ← schema, conexión, helpers
   scrape.py                  ← Binance+Phemex → data/snapshots/<date>/*_raw.jsonl (resumable)
-  flatten.py                 ← *_raw.jsonl → binance.csv / phemex.csv (en el snapshot dir)
+  flatten.py                 ← *_raw.jsonl → binance.csv / phemex.csv (in the snapshot dir)
   ingest.py                  ← CSV → SQLite (idempotente)
   metrics.py                 ← price_return, alpha, t, payoff, … → trader_metrics
   detect.py                  ← flags descalificantes + warnings
-  trend.py                   ← diff vs snapshot previo, trend_bonus, diff.json
+  trend.py                   ← diff vs the previous snapshot, trend_bonus, diff.json
   rank.py                    ← score, tiers, weights → roster.json
   report.py                  ← TOP_YYYY-MM.md
-scripts/probe_open_positions.py   ← spike posiciones abiertas (throwaway hasta confirmar)
+scripts/probe_open_positions.py   ← open-positions spike (throwaway until confirmed)
 tests/
   conftest.py                ← fixtures sintéticas
   test_db.py test_flatten.py test_ingest.py test_metrics.py
   test_detect.py test_trend.py test_rank.py test_report.py test_cli.py
-  test_regression.py         ← contra el snapshot real 2026-08-25 (marcado slow)
-(fuera del repo)              ← runbook del agente que lo invoca
+  test_regression.py         ← against the real 2026-08-25 snapshot (marked slow)
+(outside the repo)            ← runbook of the agent that invokes it
 ```
 
-Los scripts históricos (`scripts/scrape_*.py`, `analysis/*.py`) NO se tocan ni borran: son la evidencia reproducible de FINDINGS_v2. El pipeline nuevo copia su lógica, no los importa.
+The historical scripts (`scripts/scrape_*.py`, `analysis/*.py`) are NOT touched or deleted: they are the reproducible evidence behind FINDINGS_v2. The new pipeline copies their logic, it does not import them.
 
 ---
 
-### Task 1: Schema SQLite + módulo db
+### Task 1: SQLite schema + db module
 
 **Files:**
 - Create: `pipeline/__init__.py`, `pipeline/db.py`
 - Test: `tests/test_db.py`, `tests/conftest.py`
 
 **Interfaces:**
-- Produces: `db.connect(path) -> sqlite3.Connection` (crea schema si falta, `row_factory=sqlite3.Row`, FKs ON); `db.clear_snapshot(con, snapshot_date, exchange)` (borra ese snapshot de todas las tablas); constante `db.SCHEMA` (str SQL).
+- Produces: `db.connect(path) -> sqlite3.Connection` (creates the schema if missing, `row_factory=sqlite3.Row`, FKs ON); `db.clear_snapshot(con, snapshot_date, exchange)` (deletes that snapshot from every table); the `db.SCHEMA` constant (SQL str).
 
-- [ ] **Step 1: Escribir el test que falla**
+- [ ] **Step 1: Write the failing test**
 
 ```python
 # tests/conftest.py
@@ -99,13 +99,13 @@ def test_clear_snapshot_is_scoped(con):
     assert [r[0] for r in rows] == ["2026-02-01"]
 ```
 
-- [ ] **Step 2: Verificar que falla** — `cd ~/Projects/trading/copy-trading-intel && python3 -m pytest tests/test_db.py -v` → FAIL (`ModuleNotFoundError: pipeline`).
+- [ ] **Step 2: Verify it fails** — from the project root, `python3 -m pytest tests/test_db.py -v` → FAIL (`ModuleNotFoundError: pipeline`).
 
-- [ ] **Step 3: Implementación mínima**
+- [ ] **Step 3: Minimal implementation**
 
 ```python
 # pipeline/db.py
-"""Capa analitica SQLite. La DB es derivada: se reconstruye desde data/snapshots/."""
+"""SQLite analytics layer. The DB is derived: rebuilt from data/snapshots/."""
 import sqlite3
 
 SCHEMA = """
@@ -160,25 +160,25 @@ def clear_snapshot(con, snapshot_date, exchange):
     con.commit()
 ```
 
-`pipeline/__init__.py`: archivo vacío.
+`pipeline/__init__.py`: an empty file.
 
-- [ ] **Step 4: Verificar que pasa** — `python3 -m pytest tests/test_db.py -v` → 2 PASS.
+- [ ] **Step 4: Verify it passes** — `python3 -m pytest tests/test_db.py -v` → 2 PASS.
 
-- [ ] **Step 5: Commit** — `git add pipeline/ tests/ && git commit -m "feat(db): schema sqlite y modulo de conexion"`
+- [ ] **Step 5: Commit** — `git add pipeline/ tests/ && git commit -m "feat(db): sqlite schema and connection module"`
 
 ---
 
-### Task 2: flatten — jsonl crudo → CSV en el snapshot dir
+### Task 2: flatten — raw jsonl → CSV in the snapshot dir
 
 **Files:**
 - Create: `pipeline/flatten.py`
 - Test: `tests/test_flatten.py`
 
 **Interfaces:**
-- Consumes: `data/snapshots/<date>/binance_raw.jsonl` y `phemex_raw.jsonl` (mismo formato de línea que los actuales `data/binance_positions.jsonl` / `data/positions_all.jsonl`: `{"portfolioId"/"userId", "nick", ..., "positions": [...]}`).
-- Produces: `flatten.flatten_snapshot(snap_dir) -> dict` con `{"binance": n_rows, "phemex": n_rows}`; escribe `binance.csv` y `phemex.csv` en `snap_dir`. Columnas Binance: `portfolio_id,nick,p_roi,p_pnl,aum,win_rate,mdd,symbol,side,leverage,isolated,avg_cost,avg_close,closing_pnl,roi,max_oi,closed_volume,opened_ms,closed_ms,dur_h,notional,margin_est` (idénticas a `analysis/flatten.py`). Columnas Phemex: `trader_id,nick,symbol,side,pos_side,size,open_price,close_price,open_val,margin,roi,closed_pnl,realized_pnl,exchange_fee,funding_fee,opened_ms,closed_ms,dur_h`.
+- Consumes: `data/snapshots/<date>/binance_raw.jsonl` and `phemex_raw.jsonl` (same line format as the current `data/binance_positions.jsonl` / `data/positions_all.jsonl`: `{"portfolioId"/"userId", "nick", ..., "positions": [...]}`).
+- Produces: `flatten.flatten_snapshot(snap_dir) -> dict` with `{"binance": n_rows, "phemex": n_rows}`; writes `binance.csv` and `phemex.csv` into `snap_dir`. Binance columns: `portfolio_id,nick,p_roi,p_pnl,aum,win_rate,mdd,symbol,side,leverage,isolated,avg_cost,avg_close,closing_pnl,roi,max_oi,closed_volume,opened_ms,closed_ms,dur_h,notional,margin_est` (identical to `analysis/flatten.py`). Phemex columns: `trader_id,nick,symbol,side,pos_side,size,open_price,close_price,open_val,margin,roi,closed_pnl,realized_pnl,exchange_fee,funding_fee,opened_ms,closed_ms,dur_h`.
 
-- [ ] **Step 1: Test que falla** (con fixture de jsonl mínimo)
+- [ ] **Step 1: Failing test** (with a minimal jsonl fixture)
 
 ```python
 # añadir a tests/conftest.py
@@ -229,13 +229,13 @@ def test_flatten_missing_file_is_zero(snap_dir):
     assert counts["phemex"] == 0
 ```
 
-- [ ] **Step 2: Verificar FAIL** — `python3 -m pytest tests/test_flatten.py -v`.
+- [ ] **Step 2: Verify FAIL** — `python3 -m pytest tests/test_flatten.py -v`.
 
-- [ ] **Step 3: Implementar** — portar `analysis/flatten.py` a función parametrizada:
+- [ ] **Step 3: Implement** — port `analysis/flatten.py` into a parameterised function:
 
 ```python
 # pipeline/flatten.py
-"""Aplana los *_raw.jsonl de un snapshot a CSV planos. Sin red."""
+"""Flattens a snapshot's *_raw.jsonl into flat CSVs. No network."""
 import json, csv, os
 
 def _f(x, default=0.0):
@@ -298,22 +298,22 @@ def flatten_snapshot(snap_dir):
     return out
 ```
 
-- [ ] **Step 4: Verificar PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(flatten): jsonl crudo a csv por snapshot"`
+- [ ] **Step 4: Verify PASS.**
+- [ ] **Step 5: Commit** — `git commit -m "feat(flatten): raw jsonl to csv per snapshot"`
 
 ---
 
-### Task 3: ingest — CSV → SQLite, idempotente
+### Task 3: ingest — CSV → SQLite, idempotent
 
 **Files:**
 - Create: `pipeline/ingest.py`
 - Test: `tests/test_ingest.py`
 
 **Interfaces:**
-- Consumes: `db.connect`, `db.clear_snapshot`, CSVs de Task 2.
-- Produces: `ingest.ingest_snapshot(con, snap_dir, snapshot_date) -> dict {"binance": n, "phemex": n}`. Llena `snapshots`, `trader_snapshot`, `positions`. `price_return`/`alpha` quedan NULL (los pone `metrics`). Binance: `margin = margin_est`, `partial = 1 si closed_volume < max_oi`, `avg_cost/avg_close` del CSV. Phemex: `notional = open_val`, `leverage = open_val/margin` (0 si margin=0), `closing_pnl = realized_pnl` (neto), `avg_cost/avg_close` = `open_price/close_price`, y **`side` = `pos_side`** (`Long`/`Short`/`Merged` — el `side` Buy/Sell del CSV NO es el lado de la posición; guardar el correcto evita el signo invertido si Phemex se analiza a futuro). En `trader_snapshot` Phemex: roi/pnl/aum/win_rate/mdd = NULL. **`clear_snapshot` se ejecuta para cada exchange ANTES del check de existencia del CSV** — si el CSV desapareció en un re-ingest, la data vieja de ese exchange no debe sobrevivir.
+- Consumes: `db.connect`, `db.clear_snapshot`, the CSVs from Task 2.
+- Produces: `ingest.ingest_snapshot(con, snap_dir, snapshot_date) -> dict {"binance": n, "phemex": n}`. Fills `snapshots`, `trader_snapshot`, `positions`. `price_return`/`alpha` stay NULL (`metrics` sets them). Binance: `margin = margin_est`, `partial = 1 if closed_volume < max_oi`, `avg_cost/avg_close` from the CSV. Phemex: `notional = open_val`, `leverage = open_val/margin` (0 if margin=0), `closing_pnl = realized_pnl` (net), `avg_cost/avg_close` = `open_price/close_price`, and **`side` = `pos_side`** (`Long`/`Short`/`Merged` — the CSV's Buy/Sell `side` is NOT the position side; storing the right one avoids an inverted sign if Phemex is analysed later). In Phemex's `trader_snapshot`: roi/pnl/aum/win_rate/mdd = NULL. **`clear_snapshot` runs for each exchange BEFORE checking the CSV exists** — if the CSV vanished on a re-ingest, that exchange's old data must not survive.
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_ingest.py
@@ -333,8 +333,8 @@ def test_ingest_counts_and_rows(con, snap_dir):
     assert r["avg_cost"] == 100.0
     p = con.execute("SELECT * FROM positions WHERE exchange='phemex'").fetchone()
     assert p["leverage"] == 10.0            # 2000/200
-    assert p["closing_pnl"] == 99.0         # realized (neto)
-    assert p["side"] == "Short"             # pos_side, NO el Buy/Sell del CSV
+    assert p["closing_pnl"] == 99.0         # realized (net)
+    assert p["side"] == "Short"             # pos_side, NOT the CSV's Buy/Sell
     ts = con.execute("SELECT * FROM trader_snapshot WHERE exchange='binance'").fetchone()
     assert ts["mdd"] == 0.2 and ts["nick"] == "alice"
     snaps = con.execute("SELECT * FROM snapshots ORDER BY exchange").fetchall()
@@ -343,17 +343,17 @@ def test_ingest_counts_and_rows(con, snap_dir):
 
 def test_ingest_is_idempotent(con, snap_dir):
     _load(con, snap_dir)
-    _load(con, snap_dir)   # re-ingest mismo snapshot
+    _load(con, snap_dir)   # re-ingest of the same snapshot
     n = con.execute("SELECT COUNT(*) FROM positions").fetchone()[0]
-    assert n == 2          # 1 binance + 1 phemex, sin duplicar
+    assert n == 2          # 1 binance + 1 phemex, no duplication
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/ingest.py
-"""CSV de un snapshot -> SQLite. Idempotente por (snapshot_date, exchange)."""
+"""Snapshot CSVs -> SQLite. Idempotent per (snapshot_date, exchange)."""
 import csv, os
 from pipeline import db as dbmod
 
@@ -369,8 +369,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
     snap_dir = str(snap_dir)
     counts = {}
     for ex in ('binance', 'phemex'):
-        # limpiar SIEMPRE: si el CSV desaparecio en un re-ingest, la data vieja
-        # de ese exchange no debe sobrevivir en la DB
+        # ALWAYS clear: if the CSV vanished on a re-ingest, that exchange's old
+        # data must not survive in the DB
         dbmod.clear_snapshot(con, snapshot_date, ex)
         path = os.path.join(snap_dir, f'{ex}.csv')
         if not os.path.exists(path):
@@ -394,8 +394,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                 tid = r['trader_id']
                 marg, oval = _f(r['margin'], 0), _f(r['open_val'], 0)
                 lev = oval / marg if marg else 0
-                # side REAL de la posicion = pos_side (Long/Short/Merged);
-                # el side del CSV es Buy/Sell y NO es el lado de la posicion
+                # the REAL side of the position is pos_side (Long/Short/Merged);
+                # the CSV's side is Buy/Sell and is NOT the position side
                 pos_rows.append((snapshot_date, ex, tid, r['nick'], r['symbol'],
                                  r['pos_side'], _i(r['opened_ms']), _i(r['closed_ms']),
                                  _f(r['dur_h']), oval, lev, marg,
@@ -419,31 +419,31 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
 ```
 
 - [ ] **Step 4: PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(ingest): carga idempotente de snapshots a sqlite"`
+- [ ] **Step 5: Commit** — `git commit -m "feat(ingest): idempotent snapshot load into sqlite"`
 
-**Nota:** las columnas `avg_cost`/`avg_close` ya están en el schema de Task 1 — no hay migración que hacer aquí.
+**Note:** the `avg_cost`/`avg_close` columns are already in Task 1's schema — there is no migration to do here.
 
 ---
 
-### Task 4: metrics — alpha, t-stat y métricas por trader
+### Task 4: metrics — alpha, t-stat and per-trader metrics
 
 **Files:**
 - Create: `pipeline/metrics.py`
 - Test: `tests/test_metrics.py`
 
 **Interfaces:**
-- Consumes: tablas `positions`, `trader_snapshot`.
-- Produces: `metrics.compute(con, snapshot_date, exchange='binance', min_cell=20) -> int` (nº de traders con métricas). Efectos: (1) `UPDATE positions SET price_return, alpha` (sobre TODAS las filas); (2) inserta filas en `trader_metrics` con: `n, n_alpha, alpha` (media de alphas), `t_stat, payoff, wr, conc_top1, ruin, mdd, lev_med, lev_p90, marg_med, dur_med, months_active, alpha_h1, alpha_h2, monthly_alpha` (JSON `{"2025-04": 0.012, ...}`, meses con ≥5 alphas). **Las métricas por trader se computan SOLO sobre filas válidas (`pr` no NULL)** — igual que `top5_final.py`, que descarta inválidas antes de contar; `n` = filas válidas. `tier/weight/score/flags/trend_bonus` los llenan stages posteriores.
-- Fórmulas (idénticas a `analysis/top5_final.py`, con conc sobre top-3 según spec):
-  - `price_return = (avg_close/avg_cost − 1) · (+1 Long / −1 Short)`; fila inválida si `avg_cost≤0 or avg_close≤0 or notional≤0 or leverage≤0 or |pr|>3` → pr/alpha NULL.
-  - celda = `(symbol, mes_de_opened_ms_UTC, side)`; benchmark = mediana de pr de la celda si `n≥min_cell`; `alpha = pr − benchmark` (NULL sin benchmark).
-  - `t_stat = mean(alphas) / (pstdev(alphas)/√n_alpha)` (0 si pstdev=0).
-  - `payoff = mean(pr>0) / |mean(pr<0)|`; sin ganadoras o sin perdedoras → NULL (lo lee `detect`).
-  - `conc_top1 = mejor closing_pnl / total_pnl · 100` (**NULL si total ≤ 0** — un trader perdedor no es "lotería"; cae por `no_alpha`/score, no por un conc=999 que mal-rotula el motivo) — **top-1, el criterio auditado** (`top5_final.py` línea `best/tot`); top-3 fue refutado en revisión adversarial.
-  - `ruin = min(pr) · mediana(leverage) · 100` (solo si hay perdedoras, si no NULL).
-  - `alpha_h1/alpha_h2`: media de la primera/segunda mitad de los alphas ordenados por `opened_ms`.
+- Consumes: the `positions` and `trader_snapshot` tables.
+- Produces: `metrics.compute(con, snapshot_date, exchange='binance', min_cell=20) -> int` (the number of traders with metrics). Effects: (1) `UPDATE positions SET price_return, alpha` (over ALL rows); (2) inserts rows into `trader_metrics` with: `n, n_alpha, alpha` (mean of the alphas), `t_stat, payoff, wr, conc_top1, ruin, mdd, lev_med, lev_p90, marg_med, dur_med, months_active, alpha_h1, alpha_h2, monthly_alpha` (JSON `{"2025-04": 0.012, ...}`, months with ≥5 alphas). **Per-trader metrics are computed ONLY over valid rows (`pr` not NULL)** — same as `top5_final.py`, which drops invalid ones before counting; `n` = valid rows. `tier/weight/score/flags/trend_bonus` are filled by later stages.
+- Formulas (identical to `analysis/top5_final.py`, with conc over top-3 per the spec):
+  - `price_return = (avg_close/avg_cost − 1) · (+1 Long / −1 Short)`; row invalid if `avg_cost≤0 or avg_close≤0 or notional≤0 or leverage≤0 or |pr|>3` → pr/alpha NULL.
+  - cell = `(symbol, month_of_opened_ms_UTC, side)`; benchmark = the cell's median pr if `n≥min_cell`; `alpha = pr − benchmark` (NULL with no benchmark).
+  - `t_stat = mean(alphas) / (pstdev(alphas)/√n_alpha)` (0 if pstdev=0).
+  - `payoff = mean(pr>0) / |mean(pr<0)|`; no winners or no losers → NULL (`detect` reads it).
+  - `conc_top1 = best closing_pnl / total_pnl · 100` (**NULL if total ≤ 0** — a losing trader is not a "lottery"; they fall via `no_alpha`/score, not via a conc=999 that mislabels the reason) — **top-1, the audited criterion** (`top5_final.py`'s `best/tot` line); top-3 was refuted in adversarial review.
+  - `ruin = min(pr) · median(leverage) · 100` (only if there are losers, otherwise NULL).
+  - `alpha_h1/alpha_h2`: the mean of the first/second half of the alphas ordered by `opened_ms`.
 
-- [ ] **Step 1: Test que falla** — fixture sintética directa a la DB (sin CSV):
+- [ ] **Step 1: Failing test** — a synthetic fixture straight into the DB (no CSV):
 
 ```python
 # tests/test_metrics.py
@@ -461,8 +461,8 @@ def _pos(con, tid, sym, side, opened, cost, close, pnl, lev=5.0, nick=None):
          1000.0, lev, 1000.0 / lev, pnl, cost, close))
 
 def _seed(con):
-    # 21 traders "masa" en la celda (BTCUSDT, 2025-04, Long): pr = 0 → benchmark 0
-    base = 1743500000000            # 2025-04-01 UTC (OJO: 2025, no 2026)
+    # 21 "crowd" traders in the cell (BTCUSDT, 2025-04, Long): pr = 0 → benchmark 0
+    base = 1743500000000            # 2025-04-01 UTC (CAREFUL: 2025, not 2026)
     for i in range(21):
         _pos(con, f"m{i}", "BTCUSDT", "Long", base + i, 100, 100, 0.0)
     # trader objetivo: 5 trades, pr = +2%,+2%,+2%,+2%,-1% → alpha igual (bench 0)
@@ -482,34 +482,34 @@ def test_alpha_and_stats(con):
     assert abs(m["payoff"] - 2.0) < 1e-9            # .02 / .01
     assert abs(m["wr"] - 80.0) < 1e-9
     assert abs(m["ruin"] - (-5.0)) < 1e-9           # -0.01 * 5 * 100
-    assert m["mdd"] == 25.0                         # escala PORCENTUAL
+    assert m["mdd"] == 25.0                         # PERCENTAGE scale
     mo = json.loads(m["monthly_alpha"])
-    assert abs(mo["2025-04"] - 0.014) < 1e-9        # mes con >=5 alphas presente
+    assert abs(mo["2025-04"] - 0.014) < 1e-9        # month with >=5 alphas present
     pr = con.execute(
         "SELECT price_return, alpha FROM positions WHERE trader_id='T' "
         "ORDER BY opened_ms").fetchall()
     assert abs(pr[0]["price_return"] - 0.02) < 1e-9
-    assert abs(pr[0]["alpha"] - 0.02) < 1e-9        # benchmark de la celda = 0
+    assert abs(pr[0]["alpha"] - 0.02) < 1e-9        # cell benchmark = 0
 
 def test_invalid_rows_get_null_pr_and_dont_count(con):
     _seed(con)
-    _pos(con, "T", "BTCUSDT", "Long", 1743500000000, 0, 110, 5)   # avg_cost 0 → invalida
+    _pos(con, "T", "BTCUSDT", "Long", 1743500000000, 0, 110, 5)   # avg_cost 0 → invalid
     con.commit()
     metrics.compute(con, D, EX, min_cell=20)
     r = con.execute("SELECT price_return FROM positions WHERE trader_id='T' "
                     "AND avg_cost=0").fetchone()
     assert r["price_return"] is None
     m = con.execute("SELECT n FROM trader_metrics WHERE trader_id='T'").fetchone()
-    assert m["n"] == 5                               # la invalida NO cuenta en n
+    assert m["n"] == 5                               # the invalid one does NOT count in n
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/metrics.py
-"""Motor de metricas por trader. Replica top5_final.py sobre SQLite.
-alpha = price_return des-apalancado - mediana de celda (symbol, mes, side)."""
+"""Per-trader metrics engine. Mirrors top5_final.py on top of SQLite.
+alpha = de-leveraged price_return - median of its cell (symbol, month, side)."""
 import json, statistics as st, collections, datetime as dt
 
 def _month(ms):
@@ -535,21 +535,21 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                   'sym': r['symbol'], 'side': r['side'], 'o': r['opened_ms'],
                   'pr': pr, 'pnl': r['closing_pnl'] or 0, 'lev': r['leverage'] or 0,
                   'marg': r['margin'] or 0, 'dur': r['dur_h'] or 0,
-                  'mes': _month(r['opened_ms']) if r['opened_ms'] else None})
+                  'month': _month(r['opened_ms']) if r['opened_ms'] else None})
     cell = collections.defaultdict(list)
     for x in R:
         if x['pr'] is not None:
-            cell[(x['sym'], x['mes'], x['side'])].append(x['pr'])
+            cell[(x['sym'], x['month'], x['side'])].append(x['pr'])
     bench = {k: st.median(v) for k, v in cell.items() if len(v) >= min_cell}
     upd = []
     for x in R:
-        b = bench.get((x['sym'], x['mes'], x['side']))
+        b = bench.get((x['sym'], x['month'], x['side']))
         x['alpha'] = (x['pr'] - b) if (x['pr'] is not None and b is not None) else None
         upd.append((x['pr'], x['alpha'], x['rowid']))
     con.executemany("UPDATE positions SET price_return=?, alpha=? WHERE rowid=?", upd)
 
-    # metricas por trader SOLO sobre filas validas (pr no NULL) — como top5_final.py,
-    # que descarta las invalidas antes de contar (n<60, celdas, pnl, meses)
+    # per-trader metrics ONLY over valid rows (pr not NULL) — same as top5_final.py,
+    # which drops the invalid ones before counting (n<60, cells, pnl, months)
     T = collections.defaultdict(list)
     for x in R:
         if x['pr'] is not None:
@@ -567,8 +567,8 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
         payoff = (st.mean(w) / abs(st.mean(l))) if (w and l) else None
         tot = sum(z['pnl'] for z in v)
         best = max(z['pnl'] for z in v)
-        # top-1 (criterio auditado); NULL si el trader pierde en neto — un
-        # perdedor no es "loteria", cae por no_alpha/score
+        # top-1 (the audited criterion); NULL if the trader is net negative — a
+        # loser is not a "lottery", it fails via no_alpha/score
         conc = (best / tot * 100) if tot > 0 else None
         t_stat = 0.0
         if len(al) >= 2 and st.pstdev(al) > 0:
@@ -583,7 +583,7 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
         mo = collections.defaultdict(list)
         for z in v:
             if z['alpha'] is not None:
-                mo[z['mes']].append(z['alpha'])
+                mo[z['month']].append(z['alpha'])
         monthly = {m: st.mean(a) for m, a in sorted(mo.items()) if len(a) >= 5}
         s = snap.get(tid)
         out.append((snapshot_date, exchange, tid, v[0]['nick'], len(v), len(al),
@@ -591,7 +591,7 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                     s['mdd'] if s else None, lev_med, lev_p90,
                     st.median(z['marg'] for z in v) if v else None,
                     st.median(z['dur'] for z in v) if v else None,
-                    len(set(z['mes'] for z in v if z['mes'])), h1, h2,
+                    len(set(z['month'] for z in v if z['month'])), h1, h2,
                     json.dumps(monthly)))
     con.executemany(
         "INSERT OR REPLACE INTO trader_metrics (snapshot_date,exchange,trader_id,nick,"
@@ -602,35 +602,35 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
     return len(out)
 ```
 
-- [ ] **Step 4: PASS.** Si un assert falla, el bug está en la implementación o en la aritmética de la fixture — corregir la CAUSA, nunca debilitar el assert.
-- [ ] **Step 5: Commit** — `git commit -m "feat(metrics): alpha por celda, t-stat, payoff y metricas por trader"`
+- [ ] **Step 4: PASS.** If an assert fails, the bug is in the implementation or in the fixture's arithmetic — fix the CAUSE, never weaken the assert.
+- [ ] **Step 5: Commit** — `git commit -m "feat(metrics): per-cell alpha, t-stat, payoff and per-trader metrics"`
 
 ---
 
-### Task 5: detect — flags descalificantes y warnings
+### Task 5: detect — disqualifying flags and warnings
 
 **Files:**
 - Create: `pipeline/detect.py`
 - Test: `tests/test_detect.py`
 
 **Interfaces:**
-- Consumes: `trader_metrics` (Task 4), `open_positions` (puede estar vacía).
-- Produces: `detect.run(con, snapshot_date, exchange='binance') -> dict {trader_id: [flags]}`; escribe `trader_metrics.flags` (JSON array). Constantes exportadas: `detect.DISQUALIFYING = {"loss_hider","open_loss_divergence","lottery","roi_artifact","ruin_risk","not_copyable","insufficient","no_alpha"}` y `detect.WARNINGS = {"alpha_decay","inactive","style_drift","regime_onesided","mdd_high"}`.
-- Reglas (umbral → flag), evaluadas en este orden; un trader puede acumular varios:
+- Consumes: `trader_metrics` (Task 4), `open_positions` (may be empty).
+- Produces: `detect.run(con, snapshot_date, exchange='binance') -> dict {trader_id: [flags]}`; writes `trader_metrics.flags` (JSON array). Exported constants: `detect.DISQUALIFYING = {"loss_hider","open_loss_divergence","lottery","roi_artifact","ruin_risk","not_copyable","insufficient","no_alpha"}` y `detect.WARNINGS = {"alpha_decay","inactive","style_drift","regime_onesided","mdd_high"}`.
+- Rules (threshold → flag), evaluated in this order; a trader can accumulate several:
   - `insufficient`: `n<60 or n_alpha<40 or months_active<3`
-  - `loss_hider`: `(wr>92 and n≥20) or (payoff is NULL and n≥20) or (payoff<0.5 and mdd>35)` — la rama de cero perdedoras NO exige `wr==100` (un trade break-even da wr<100 con cero perdedoras reales; el caso Una躺平记_ debe caer igual)
-  - `open_loss_divergence`: existe fila en `open_positions` del trader con `sum(unrealized_pnl) < −2 × max(1, pnl_realizado_total)` (solo si hay data de abiertas)
-  - `lottery`: `conc_top1 > 30` (top-1, criterio auditado)
-  - `roi_artifact`: `roi_portada > 300` (%) y (`alpha ≤ 0 or t_stat < 2`) — roi de `trader_snapshot.roi`
+  - `loss_hider`: `(wr>92 and n≥20) or (payoff is NULL and n≥20) or (payoff<0.5 and mdd>35)` — the zero-losers branch does NOT require `wr==100` (a break-even trade gives wr<100 with zero real losers; the Una躺平记_ case must still be caught)
+  - `open_loss_divergence`: the trader has rows in `open_positions` with `sum(unrealized_pnl) < −2 × max(1, total_realised_pnl)` (only if open-position data exists)
+  - `lottery`: `conc_top1 > 30` (top-1, the audited criterion)
+  - `roi_artifact`: `headline_roi > 300` (%) and (`alpha ≤ 0 or t_stat < 2`) — roi from `trader_snapshot.roi`
   - `ruin_risk`: `lev_p90 > 25 or ruin < −500`
   - `not_copyable`: `marg_med < 50 or dur_med < 0.5`
   - `no_alpha`: `t_stat < 2.5`
-  - `mdd_high` (warning): `35 ≤ mdd ≤ 60` — **escala PORCENTUAL** (mediana real ~30.15, GGbond哦=50.5; "Trampa 5" de SKILL.md). Sin guard de loss_hider (el spec no lo pide).
-  - `alpha_decay` (warning): `alpha_h2 < alpha_h1` (ambos no NULL). La mitad entre-snapshots la aplica `trend` (Task 6).
-  - `inactive` (warning): sin posiciones con `closed_ms` en los últimos 30 días del máximo `closed_ms` del snapshot
-  - `style_drift` NO va aquí — vive en `trend` (Task 6); `regime_onesided`: alpha mensual (de `monthly_alpha`) positivo en <50% de sus meses con dato, con ≥2 meses.
+  - `mdd_high` (warning): `35 ≤ mdd ≤ 60` — **PERCENTAGE scale** (real median ~30.15, GGbond哦=50.5; "Trap 5" in SKILL.md). No loss_hider guard (the spec does not ask for one).
+  - `alpha_decay` (warning): `alpha_h2 < alpha_h1` (neither NULL). The cross-snapshot half is applied by `trend` (Task 6).
+  - `inactive` (warning): no positions with `closed_ms` within the last 30 days of the snapshot's maximum `closed_ms`
+  - `style_drift` does NOT go here — it lives in `trend` (Task 6); `regime_onesided`: monthly alpha (from `monthly_alpha`) positive in <50% of the months with data, with ≥2 months.
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_detect.py
@@ -640,7 +640,7 @@ from pipeline import detect
 D, EX = "2026-09-01", "binance"
 
 def _tm(con, tid, **kw):
-    # mdd en escala PORCENTUAL (como la data real de Binance)
+    # mdd on a PERCENTAGE scale (like Binance's real data)
     base = dict(n=100, n_alpha=80, alpha=0.01, t_stat=3.0, payoff=1.2, wr=70.0,
                 conc_top1=20.0, ruin=-100.0, mdd=20.0, lev_med=5, lev_p90=10,
                 marg_med=500.0, dur_med=4.0, months_active=4, alpha_h1=0.01,
@@ -653,7 +653,7 @@ def _tm(con, tid, **kw):
         (D, EX, tid, tid, *base.values()))
     con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
                 (D, EX, tid, tid, 50.0, 0, 0, 0, base["mdd"]))
-    # una posicion reciente para no disparar inactive
+    # a recent position so `inactive` is not triggered
     con.execute(
         "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
         "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
@@ -667,11 +667,11 @@ def test_clean_trader_no_flags(con):
     assert flags["clean"] == []
 
 def test_loss_hider_high_wr(con):
-    _tm(con, "gg", wr=98.5, mdd=50.5)               # caso GGbond哦, escala %
+    _tm(con, "gg", wr=98.5, mdd=50.5)               # GGbond哦 case, % scale
     assert "loss_hider" in detect.run(con, D, EX)["gg"]
 
 def test_loss_hider_zero_losers_with_breakeven(con):
-    # caso Una躺平记_: cero perdedoras (payoff NULL) pero wr<100 por un break-even
+    # Una躺平记_ case: zero losers (payoff NULL) but wr<100 because of a break-even
     _tm(con, "una", payoff=None, wr=99.4)
     assert "loss_hider" in detect.run(con, D, EX)["una"]
 
@@ -713,12 +713,12 @@ def test_flags_persisted(con):
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/detect.py
-"""Bateria anti-inflado. Cada regla emite un flag por trader.
-Casos de referencia: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
+"""Anti-inflation battery. Each rule emits one flag per trader.
+Reference cases: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
 import json
 
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
@@ -798,30 +798,30 @@ def run(con, snapshot_date, exchange='binance'):
 ```
 
 - [ ] **Step 4: PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(detect): flags anti-inflado (loss_hider, lottery, roi_artifact, ...)"`
+- [ ] **Step 5: Commit** — `git commit -m "feat(detect): anti-inflation flags (loss_hider, lottery, roi_artifact, ...)"`
 
 ---
 
-### Task 6: trend — diff entre snapshots, de-copy y trend_bonus
+### Task 6: trend — diff between snapshots, de-copy and trend_bonus
 
 **Files:**
 - Create: `pipeline/trend.py`
 - Test: `tests/test_trend.py`
 
 **Interfaces:**
-- Consumes: `trader_metrics` de ≥1 snapshots; `detect.DISQUALIFYING`.
-- Produces: `trend.run(con, snapshot_date, exchange='binance', prev_roster=None) -> dict` (el contenido de `diff.json`). Efectos: actualiza `trader_metrics.trend_bonus` y añade flags `style_drift` / decopy a `flags`. `prev_roster` = dict cargado del `roster.json` de la corrida previa o None.
-- Lógica:
-  - `prev_date` = mayor `snapshot_date < snapshot_date` en `snapshots` para ese exchange (None si no hay).
-  - **trend_bonus**: pendiente por mínimos cuadrados de `monthly_alpha` (ordenado por mes, índice 0..k-1), `slope·100` clampeado a [−2, +2]; 0 si <3 meses con dato. Si hay `prev_date`, promedio simple entre ese valor y `sign(alpha_now − alpha_prev)` (+1/−1/0 clampeado igual): `bonus = clamp((slope·100 + sign)/2, −2, 2)`.
-  - **de-copy** (flag descalificante `decopy_2neg` — añadirlo a `detect.DISQUALIFYING` NO: se trata como descalificante propio de trend; `rank` excluye `DISQUALIFYING | {"decopy_2neg"}`): `alpha<0` en este snapshot **y** en `prev_date`.
-  - **alpha_decay entre snapshots** (la mitad del spec que detect no cubre): `alpha_now < alpha_prev` → añade el warning `alpha_decay` si no está.
-  - **style_drift** (warning): `lev_med` o `marg_med` cambia >2× o <0.5× vs `prev_date` (ambos no NULL/no 0).
-  - **Flags frescos**: `newly_disq` se calcula de los flags YA actualizados en esta corrida (dict en memoria), nunca del fetch inicial — si no, el propio `decopy_2neg` que trend añade sería invisible para el gate.
-  - **Matching por `portfolio_id`** contra `prev_roster` (el nick es renombrable).
-  - **diff.json**: `{"snapshot": date, "prev": prev_date, "added_a": [], "removed_a": [], "new_disqualified_incumbents": [{"nick","flags"}], "weight_moves": [{"nick","prev","now"}], "material": bool}` — los campos de roster (`added_a`, `removed_a`, `weight_moves`) los completa `rank` después de asignar tiers (trend deja listas vacías y `material` provisional); `material = true` si `prev_date is None` (primera corrida) o si algún titular de `prev_roster` recibió flag descalificante nuevo. `rank` re-evalúa `material` con los cambios de tier/peso.
+- Consumes: `trader_metrics` from ≥1 snapshots; `detect.DISQUALIFYING`.
+- Produces: `trend.run(con, snapshot_date, exchange='binance', prev_roster=None) -> dict` (the contents of `diff.json`). Effects: updates `trader_metrics.trend_bonus` and adds `style_drift` / decopy flags to `flags`. `prev_roster` = a dict loaded from the previous run's `roster.json`, or None.
+- Logic:
+  - `prev_date` = the greatest `snapshot_date < snapshot_date` in `snapshots` for that exchange (None if there is none).
+  - **trend_bonus**: least-squares slope of `monthly_alpha` (ordered by month, index 0..k-1), `slope·100` clamped to [−2, +2]; 0 with <3 months of data. If there is a `prev_date`, the simple average of that value and `sign(alpha_now − alpha_prev)` (+1/−1/0, clamped the same): `bonus = clamp((slope·100 + sign)/2, −2, 2)`.
+  - **de-copy** (disqualifying flag `decopy_2neg` — do NOT add it to `detect.DISQUALIFYING`: it is treated as trend's own disqualifier; `rank` excludes `DISQUALIFYING | {"decopy_2neg"}`): `alpha<0` in this snapshot **and** in `prev_date`.
+  - **cross-snapshot alpha_decay** (the half of the spec detect does not cover): `alpha_now < alpha_prev` → adds the `alpha_decay` warning if absent.
+  - **style_drift** (warning): `lev_med` or `marg_med` changes >2× or <0.5× vs `prev_date` (neither NULL nor 0).
+  - **Fresh flags**: `newly_disq` is computed from the flags ALREADY updated in this run (an in-memory dict), never from the initial fetch — otherwise the very `decopy_2neg` that trend adds would be invisible to the gate.
+  - **Matching by `portfolio_id`** against `prev_roster` (the nick can be renamed).
+  - **diff.json**: `{"snapshot": date, "prev": prev_date, "added_a": [], "removed_a": [], "new_disqualified_incumbents": [{"nick","flags"}], "weight_moves": [{"nick","prev","now"}], "material": bool}` — the roster fields (`added_a`, `removed_a`, `weight_moves`) are filled by `rank` after assigning tiers (trend leaves empty lists and a provisional `material`); `material = true` if `prev_date is None` (first run) or if any `prev_roster` incumbent picked up a new disqualifying flag. `rank` re-evaluates `material` with the tier/weight changes.
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_trend.py
@@ -846,7 +846,7 @@ def test_first_run_is_material(con):
     assert d["prev"] is None and d["material"] is True
 
 def test_trend_bonus_from_monthly_slope(con):
-    _tm(con, "2026-09-01", "A", 0.01)   # pendiente positiva en monthly
+    _tm(con, "2026-09-01", "A", 0.01)   # positive slope in monthly
     trend.run(con, "2026-09-01", EX)
     tb = con.execute("SELECT trend_bonus FROM trader_metrics "
                      "WHERE trader_id='A'").fetchone()[0]
@@ -862,13 +862,13 @@ def test_decopy_two_negative_snapshots_and_gate_sees_it(con):
         "SELECT flags FROM trader_metrics WHERE trader_id='B' "
         "AND snapshot_date='2026-09-01'").fetchone()[0])
     assert "decopy_2neg" in flags
-    # el gate ve el flag AÑADIDO EN ESTA CORRIDA (no flags stale del fetch inicial)
+    # the gate sees the flag ADDED IN THIS RUN (not stale flags from the initial fetch)
     assert d["new_disqualified_incumbents"][0]["portfolio_id"] == "B"
     assert d["material"] is True
 
 def test_alpha_decay_between_snapshots(con):
     _tm(con, "2026-08-01", "E", 0.020)
-    _tm(con, "2026-09-01", "E", 0.012)     # positivo pero decreciente
+    _tm(con, "2026-09-01", "E", 0.012)     # positive but declining
     trend.run(con, "2026-09-01", EX)
     flags = json.loads(con.execute(
         "SELECT flags FROM trader_metrics WHERE trader_id='E' "
@@ -895,11 +895,11 @@ def test_incumbent_disqualified_is_material(con):
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/trend.py
-"""Compara snapshots: quien mejora, quien decae, de-copy y style_drift."""
+"""Compares snapshots: who improves, who decays, de-copy and style_drift."""
 import json
 from pipeline import detect as det
 
@@ -928,7 +928,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
         old = {r['trader_id']: r for r in con.execute(
             "SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
             (prev, exchange))}
-    updated = {}                      # flags FRESCOS post-update (evita leer stale)
+    updated = {}                      # FRESH post-update flags (avoids reading stale)
     for tid, m in cur.items():
         flags = json.loads(m['flags'] or '[]')
         s = _slope(json.loads(m['monthly_alpha'] or '{}'))
@@ -940,7 +940,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
                 bonus = _clamp((bonus + sign) / 2)
                 if m['alpha'] < 0 and o['alpha'] < 0 and 'decopy_2neg' not in flags:
                     flags.append('decopy_2neg')
-                # mitad entre-snapshots de alpha_decay (spec): alpha bajo vs prev
+                # cross-snapshot half of alpha_decay (spec): alpha fell vs prev
                 if m['alpha'] < o['alpha'] and 'alpha_decay' not in flags:
                     flags.append('alpha_decay')
             for col in ('lev_med', 'marg_med'):
@@ -954,7 +954,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
     con.commit()
     newly_disq = []
     if prev_roster:
-        # matching por portfolio_id (estable) — el nick es renombrable
+        # matched by portfolio_id (stable) — the nick can be renamed
         for t in prev_roster.get('traders', []):
             tid = t.get('portfolio_id')
             if tid not in updated:
@@ -970,29 +970,29 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
 ```
 
 - [ ] **Step 4: PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(trend): diff entre snapshots, regla de-copy y trend_bonus"`
+- [ ] **Step 5: Commit** — `git commit -m "feat(trend): diff between snapshots, de-copy rule and trend_bonus"`
 
 ---
 
-### Task 7: rank — score, tiers, pesos y roster.json
+### Task 7: rank — score, tiers, weights and roster.json
 
 **Files:**
 - Create: `pipeline/rank.py`
 - Test: `tests/test_rank.py`
 
 **Interfaces:**
-- Consumes: `trader_metrics` con flags y trend_bonus; `detect.DISQUALIFYING`; el diff de `trend.run`; `prev_roster` (dict o None); nº de snapshots en que se ha visto cada trader (`SELECT COUNT(DISTINCT snapshot_date) FROM trader_metrics WHERE trader_id=?`).
-- Produces: `rank.run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None) -> dict` (el roster, formato del spec). Efectos: `UPDATE trader_metrics SET score, tier, weight`; completa `diff["added_a"/"removed_a"/"weight_moves"]` y re-evalúa `diff["material"]`.
-- Algoritmo:
-  1. Sobrevivientes = sin ningún flag en `DISQUALIFYING | {"decopy_2neg"}` **y score > 0**.
-  2. `score = 0.40·t_stat + 0.25·alpha·100 + 0.20·(payoff or 0) + 0.15·trend_bonus`; luego `score ·= (0.9 ** n_warnings)` (warnings = flags ∩ `detect.WARNINGS`).
-  3. Roster = top-5 por score. Tier A: 0 warnings **y** (visto en ≥2 snapshots **o** (n>300 **y es la primera corrida del pipeline** — un solo snapshot en la DB)). Tier B: el resto del top-5. Tier W: sobrevivientes fuera del top-5 **y** los que tienen `insufficient` como ÚNICO flag descalificante (novatos, no fraudes). Tier X: el resto de descalificados.
-  4. Pesos: si hay A y B → pool A 0.70 / pool B 0.30; solo A → 1.0. **Solo B (típico de la corrida #1): cada B se capea a 0.10 y el remanente queda SIN ASIGNAR** (suma < 1.0, el roster lo declara en `unallocated`) — jamás se vuelca el exceso en un solo trader. Dentro del grupo proporcional al score; el exceso de caps de B se redistribuye a A solo si A existe. Redondear a múltiplos de 0.05; el ajuste de redondeo va al mayor peso de A (o se omite si no hay A).
-  5. `removed` en el roster: titulares de `prev_roster` (por `portfolio_id`) que ya no están en A∪B, con `reason` = flags descalificantes o "fuera del top-5 por score".
-  6. Material adicional: alta/baja en tier A vs prev_roster, **cualquier titular (A o B) que sale del roster**, o |Δweight|>0.10 de un titular (una salida cuenta como prev→0).
-  7. Cada trader del roster lleva `trend`: `{"rank_prev", "rank_now", "alpha_delta"}` — rank por score dentro del snapshot previo (`trader_metrics` de `prev_date`, NULL si no existía) y delta de alpha.
+- Consumes: `trader_metrics` with flags and trend_bonus; `detect.DISQUALIFYING`; the diff from `trend.run`; `prev_roster` (a dict or None); the number of snapshots each trader has been seen in (`SELECT COUNT(DISTINCT snapshot_date) FROM trader_metrics WHERE trader_id=?`).
+- Produces: `rank.run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None) -> dict` (the roster, in the spec's format). Effects: `UPDATE trader_metrics SET score, tier, weight`; fills `diff["added_a"/"removed_a"/"weight_moves"]` and re-evaluates `diff["material"]`.
+- Algorithm:
+  1. Survivors = no flag in `DISQUALIFYING | {"decopy_2neg"}` **and score > 0**.
+  2. `score = 0.40·t_stat + 0.25·alpha·100 + 0.20·(payoff or 0) + 0.15·trend_bonus`; then `score ·= (0.9 ** n_warnings)` (warnings = flags ∩ `detect.WARNINGS`).
+  3. Roster = top-5 by score. Tier A: 0 warnings **and** (seen in ≥2 snapshots **or** (n>300 **and it is the pipeline's first run** — a single snapshot in the DB)). Tier B: the rest of the top-5. Tier W: survivors outside the top-5 **and** those whose ONLY disqualifying flag is `insufficient` (newcomers, not frauds). Tier X: the remaining disqualified.
+  4. Weights: with both A and B → pool A 0.70 / pool B 0.30; A only → 1.0. **B only (typical of run #1): each B is capped at 0.10 and the remainder stays UNALLOCATED** (sum < 1.0, declared by the roster in `unallocated`) — the excess is never dumped onto a single trader. Within the group, proportional to score; B's cap excess is redistributed to A only if A exists. Round to multiples of 0.05; the rounding adjustment goes to A's largest weight (or is skipped if there is no A).
+  5. `removed` in the roster: `prev_roster` incumbents (by `portfolio_id`) no longer in A∪B, with `reason` = disqualifying flags or "out of the top-5 by score".
+  6. Additional materiality: an entry/exit in tier A vs prev_roster, **any incumbent (A or B) leaving the roster**, or |Δweight|>0.10 for an incumbent (an exit counts as prev→0).
+  7. Every roster trader carries `trend`: `{"rank_prev", "rank_now", "alpha_delta"}` — rank by score within the previous snapshot (`trader_metrics` at `prev_date`, NULL if they did not exist) and the alpha delta.
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_rank.py
@@ -1008,7 +1008,7 @@ def _tm(con, tid, t=4.0, alpha=0.015, payoff=1.2, tb=0.5, n=400, flags='[]'):
     con.commit()
 
 def test_score_formula_and_warning_penalty(con):
-    _tm(con, "A")                                   # limpio
+    _tm(con, "A")                                   # clean
     _tm(con, "B", flags='["alpha_decay"]')          # 1 warning
     r = rank.run(con, D, EX)
     sa = next(t for t in r["traders"] if t["nick"] == "A")["score"]
@@ -1024,7 +1024,7 @@ def test_disqualified_excluded_and_cap5(con):
     r = rank.run(con, D, EX)
     nicks = [t["nick"] for t in r["traders"]]
     assert "bad" not in nicks and len(nicks) == 5
-    assert nicks[0] == "t0"                          # mayor score primero
+    assert nicks[0] == "t0"                          # highest score first
 
 def test_tiers_and_weights(con):
     _tm(con, "vet", n=400)                           # A (n>300, 0 warnings)
@@ -1035,7 +1035,7 @@ def test_tiers_and_weights(con):
     assert abs(sum(t["weight"] for t in r["traders"]) - 1.0) < 1e-9
     assert by["rookie"]["weight"] <= 0.10 + 1e-9
     assert all(abs(t["weight"] * 20 - round(t["weight"] * 20)) < 1e-6
-               for t in r["traders"])                # multiplos de 0.05
+               for t in r["traders"])                # multiples of 0.05
 
 def test_material_on_tier_a_change(con):
     _tm(con, "vet", n=400)
@@ -1044,37 +1044,37 @@ def test_material_on_tier_a_change(con):
                          "tier": "A", "weight": 0.5}]}
     rank.run(con, D, EX, diff=diff, prev_roster=prev)
     assert "vet" in diff["added_a"] and "otro" in diff["removed_a"]
-    # la salida del titular tambien aparece como weight_move prev->0
+    # the incumbent's exit also shows up as a weight_move prev->0
     assert any(m["nick"] == "otro" and m["now"] == 0.0
                for m in diff["weight_moves"])
     assert diff["material"] is True
 
 def test_weights_all_B_respects_cap_and_leaves_unallocated(con):
-    # corrida #1 tipica: nadie califica a tier A (todos con warning)
+    # typical run #1: nobody qualifies for tier A (everyone has a warning)
     for i in range(5):
         _tm(con, f"b{i}", t=4.0 - i * 0.1, n=100, flags='["alpha_decay"]')
     r = rank.run(con, D, EX)
     assert all(t["tier"] == "B" for t in r["traders"])
-    assert all(t["weight"] <= 0.10 + 1e-9 for t in r["traders"])   # cap SIEMPRE
+    assert all(t["weight"] <= 0.10 + 1e-9 for t in r["traders"])   # cap ALWAYS
     assert abs(sum(t["weight"] for t in r["traders"]) - 0.50) < 1e-9
-    assert abs(r["unallocated"] - 0.50) < 1e-9   # remanente declarado, no volcado
+    assert abs(r["unallocated"] - 0.50) < 1e-9   # remainder declared, not dumped
 
 def test_insufficient_only_goes_to_W_not_X(con):
-    _tm(con, "novato", n=30, flags='["insufficient"]')
-    _tm(con, "fraude", n=100, flags='["loss_hider"]')
+    _tm(con, "newbie_ins", n=30, flags='["insufficient"]')
+    _tm(con, "fraud", n=100, flags='["loss_hider"]')
     rank.run(con, D, EX)
     tiers = {r["trader_id"]: r["tier"] for r in con.execute(
         "SELECT trader_id, tier FROM trader_metrics WHERE snapshot_date=?", (D,))}
-    assert tiers["novato"] == "W" and tiers["fraude"] == "X"
+    assert tiers["newbie_ins"] == "W" and tiers["fraud"] == "X"
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/rank.py
-"""Score, tiers y pesos -> roster. Cap de 5 traders (A+B).
-Matching entre corridas SIEMPRE por portfolio_id (el nick es renombrable)."""
+"""Score, tiers and weights -> roster. Capped at 5 traders (A+B).
+Runs are ALWAYS matched by portfolio_id (the nick can be renamed)."""
 import json, datetime as dt
 from pipeline import detect as det
 
@@ -1084,9 +1084,9 @@ def _round05(x):
     return round(x * 20) / 20
 
 def _weights(roster):
-    """A y B: pool 70/30. Solo A: pool 1.0. Solo B: cap 0.10 c/u y el
-    remanente queda SIN ASIGNAR (suma < 1.0) — nunca se vuelca en uno solo.
-    Devuelve el peso no asignado."""
+    """A and B: 70/30 pools. A only: pool 1.0. B only: cap of 0.10 each and the
+    remainder stays UNALLOCATED (sums < 1.0) — never dumped onto a single one.
+    Returns the unallocated weight."""
     A = [t for t in roster if t['tier'] == 'A']
     B = [t for t in roster if t['tier'] == 'B']
     poolA = 1.0 if (A and not B) else 0.70
@@ -1095,7 +1095,7 @@ def _weights(roster):
         tot = sum(t['score'] for t in grp)
         for t in grp:
             t['weight'] = pool * t['score'] / tot if tot else 0.0
-    # cap iterativo de B: el exceso se reparte dentro de B entre los no capeados
+    # iterative cap on B: the excess is spread within B among the uncapped ones
     for _ in range(len(B)):
         excess = sum(max(0.0, t['weight'] - 0.10) for t in B)
         if excess < 1e-9:
@@ -1111,7 +1111,7 @@ def _weights(roster):
     for t in B:
         t['weight'] = min(t['weight'], 0.10)
     b_excess = poolB - sum(t['weight'] for t in B) if B else 0.0
-    if A and b_excess > 1e-9:                 # exceso de B pasa a A si A existe
+    if A and b_excess > 1e-9:                 # B's excess goes to A if A exists
         totA = sum(t['weight'] for t in A)
         for t in A:
             t['weight'] += b_excess * t['weight'] / totA if totA else 0.0
@@ -1119,11 +1119,11 @@ def _weights(roster):
         t['weight'] = _round05(t['weight'])
     assigned = sum(t['weight'] for t in roster)
     drift = 1.0 - assigned
-    if A and abs(drift) > 1e-9:               # ajuste de redondeo SOLO sobre A
+    if A and abs(drift) > 1e-9:               # rounding adjustment ONLY on A
         mx = max(A, key=lambda t: t['weight'])
         mx['weight'] = _round05(mx['weight'] + drift)
         assigned = sum(t['weight'] for t in roster)
-    return max(0.0, round(1.0 - assigned, 2))  # unallocated (solo-B lo deja >0)
+    return max(0.0, round(1.0 - assigned, 2))  # unallocated (B-only leaves it >0)
 
 def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     ms = con.execute("SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
@@ -1156,13 +1156,13 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                   key=lambda c: -c['score'])
     roster = surv[:5]
     for c in roster:
-        # n>300 sustituye historial SOLO en la primera corrida del pipeline
+        # n>300 stands in for history ONLY on the pipeline's first run
         c['tier'] = 'A' if (not c['warns'] and
                             (seen.get(c['tid'], 1) >= 2 or
                              (total_snaps <= 1 and (c['m']['n'] or 0) > 300))) \
                     else 'B'
     unallocated = _weights(roster)
-    # rank del snapshot previo por score (para el bloque trend del roster)
+    # previous snapshot's rank by score (for the roster's trend block)
     prev_rank = {}
     if prev_m:
         ordered = sorted(prev_m.values(),
@@ -1173,7 +1173,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
         if c['tid'] in in_roster:
             tier = c['tier']
         elif c['flags'] & BAD == {'insufficient'}:
-            tier = 'W'                        # novato, no fraude (spec)
+            tier = 'W'                        # newcomer, not fraud (spec)
         elif c['disq']:
             tier = 'X'
         else:
@@ -1208,7 +1208,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                 continue
             c = by_id.get(pid)
             reason = (', '.join(sorted(c['flags'] & BAD)) if c and (c['flags'] & BAD)
-                      else 'fuera del top-5 por score' if c else 'fuera del universo')
+                      else 'out of the top-5 by score' if c else 'out of the universe')
             removed.append({'portfolio_id': pid, 'nick': t['nick'], 'reason': reason})
     if diff is not None:
         prev_traders = (prev_roster or {}).get('traders', [])
@@ -1237,7 +1237,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
 ```
 
 - [ ] **Step 4: PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(rank): score, tiers A/B/W/X, pesos y roster"`
+- [ ] **Step 5: Commit** — `git commit -m "feat(rank): score, A/B/W/X tiers, weights and roster"`
 
 ---
 
@@ -1248,10 +1248,10 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
 - Test: `tests/test_report.py`
 
 **Interfaces:**
-- Consumes: roster (dict de `rank.run`), diff (dict), `trader_metrics` (para excluidos notables).
-- Produces: `report.write(con, snapshot_date, exchange, roster, diff, out_dir) -> str` (path del .md). Escribe `TOP_<YYYY-MM>.md` en `out_dir`. Secciones: título+fecha; tabla del roster (nick, tier, weight, score, alpha%, t, payoff, lev, mdd, n, warnings); **Cambios vs corrida anterior** (`prev` del diff; altas/bajas A, weight_moves, new_disqualified_incumbents; o "Primera corrida — sin corrida previa"); **Excluidos notables** (top-10 por `trader_snapshot.roi` entre tier X, con sus flags); **Caveats fijos** (texto literal: ventana de régimen única; survivorship top-600; winner's curse ≈ mitad del alpha; solo posiciones cerradas visibles).
+- Consumes: roster (the dict from `rank.run`), diff (dict), `trader_metrics` (for the notable exclusions).
+- Produces: `report.write(con, snapshot_date, exchange, roster, diff, out_dir) -> str` (the .md path). Writes `TOP_<YYYY-MM>.md` into `out_dir`. Sections: title+date; the roster table (nick, tier, weight, score, alpha%, t, payoff, lev, mdd, n, warnings); **Changes vs the previous run** (the diff's `prev`; A entries/exits, weight_moves, new_disqualified_incumbents; or "First run — no previous run"); **Notable exclusions** (top-10 by `trader_snapshot.roi` among tier X, with their flags); **Standing caveats** (literal text: single regime window; top-600 survivorship; winner's curse ≈ half the alpha; only closed positions visible).
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_report.py
@@ -1275,35 +1275,35 @@ def test_report_contains_sections(con, tmp_path):
             "weight_moves": [], "new_disqualified_incumbents": [], "material": True}
     p = report.write(con, "2026-09-01", "binance", roster, diff, tmp_path)
     text = open(p).read()
-    assert "suoha" in text and "Cambios" in text
+    assert "suoha" in text and "Changes" in text
     assert "vicky" in text and "roi_artifact" in text
-    assert "winner" in text.lower() or "mitad del alpha" in text
-    assert "Primera corrida" in text
+    assert "winner" in text.lower() or "half the" in text
+    assert "First run" in text
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 # pipeline/report.py
-"""Genera el reporte humano TOP_YYYY-MM.md."""
+"""Generates the human-readable TOP_YYYY-MM.md report."""
 import json, os
 
-CAVEATS = """## Caveats fijos
-- **Ventana de régimen única**: la data cubre pocos meses y un solo ciclo; \
-consistencia dentro del ciclo, no estabilidad universal.
-- **Survivorship**: el universo Binance es el top-600 por ROI-90D; no hay grupo \
-de control de traders quebrados.
-- **Winner's curse**: con cientos de candidatos filtrados, espera ~la mitad del \
-alpha mostrado.
-- **Solo posiciones cerradas** son visibles (salvo data de abiertas): las \
-perdidas latentes de un loss-hider pueden no aparecer.
+CAVEATS = """## Standing caveats
+- **Single regime window**: the data covers few months and one cycle only; \
+consistency within the cycle, not universal stability.
+- **Survivorship**: the Binance universe is the top-600 by 90D ROI; there is no \
+control group of blown-up traders.
+- **Winner's curse**: with hundreds of candidates filtered down, expect ~half the \
+alpha shown.
+- **Only closed positions** are visible (barring open-position data): a \
+loss-hider's latent losses may never show up.
 """
 
 def write(con, snapshot_date, exchange, roster, diff, out_dir):
     month = snapshot_date[:7]
     path = os.path.join(str(out_dir), f"TOP_{month}.md")
-    L = [f"# Roster copy-trading — {snapshot_date} ({exchange})", ""]
+    L = [f"# Copy-trading roster — {snapshot_date} ({exchange})", ""]
     L += ["| nick | tier | peso | score | alpha% | t | payoff | lev | mdd | n | warnings |",
           "|---|---|---|---|---|---|---|---|---|---|---|"]
     for t in roster["traders"]:
@@ -1314,26 +1314,26 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
                  f"| {fmt(m['lev_med'],0)} | {fmt(m['mdd'])} | {m['n']} "
                  f"| {', '.join(t['warnings']) or '—'} |")
     if roster.get("unallocated"):
-        L.append(f"\n**Peso sin asignar: {roster['unallocated']:.0%}** "
-                 f"(roster todo tier B — cap del 10% por trader)")
-    L += ["", "## Cambios vs corrida anterior"]
+        L.append(f"\n**Unallocated weight: {roster['unallocated']:.0%}** "
+                 f"(roster is all tier B — 10% cap per trader)")
+    L += ["", "## Changes vs previous run"]
     if diff.get("prev") is None:
-        L.append("Primera corrida — sin corrida previa.")
+        L.append("First run — no previous run.")
     else:
-        L.append(f"Comparado con {diff['prev']}.")
+        L.append(f"Compared with {diff['prev']}.")
         for n in diff["added_a"]:
-            L.append(f"- ▲ **{n}** entra a tier A")
+            L.append(f"- ▲ **{n}** enters tier A")
         for n in diff["removed_a"]:
-            L.append(f"- ▼ **{n}** sale de tier A")
+            L.append(f"- ▼ **{n}** leaves tier A")
         for w in diff["weight_moves"]:
             L.append(f"- ⚖ **{w['nick']}**: {w['prev']:.0%} → {w['now']:.0%}")
         for d in diff["new_disqualified_incumbents"]:
-            L.append(f"- ✖ **{d['nick']}** descalificado: {', '.join(d['flags'])}")
+            L.append(f"- ✖ **{d['nick']}** disqualified: {', '.join(d['flags'])}")
         if len(L[-1]) and L[-1].startswith("Comparado") :
-            L.append("Sin cambios materiales.")
+            L.append("No material changes.")
     for r in roster.get("removed", []):
-        L.append(f"- ✖ **{r['nick']}** fuera del roster: {r['reason']}")
-    L += ["", "## Excluidos notables"]
+        L.append(f"- ✖ **{r['nick']}** out of the roster: {r['reason']}")
+    L += ["", "## Notable exclusions"]
     rows = con.execute(
         "SELECT tm.nick, ts.roi, tm.flags FROM trader_metrics tm "
         "LEFT JOIN trader_snapshot ts ON ts.snapshot_date=tm.snapshot_date "
@@ -1342,7 +1342,7 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
         "ORDER BY ts.roi DESC LIMIT 10", (snapshot_date, exchange)).fetchall()
     for r in rows:
         roi = f"{r['roi']:.0f}%" if r['roi'] is not None else "—"
-        L.append(f"- **{r['nick']}** (ROI portada {roi}): "
+        L.append(f"- **{r['nick']}** (headline ROI {roi}): "
                  f"{', '.join(json.loads(r['flags'] or '[]'))}")
     L += ["", CAVEATS]
     with open(path, "w") as fh:
@@ -1351,25 +1351,25 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
 ```
 
 - [ ] **Step 4: PASS.**
-- [ ] **Step 5: Commit** — `git commit -m "feat(report): reporte humano TOP_YYYY-MM.md"`
+- [ ] **Step 5: Commit** — `git commit -m "feat(report): human report TOP_YYYY-MM.md"`
 
 ---
 
-### Task 9: scrape — a snapshot fechado, resumable
+### Task 9: scrape — into a dated snapshot, resumable
 
 **Files:**
 - Create: `pipeline/scrape.py`
 - Test: `tests/test_scrape.py`
 
 **Interfaces:**
-- Consumes: red (Binance/Phemex, endpoints y headers idénticos a `scripts/scrape_binance.py` y `scripts/scrape_positions.py` — copiar `UA`, URLs y cuerpos tal cual; NO importar los scripts viejos).
-- Produces: `scrape.run(snap_dir, exchanges=('binance','phemex'), pages_binance=20, pages_phemex=7, extra_ids_binance=(), http_post=None, http_get=None) -> dict {"binance": n_traders, "phemex": n_traders}`. Escribe `binance_raw.jsonl` / `phemex_raw.jsonl` en `snap_dir` (formato de línea idéntico al actual). Resumable: si el archivo ya existe en el snapshot dir, salta los trader_id presentes. `http_post`/`http_get` inyectables para tests (default = las funciones reales con urllib). Las listas de portfolios/traders se guardan también como `binance_list.json` / `phemex_list.json` en el snapshot dir.
-- **`extra_ids_binance`** (unión histórica del spec): portfolio_ids conocidos de corridas previas que ya NO están en la lista viva — se les baja igual el position-history (el endpoint acepta cualquier pid) con un registro mínimo `{'portfolioId': pid, 'nick': None, ..., 'positions': rows}`. Así el de-copy ve decaer a un trader justo cuando sale del top-600.
-- **⚠️ Cap real de la list API: 30/página aunque pidas 50** (SKILL.md: "pageSize se ignora"). Por eso: `pages_binance=20` por default (≥600 portfolios) y el loop de `fetch_portfolios` corta SOLO con página vacía (`not lst`), NUNCA con `len(lst) < pageSize` — con el cap de 30 ese break cortaría en la página 1 y entregaría la mitad del universo pasando la validación ±50% por 3 traders.
-- **Fallo de red ≠ hecho**: si `fetch_history` recibe `{'code':'ERR'}` a mitad de paginación, NO se escribe el registro del trader (queda fuera de `done` y el resume lo reintenta). El bug heredado de `scripts/scrape_binance.py` (ERR → `positions: []` → marcado como completo para siempre) NO se copia. `fetch_history` devuelve `(rows, ok)` y solo `ok=True` escribe.
-- Diferencias vs scripts viejos: (1) escribe al snapshot dir, no a `data/*.jsonl` global; (2) funciones puras parametrizadas; (3) al final imprime resumen `{exchange: n}`; (4) los dos puntos de arriba.
+- Consumes: the network (Binance/Phemex, endpoints and headers identical to `scripts/scrape_binance.py` and `scripts/scrape_positions.py` — copy `UA`, URLs and bodies verbatim; do NOT import the old scripts).
+- Produces: `scrape.run(snap_dir, exchanges=('binance','phemex'), pages_binance=20, pages_phemex=7, extra_ids_binance=(), http_post=None, http_get=None) -> dict {"binance": n_traders, "phemex": n_traders}`. Writes `binance_raw.jsonl` / `phemex_raw.jsonl` into `snap_dir` (line format identical to the current one). Resumable: if the file already exists in the snapshot dir, it skips the trader_ids present. `http_post`/`http_get` injectable for tests (default = the real urllib functions). The portfolio/trader listings are also saved as `binance_list.json` / `phemex_list.json` in the snapshot dir.
+- **`extra_ids_binance`** (the spec's historical union): portfolio_ids known from previous runs that are NO longer in the live listing — their position-history is downloaded anyway (the endpoint accepts any pid) with a minimal record `{'portfolioId': pid, 'nick': None, ..., 'positions': rows}`. That way de-copy sees a trader decay exactly as they drop out of the top-600.
+- **⚠️ The list API's real cap: 30/page even if you ask for 50** (SKILL.md: "pageSize is ignored"). Hence: `pages_binance=20` by default (≥600 portfolios) and `fetch_portfolios`'s loop breaks ONLY on an empty page (`not lst`), NEVER on `len(lst) < pageSize` — with the cap of 30 that break would stop at page 1 and deliver half the universe, passing the ±50% validation by 3 traders.
+- **A network failure ≠ done**: if `fetch_history` receives `{'code':'ERR'}` mid-pagination, the trader's record is NOT written (it stays out of `done` and the resume retries it). The bug inherited from `scripts/scrape_binance.py` (ERR → `positions: []` → marked complete forever) is NOT copied. `fetch_history` returns `(rows, ok)` and only `ok=True` writes.
+- Differences from the old scripts: (1) it writes to the snapshot dir, not to a global `data/*.jsonl`; (2) pure parameterised functions; (3) it prints a `{exchange: n}` summary at the end; (4) the two points above.
 
-- [ ] **Step 1: Test que falla** (con HTTP mockeado)
+- [ ] **Step 1: Failing test** (with mocked HTTP)
 
 ```python
 # tests/test_scrape.py
@@ -1398,27 +1398,27 @@ def test_binance_scrape_writes_snapshot(tmp_path):
 def test_binance_scrape_resumes(tmp_path):
     scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
-    assert counts["binance"] == 0          # ya estaba, no re-scrapea
+    assert counts["binance"] == 0          # already there, no re-scrape
     lines = (tmp_path / "binance_raw.jsonl").read_text().strip().splitlines()
-    assert len(lines) == 1                  # sin duplicados
+    assert len(lines) == 1                  # no duplicates
 
 def test_network_error_does_not_mark_trader_done(tmp_path):
     def _err_post(url, body):
         if "query-list" in url:
             return _fake_post(url, body)
-        return {"code": "ERR"}              # historial siempre falla
+        return {"code": "ERR"}              # history always fails
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_err_post)
-    assert counts["binance"] == 0           # nada escrito
+    assert counts["binance"] == 0           # nothing written
     raw = tmp_path / "binance_raw.jsonl"
     assert not raw.exists() or raw.read_text().strip() == ""
-    # al reintentar con red sana, el trader SI se baja (no quedo marcado hecho)
+    # on retry with a healthy network the trader IS fetched (never marked done)
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
     assert counts["binance"] == 1
 
-def test_extra_ids_union_historica(tmp_path):
+def test_extra_ids_historical_union(tmp_path):
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post,
                         extra_ids_binance=("P_OLD",))
-    assert counts["binance"] == 2           # P1 (lista viva) + P_OLD (historico)
+    assert counts["binance"] == 2           # P1 (live listing) + P_OLD (historical)
     lines = [json.loads(l) for l in
              (tmp_path / "binance_raw.jsonl").read_text().strip().splitlines()]
     ids = {l["portfolioId"] for l in lines}
@@ -1426,11 +1426,11 @@ def test_extra_ids_union_historica(tmp_path):
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar** — portar los dos scrapers a `pipeline/scrape.py` con la estructura:
+- [ ] **Step 3: Implement** — port both scrapers into `pipeline/scrape.py` with this structure:
 
 ```python
 # pipeline/scrape.py  (esqueleto — cuerpos de red copiados de scripts/scrape_*.py)
-"""Scrape Binance+Phemex a un snapshot fechado. Resumable dentro del snapshot."""
+"""Scrapes Binance+Phemex into a dated snapshot. Resumable within the snapshot."""
 import json, os, time, urllib.request
 
 BUA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -1448,7 +1448,7 @@ PH_REC = ('https://api.phemex.com/phemex-lb/public/data/v3/user/recommend'
 PH_POS = 'https://api.phemex.com/phemex-lb/public/data/position/closed/v2'
 
 def _post(url, body, tries=3):
-    # identico a scripts/scrape_binance.py::post
+    # identical to scripts/scrape_binance.py::post
     for i in range(tries):
         try:
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=BUA)
@@ -1460,7 +1460,7 @@ def _post(url, body, tries=3):
             time.sleep(2 * (i + 1))
 
 def _get(url, tries=3):
-    # identico a scripts/scrape_positions.py::get, headers PUA
+    # identical to scripts/scrape_positions.py::get, PUA headers
     ...
 
 def _done_ids(path, key):
@@ -1472,9 +1472,9 @@ def _done_ids(path, key):
     return done
 
 def _fetch_history(pid, post):
-    """Devuelve (rows, ok). ok=False si hubo ERR a mitad de paginacion —
-    en ese caso el caller NO escribe el registro (el resume lo reintenta).
-    NO copiar el bug de scripts/scrape_binance.py (ERR -> [] -> 'hecho')."""
+    """Returns (rows, ok). ok=False if an ERR hit mid-pagination — in that case
+    the caller does NOT write the record (the resume retries it).
+    Do NOT copy the bug in scripts/scrape_binance.py (ERR -> [] -> 'done')."""
     all_rows, page = [], 1
     while page <= 40:
         d = post(HIST_URL, {'portfolioId': pid, 'pageNumber': page, 'pageSize': 50})
@@ -1492,17 +1492,17 @@ def _fetch_history(pid, post):
 
 def _scrape_binance(snap_dir, pages, post, extra_ids=()):
     # fetch_portfolios de scripts/scrape_binance.py -> snap_dir/binance_list.json;
-    # por cada portfolio de la lista + cada pid de extra_ids no presente en ella:
+    # for each portfolio in the listing + each extra_ids pid not present in it:
     #   rows, ok = _fetch_history(pid, post)
-    #   solo si ok: escribir el registro (formato identico al actual; para
-    #   extra_ids sin metadata: nick/roi/pnl/aum/winRate/mdd = None) y append
+    #   only if ok: write the record (format identical to the current one; for
+    #   extra_ids without metadata: nick/roi/pnl/aum/winRate/mdd = None) and append
     #   a snap_dir/binance_raw.jsonl, saltando _done_ids(..., 'portfolioId').
     # Devuelve nº de portfolios NUEVOS escritos.
     ...
 
 def _scrape_phemex(snap_dir, pages, get):
-    # fetch_trader_list + loop de scripts/scrape_positions.py, mismo patron
-    # (incluida la misma regla: fallo de red -> no escribir, no marcar hecho).
+    # fetch_trader_list + the loop from scripts/scrape_positions.py, same pattern
+    # (including the same rule: network failure -> do not write, do not mark done).
     # Devuelve nº de traders NUEVOS escritos.
     ...
 
@@ -1519,37 +1519,37 @@ def run(snap_dir, exchanges=('binance', 'phemex'), pages_binance=20,
     return out
 ```
 
-Los cuerpos de `_scrape_binance`/`_scrape_phemex`/`_get` se copian línea a línea de los scripts viejos cambiando solo rutas de salida y la inyección de `post`/`get`. El registro por trader debe ser **idéntico** al formato actual (`{'portfolioId', 'nick', 'roi', 'pnl', 'aum', 'winRate', 'mdd', 'n_pos', 'positions'}` / `{'userId', 'nick', 'n_pos', 'positions'}`) para que Task 2 los lea.
+The bodies of `_scrape_binance`/`_scrape_phemex`/`_get` are copied line by line from the old scripts, changing only the output paths and the `post`/`get` injection. The per-trader record must be **identical** to the current format (`{'portfolioId', 'nick', 'roi', 'pnl', 'aum', 'winRate', 'mdd', 'n_pos', 'positions'}` / `{'userId', 'nick', 'n_pos', 'positions'}`) so that Task 2 can read them.
 
-- [ ] **Step 4: PASS** (tests solo del camino Binance mockeado; añadir un test análogo para Phemex con `http_get` mockeado que devuelva 1 trader con `showPosition: true` y 1 página de posiciones).
-- [ ] **Step 5: Commit** — `git commit -m "feat(scrape): scrapers a snapshot fechado, resumable e inyectable"`
+- [ ] **Step 4: PASS** (tests only for the mocked Binance path; add an analogous Phemex test with a mocked `http_get` returning 1 trader with `showPosition: true` and 1 page of positions).
+- [ ] **Step 5: Commit** — `git commit -m "feat(scrape): scrapers into a dated snapshot, resumable and injectable"`
 
 ---
 
-### Task 10: CLI — pipeline.py con subcomandos y validación
+### Task 10: CLI — pipeline.py with subcommands and validation
 
 **Files:**
-- Create: `pipeline.py` (raíz del proyecto)
+- Create: `pipeline.py` (project root)
 - Test: `tests/test_cli.py`
 
 **Interfaces:**
-- Consumes: todos los módulos anteriores.
+- Consumes: every previous module.
 - Produces: CLI:
-  - `python3 pipeline.py scrape [--date YYYY-MM-DD] [--exchange binance|phemex|all]` → `data/snapshots/<date>/` (date default hoy). Pasa a `scrape.run` los `extra_ids_binance` = distinct `trader_id` históricos de la DB que no estén ya bajados (unión histórica del spec).
-  - `python3 pipeline.py analyze [--date YYYY-MM-DD] [--force]` → flatten→**validación (ANTES de ingest, desde los CSV)**→ingest→metrics→detect→trend→rank→report; escribe `analysis/runs/<date>/{roster.json,diff.json,TOP_*.md}`. **NO toca `analysis/roster.json`** (el latest).
-  - `python3 pipeline.py publish --date YYYY-MM-DD` → copia `analysis/runs/<date>/roster.json` a `analysis/roster.json`. Es el ÚNICO comando que escribe el latest; la skill lo invoca tras el gate del consejo.
-  - Subcomandos granulares `metrics|detect|trend|rank|report --date ...` para debug. **Orden obligatorio documentado en el `--help`**: metrics→detect→trend→rank→report (metrics resetea flags/trend_bonus vía INSERT OR REPLACE; un rank sin detect/trend posterior rankearía sin flags).
-- **Validación pre-ingest** (la DB no se toca si falla): (a) `data/snapshots/<date>/` debe existir y tener al menos un `*_raw.jsonl` no vacío — un `--date` con typo NUNCA produce un roster vacío; (b) contando filas de los CSV recién flatteneados vs el snapshot previo en `snapshots` (si existe): `n_traders` y `n_positions` dentro de ±50%; (c) **un exchange con snapshot previo en la DB cuyo CSV hoy no existe o está vacío → falla** (Phemex caído ≠ data completa). Cualquier fallo → detalle a stderr y `return 2`, salvo `--force`.
-- `prev_roster`: se carga de `analysis/runs/<prev_date>/roster.json` si existe (prev_date = snapshot previo en DB **del exchange analizado**).
-- Función `main(argv=None, project_root=None)` para testear con `tmp_path`.
+  - `python3 pipeline.py scrape [--date YYYY-MM-DD] [--exchange binance|phemex|all]` → `data/snapshots/<date>/` (date defaults to today). Passes `scrape.run` the `extra_ids_binance` = the DB's distinct historical `trader_id`s not already downloaded (the spec's historical union).
+  - `python3 pipeline.py analyze [--date YYYY-MM-DD] [--force]` → flatten→**validation (BEFORE ingest, from the CSVs)**→ingest→metrics→detect→trend→rank→report; writes `analysis/runs/<date>/{roster.json,diff.json,TOP_*.md}`. **Does NOT touch `analysis/roster.json`** (the latest).
+  - `python3 pipeline.py publish --date YYYY-MM-DD` → copies `analysis/runs/<date>/roster.json` to `analysis/roster.json`. The ONLY command that writes the latest; the skill invokes it after the council gate.
+  - Granular subcommands `metrics|detect|trend|rank|report --date ...` for debugging. **Mandatory order documented in `--help`**: metrics→detect→trend→rank→report (metrics resets flags/trend_bonus via INSERT OR REPLACE; a rank without a subsequent detect/trend would rank with no flags).
+- **Pre-ingest validation** (the DB is untouched on failure): (a) `data/snapshots/<date>/` must exist and hold at least one non-empty `*_raw.jsonl` — a typo'd `--date` NEVER produces an empty roster; (b) counting rows of the just-flattened CSVs against the previous snapshot in `snapshots` (if any): `n_traders` and `n_positions` within ±50%; (c) **an exchange with a previous snapshot in the DB whose CSV today is missing or empty → fails** (Phemex being down ≠ complete data). Any failure → details to stderr and `return 2`, unless `--force`.
+- `prev_roster`: loaded from `analysis/runs/<prev_date>/roster.json` if it exists (prev_date = the previous snapshot in the DB **for the analysed exchange**).
+- A `main(argv=None, project_root=None)` function so it can be tested with `tmp_path`.
 
-- [ ] **Step 1: Test que falla**
+- [ ] **Step 1: Failing test**
 
 ```python
 # tests/test_cli.py
 import importlib.util, json, pathlib, shutil
 
-# pipeline.py (archivo) colisiona con pipeline/ (paquete): cargar el CLI por path
+# pipeline.py (file) collides with pipeline/ (package): load the CLI by path
 _spec = importlib.util.spec_from_file_location(
     "cli", pathlib.Path(__file__).parent.parent / "pipeline.py")
 cli = importlib.util.module_from_spec(_spec)
@@ -1570,9 +1570,9 @@ def test_analyze_end_to_end_and_publish_gate(tmp_path, snap_dir):
     roster = json.loads((run_dir / "roster.json").read_text())
     diff = json.loads((run_dir / "diff.json").read_text())
     assert roster["snapshot"] == "2026-09-01"
-    assert diff["material"] is True            # primera corrida
+    assert diff["material"] is True            # first run
     assert (run_dir / "TOP_2026-09.md").exists()
-    # analyze NO publica el latest — eso es publish, tras el gate
+    # analyze does NOT publish the latest — that is publish, after the gate
     assert not (root / "analysis" / "roster.json").exists()
     rc = cli.main(["publish", "--date", "2026-09-01"], project_root=str(root))
     assert rc == 0
@@ -1580,7 +1580,7 @@ def test_analyze_end_to_end_and_publish_gate(tmp_path, snap_dir):
 
 def test_analyze_aborts_on_missing_snapshot_dir(tmp_path, snap_dir):
     root = _setup_project(tmp_path, snap_dir)
-    # typo en --date: no debe producir un roster (menos aun uno vacio)
+    # typo in --date: must not produce a roster (least of all an empty one)
     rc = cli.main(["analyze", "--date", "2026-12-31"], project_root=str(root))
     assert rc == 2
     assert not (root / "analysis" / "runs" / "2026-12-31").exists()
@@ -1588,7 +1588,7 @@ def test_analyze_aborts_on_missing_snapshot_dir(tmp_path, snap_dir):
 def test_analyze_validation_blocks_partial_data(tmp_path, snap_dir):
     root = _setup_project(tmp_path, snap_dir, "2026-09-01")
     cli.main(["analyze", "--date", "2026-09-01"], project_root=str(root))
-    # segundo snapshot con 5x las posiciones -> fuera de ±50%
+    # second snapshot with 5x the positions -> outside ±50%
     d2 = root / "data" / "snapshots" / "2026-10-01"
     d2.mkdir()
     lines = (snap_dir / "binance_raw.jsonl").read_text()
@@ -1597,7 +1597,7 @@ def test_analyze_validation_blocks_partial_data(tmp_path, snap_dir):
     (d2 / "binance_raw.jsonl").write_text(json.dumps(rec) + "\n")
     rc = cli.main(["analyze", "--date", "2026-10-01"], project_root=str(root))
     assert rc == 2
-    # la DB NO quedo envenenada: el snapshot rechazado no existe en `snapshots`
+    # the DB was NOT poisoned: the rejected snapshot is absent from `snapshots`
     from pipeline import db as dbmod
     con = dbmod.connect(root / "data" / "copytrade.sqlite")
     assert con.execute("SELECT COUNT(*) FROM snapshots "
@@ -1609,18 +1609,18 @@ def test_analyze_validation_blocks_partial_data(tmp_path, snap_dir):
 ```
 
 - [ ] **Step 2: FAIL.**
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
-# pipeline.py — entrypoint del pipeline copy-trading-refresh
-"""Uso:
+# pipeline.py — entrypoint for the copy-trading-refresh pipeline
+"""Usage:
   python3 pipeline.py scrape  [--date YYYY-MM-DD] [--exchange all|binance|phemex]
   python3 pipeline.py analyze [--date YYYY-MM-DD] [--force]
-  python3 pipeline.py publish --date YYYY-MM-DD     (unico que escribe analysis/roster.json)
+  python3 pipeline.py publish --date YYYY-MM-DD     (the only one that writes analysis/roster.json)
   python3 pipeline.py metrics|detect|trend|rank|report --date YYYY-MM-DD
-     (orden obligatorio: metrics -> detect -> trend -> rank -> report;
-      metrics resetea flags/trend_bonus — un rank sin detect+trend rankea sin flags)
+     (mandatory order: metrics -> detect -> trend -> rank -> report;
+      metrics resets flags/trend_bonus — a rank without detect+trend ranks with no flags)
 """
 import argparse, csv, datetime as dt, glob, json, os, shutil, sys
 from pipeline import db as dbmod, flatten, ingest, metrics, detect, trend, rank, report
@@ -1633,7 +1633,7 @@ def _paths(root, date):
             'latest': os.path.join(root, 'analysis', 'roster.json')}
 
 def _csv_counts(snap_dir, ex):
-    """(n_traders, n_positions) del CSV del snapshot, o None si no existe/vacio."""
+    """(n_traders, n_positions) from the snapshot CSV, or None if missing/empty."""
     path = os.path.join(snap_dir, f'{ex}.csv')
     if not os.path.exists(path):
         return None
@@ -1644,17 +1644,17 @@ def _csv_counts(snap_dir, ex):
     return (len(traders), n) if n else None
 
 def _validate_pre(con, snap_dir, date, force):
-    """ANTES de ingest, desde los CSV — la DB no se toca si falla."""
+    """BEFORE ingest, straight from the CSVs — the DB is left untouched on failure."""
     raws = [p for p in glob.glob(os.path.join(snap_dir, '*_raw.jsonl'))
             if os.path.getsize(p) > 0]
     if not os.path.isdir(snap_dir) or not raws:
-        print(f"VALIDACION: {snap_dir} no existe o no tiene *_raw.jsonl — "
-              f"¿typo en --date?", file=sys.stderr)
-        return False                       # esto ni --force lo salta
+        print(f"VALIDATION: {snap_dir} does not exist or has no *_raw.jsonl — "
+              f"typo in --date?", file=sys.stderr)
+        return False                       # not even --force skips this one
     if _csv_counts(snap_dir, 'binance') is None:
-        print("VALIDACION: sin binance.csv (o vacio) — v1 analiza Binance; "
-              "seguir produciria un roster VACIO", file=sys.stderr)
-        return False                       # esto TAMPOCO lo salta --force
+        print("VALIDATION: no binance.csv (or empty) — v1 analyses Binance; "
+              "carrying on would produce an EMPTY roster", file=sys.stderr)
+        return False                       # --force does NOT skip this one either
     ok = True
     for ex in ('binance', 'phemex'):
         prev = con.execute(
@@ -1663,8 +1663,8 @@ def _validate_pre(con, snap_dir, date, force):
             (ex, date)).fetchone()
         cur = _csv_counts(snap_dir, ex)
         if prev and cur is None:
-            print(f"VALIDACION {ex}: tenia snapshot previo ({prev['snapshot_date']}) "
-                  f"pero hoy no hay CSV — scrape incompleto", file=sys.stderr)
+            print(f"VALIDATION {ex}: had a previous snapshot ({prev['snapshot_date']}) "
+                  f"but there is no CSV today — incomplete scrape", file=sys.stderr)
             ok = False
             continue
         if not prev or cur is None:
@@ -1672,17 +1672,17 @@ def _validate_pre(con, snap_dir, date, force):
         for field, c, p in (('n_traders', cur[0], prev['n_traders']),
                             ('n_positions', cur[1], prev['n_positions'])):
             if p and not (0.5 * p <= c <= 1.5 * p):
-                print(f"VALIDACION {ex}.{field}: {c} vs {p} en "
-                      f"{prev['snapshot_date']} (fuera de ±50%)", file=sys.stderr)
+                print(f"VALIDATION {ex}.{field}: {c} vs {p} on "
+                      f"{prev['snapshot_date']} (outside ±50%)", file=sys.stderr)
                 ok = False
     if not ok and not force:
-        print("Abortando SIN tocar la DB; usa --force para continuar.",
+        print("Aborting WITHOUT touching the DB; use --force to continue.",
               file=sys.stderr)
         return False
     return True
 
 def _known_ids(con, snap_dir):
-    """Union historica: ids de la DB que aun no estan bajados en este snapshot."""
+    """Historical union: DB ids not yet downloaded into this snapshot."""
     hist = {r[0] for r in con.execute(
         "SELECT DISTINCT trader_id FROM positions WHERE exchange='binance'")}
     done = set()
@@ -1696,8 +1696,8 @@ def _known_ids(con, snap_dir):
 def main(argv=None, project_root=None):
     root = project_root or os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser(
-        epilog='Orden de subcomandos granulares: metrics -> detect -> trend -> '
-               'rank -> report (metrics resetea flags/trend_bonus).')
+        epilog='Order of the granular subcommands: metrics -> detect -> trend -> '
+               'rank -> report (metrics resets flags/trend_bonus).')
     ap.add_argument('cmd', choices=['scrape', 'analyze', 'publish', 'metrics',
                                     'detect', 'trend', 'rank', 'report'])
     ap.add_argument('--date', default=dt.date.today().isoformat())
@@ -1709,11 +1709,11 @@ def main(argv=None, project_root=None):
     if a.cmd == 'publish':
         src = os.path.join(P['run'], 'roster.json')
         if not os.path.exists(src):
-            print(f"publish: no existe {src} — corre analyze primero",
+            print(f"publish: {src} does not exist — run analyze first",
                   file=sys.stderr)
             return 1
         shutil.copy(src, P['latest'])
-        print('publicado:', P['latest'])
+        print('published:', P['latest'])
         return 0
 
     con = dbmod.connect(P['db'])
@@ -1725,7 +1725,7 @@ def main(argv=None, project_root=None):
             return 0
         if a.cmd == 'analyze':
             print('flatten:', flatten.flatten_snapshot(P['snap'])
-                  if os.path.isdir(P['snap']) else 'snapshot dir inexistente')
+                  if os.path.isdir(P['snap']) else 'snapshot dir does not exist')
             if not _validate_pre(con, P['snap'], a.date, a.force):
                 return 2
             print('ingest:', ingest.ingest_snapshot(con, P['snap'], a.date))
@@ -1748,8 +1748,8 @@ def main(argv=None, project_root=None):
             json.dump(diff, open(os.path.join(P['run'], 'diff.json'), 'w'),
                       indent=1, ensure_ascii=False)
             p = report.write(con, a.date, 'binance', roster, diff, P['run'])
-            # NO se copia a analysis/roster.json aqui: eso es `publish`, tras el gate
-            print('reporte:', p)
+            # NOT copied to analysis/roster.json here: that is `publish`, after the gate
+            print('report:', p)
             print('material:', diff['material'])
             return 0
         if a.cmd == 'metrics':
@@ -1761,12 +1761,12 @@ def main(argv=None, project_root=None):
         if a.cmd == 'rank':
             print(json.dumps(rank.run(con, a.date), ensure_ascii=False)); return 0
         if a.cmd == 'report':
-            # lee los artefactos de la corrida — NO recomputa trend/rank
-            # (recomputar sin prev_roster produciria un diff distinto al de analyze)
+            # reads the run artifacts — does NOT recompute trend/rank
+            # (recomputing without prev_roster would yield a diff unlike analyze's)
             rp = os.path.join(P['run'], 'roster.json')
             dp = os.path.join(P['run'], 'diff.json')
             if not (os.path.exists(rp) and os.path.exists(dp)):
-                print("report: faltan roster.json/diff.json — corre analyze primero",
+                print("report: roster.json/diff.json missing — run analyze first",
                       file=sys.stderr)
                 return 1
             print(report.write(con, a.date, 'binance', json.load(open(rp)),
@@ -1779,22 +1779,22 @@ if __name__ == '__main__':
     sys.exit(main())
 ```
 
-**Nota:** `pipeline.py` (archivo) y `pipeline/` (paquete) coexisten — por eso `tests/test_cli.py` carga el CLI vía `importlib` por path (ya incluido en el bloque del Step 1).
+**Note:** `pipeline.py` (the file) and `pipeline/` (the package) coexist — which is why `tests/test_cli.py` loads the CLI via `importlib` by path (already included in Step 1's block).
 
-- [ ] **Step 4: PASS** — `python3 -m pytest tests/ -v` (suite completa en verde).
-- [ ] **Step 5: Commit** — `git commit -m "feat(cli): pipeline.py con scrape/analyze y validacion de snapshot"`
+- [ ] **Step 4: PASS** — `python3 -m pytest tests/ -v` (the whole suite green).
+- [ ] **Step 5: Commit** — `git commit -m "feat(cli): pipeline.py with scrape/analyze and snapshot validation"`
 
 ---
 
-### Task 11: Regresión contra el snapshot real 2026-08-25
+### Task 11: Regression against the real 2026-08-25 snapshot
 
 **Files:**
-- Create: `tests/test_regression.py`, `data/snapshots/2026-08-25/` (symlinks/copias de la data existente)
+- Create: `tests/test_regression.py`, `data/snapshots/2026-08-25/` (symlinks/copies of the existing data)
 
 **Interfaces:**
-- Consumes: `data/binance_positions.jsonl` y `data/positions_all.jsonl` reales (43MB/4.4MB — ya existen, gitignored).
+- Consumes: the real `data/binance_positions.jsonl` and `data/positions_all.jsonl` (43MB/4.4MB — they already exist, gitignored).
 
-- [ ] **Step 1: Preparar el snapshot histórico** (una vez, no test):
+- [ ] **Step 1: Prepare the historical snapshot** (once, not a test):
 
 ```bash
 cd ~/Projects/trading/copy-trading-intel
@@ -1803,12 +1803,12 @@ ln -sf ../../binance_positions.jsonl data/snapshots/2026-08-25/binance_raw.jsonl
 ln -sf ../../positions_all.jsonl data/snapshots/2026-08-25/phemex_raw.jsonl
 ```
 
-- [ ] **Step 2: Escribir el test de regresión** (marcado `slow`, se salta si falta la data):
+- [ ] **Step 2: Write the regression test** (marked `slow`, skipped if the data is missing):
 
 ```python
 # tests/test_regression.py
-"""Reproduce el analisis auditado del 2026-08-25 con el pipeline nuevo.
-Referencia: analysis/TOP5.md y FINDINGS_v2.md."""
+"""Reproduces the audited 2026-08-25 analysis with the new pipeline.
+Reference: analysis/TOP5.md and FINDINGS_v2.md."""
 import json, os, pathlib, pytest
 from pipeline import db as dbmod, flatten, ingest, metrics, detect, rank
 
@@ -1834,7 +1834,7 @@ def _by_nick(con):
         "AND exchange='binance'")}
 
 def test_mdd_scale_is_percentage(real):
-    """Guarda contra la regresion de escala: mdd es PORCENTUAL (Trampa 5)."""
+    """Guards against the scale regression: mdd is a PERCENTAGE (Trap 5)."""
     con, flags, roster = real
     med = con.execute(
         "SELECT mdd FROM trader_snapshot WHERE snapshot_date='2026-08-25' "
@@ -1842,12 +1842,12 @@ def test_mdd_scale_is_percentage(real):
         "LIMIT 1 OFFSET (SELECT COUNT(*)/2 FROM trader_snapshot "
         "WHERE snapshot_date='2026-08-25' AND exchange='binance' "
         "AND mdd IS NOT NULL)").fetchone()[0]
-    assert 10 <= med <= 60          # mediana real ~30.15; si sale <1, la escala se rompio
+    assert 10 <= med <= 60          # real median ~30.15; if <1, the scale broke
 
 def test_known_top_traders_survive(real):
     con, flags, roster = real
     m = _by_nick(con)
-    # 梭哈到世界尽头: n=527, t~6, lev 5x, conc top-1 = 26.1% — sobrevive
+    # 梭哈到世界尽头: n=527, t~6, lev 5x, top-1 conc = 26.1% — survives
     s = m["梭哈到世界尽头"]
     assert s["n"] > 400 and s["t_stat"] > 4
     assert s["conc_top1"] < 30
@@ -1859,7 +1859,7 @@ def test_known_frauds_are_flagged(real):
     assert "roi_artifact" in json.loads(m["VickyKaushal"]["flags"]) or \
            "no_alpha" in json.loads(m["VickyKaushal"]["flags"])
     assert "loss_hider" in json.loads(m["GGbond哦"]["flags"])
-    # OJO: el nick real en la data lleva sufijo — es 龟兔赛跑985-重新起航
+    # CAREFUL: the real nick in the data carries a suffix — 龟兔赛跑985-重新起航
     assert "lottery" in json.loads(m["龟兔赛跑985-重新起航"]["flags"])
     assert "ruin_risk" in json.loads(m["牛熊摆渡人"]["flags"])   # lev p90 / -1173%
 
@@ -1867,29 +1867,29 @@ def test_roster_is_five_and_sane(real):
     con, flags, roster = real
     assert len(roster["traders"]) <= 5
     total = sum(t["weight"] for t in roster["traders"]) + roster["unallocated"]
-    assert abs(total - 1.0) < 1e-9   # asignado + sin asignar = 1.0 (corrida #1
-                                     # puede ser todo-B → unallocated > 0)
+    assert abs(total - 1.0) < 1e-9   # allocated + unallocated = 1.0 (run #1 can
+                                     # can be all-B → unallocated > 0)
 ```
 
-- [ ] **Step 3: Correr** — `python3 -m pytest tests/test_regression.py -v` (tarda ~1-2 min por los 108k rows). Si un assert falla, investigar ANTES de relajar el umbral: la data real manda; los nombres exactos pueden diferir (p.ej. sufijos en el nick — buscar con `LIKE` si el exacto no aparece y ajustar el test con el nick literal encontrado).
-- [ ] **Step 4: Commit** — `git commit -m "test(regression): pipeline reproduce el analisis auditado 2026-08-25"`
+- [ ] **Step 3: Run** — `python3 -m pytest tests/test_regression.py -v` (takes ~1-2 min for the 108k rows). If an assert fails, investigate BEFORE relaxing the threshold: the real data rules; exact names may differ (e.g. nick suffixes — search with `LIKE` if the exact one is absent and adjust the test with the literal nick found).
+- [ ] **Step 4: Commit** — `git commit -m "test(regression): pipeline reproduces the audited 2026-08-25 analysis"`
 
 ---
 
-### Task 12: Spike — posiciones abiertas (open_loss_divergence directo)
+### Task 12: Spike — open positions (direct open_loss_divergence)
 
 **Files:**
-- Create: `scripts/probe_open_positions.py` (throwaway hasta confirmar)
-- Modify (solo si el spike funciona): `pipeline/scrape.py`, `pipeline/ingest.py`, `SKILL.md`
+- Create: `scripts/probe_open_positions.py` (throwaway until confirmed)
+- Modify (only if the spike works): `pipeline/scrape.py`, `pipeline/ingest.py`, `SKILL.md`
 
 **Interfaces:**
-- Produces: respuesta a "¿hay endpoint público de posiciones ABIERTAS por lead-trader?" documentada. Si sí: scrape/ingest llenan `open_positions` y el flag `open_loss_divergence` (ya implementado en Task 5) se activa con data real.
+- Produces: a documented answer to "is there a public per-lead-trader OPEN positions endpoint?". If yes: scrape/ingest fill `open_positions` and the `open_loss_divergence` flag (already implemented in Task 5) fires on real data.
 
-- [ ] **Step 1: Escribir la sonda**
+- [ ] **Step 1: Write the probe**
 
 ```python
 #!/usr/bin/env python3
-# scripts/probe_open_positions.py — spike: ¿posiciones abiertas publicas?
+# scripts/probe_open_positions.py — spike: are open positions public?
 import json, urllib.request
 
 BUA = {'User-Agent': 'Mozilla/5.0', 'Content-Type': 'application/json',
@@ -1913,7 +1913,7 @@ def try_binance(pid):
                 with urllib.request.urlopen(req, timeout=15) as r:
                     d = json.load(r)
                 print(f"BINANCE {c}: code={d.get('code')} "
-                      f"data={'SI' if d.get('data') else 'vacio'}")
+                      f"data={'YES' if d.get('data') else 'empty'}")
                 if d.get('data'):
                     print(json.dumps(d['data'], ensure_ascii=False)[:800])
             except Exception as e:
@@ -1933,113 +1933,117 @@ def try_phemex(uid):
 
 if __name__ == '__main__':
     import sys
-    # ids reales: sacarlos de data/snapshots/<ultimo>/binance_list.json y
-    # phemex_list.json (o data/binance_portfolios.json / all_traders.json)
+    # real ids: take them from data/snapshots/<latest>/binance_list.json and
+    # phemex_list.json (or data/binance_portfolios.json / all_traders.json)
     try_binance(sys.argv[1] if len(sys.argv) > 1 else '')
     try_phemex(sys.argv[2] if len(sys.argv) > 2 else '')
 ```
 
-- [ ] **Step 2: Correr la sonda** con un `portfolioId` real (de `data/binance_portfolios.json`) y un `userId` real (de `data/all_traders.json`). Anotar salida.
-- [ ] **Step 3: Documentar el resultado** — añadir a `SKILL.md` (sección Endpoints) una línea por exchange: endpoint confirmado + campos, o "verificado NO disponible el 2026-XX-XX".
-- [ ] **Step 4 (solo si funciona):** en `pipeline/scrape.py` añadir la llamada por trader y volcar a `open_raw.jsonl` del snapshot; en `pipeline/ingest.py` poblar `open_positions` (columnas: symbol, side, notional, unrealized_pnl según los nombres reales que devuelva el endpoint). Test análogo a los de Task 9 con HTTP mockeado.
-- [ ] **Step 5: Commit** — `git commit -m "spike: sonda de posiciones abiertas (+ integracion si disponible)"`
+- [ ] **Step 2: Run the probe** with a real `portfolioId` (from `data/binance_portfolios.json`) and a real `userId` (from `data/all_traders.json`). Note the output.
+- [ ] **Step 3: Document the result** — add one line per exchange to `SKILL.md` (Endpoints section): confirmed endpoint + fields, or "verified NOT available on 2026-XX-XX".
+- [ ] **Step 4 (only if it works):** in `pipeline/scrape.py` add the per-trader call and dump into the snapshot's `open_raw.jsonl`; in `pipeline/ingest.py` populate `open_positions` (columns: symbol, side, notional, unrealized_pnl, following the real names the endpoint returns). A test analogous to Task 9's with mocked HTTP.
+- [ ] **Step 5: Commit** — `git commit -m "spike: open-positions probe (+ integration if available)"`
 
 ---
 
 ### Task 13: Skill `/copy-trading-refresh`
 
 **Files:**
-- Create: una skill de agente (fuera del repo)
+- Create: an agent skill (outside the repo)
 
 **Interfaces:**
-- Consumes: el CLI de Task 10, el gate de materialidad de `diff.json`, la skill `adversarial-review` existente.
+- Consumes: Task 10's CLI, `diff.json`'s materiality gate, the existing `adversarial-review` skill.
 
-- [ ] **Step 1: Escribir la skill**
+- [ ] **Step 1: Write the skill**
 
 ```markdown
 ---
 name: copy-trading-refresh
-description: Refresca el roster de lead-traders a copiar (Binance+Phemex). Scrapea data fresca, corre el motor determinista (alpha, anti-inflado, tendencia), y si el roster cambia materialmente lanza el consejo adversarial (Fable/Kimi/GLM) antes de publicar. Use when the user asks to "refrescar el roster", "actualizar los traders", "correr el pipeline de copy-trading", "revisar si cambiaron los traders a seguir", o menciona copy-trading-refresh. Se corre 1-2 veces al mes.
+description: Refreshes the roster of lead traders to copy (Binance+Phemex). Scrapes fresh data, runs the deterministic engine (alpha, anti-inflation, trend), and if the roster changes materially convenes the adversarial council (Fable/Kimi/GLM) before publishing. Use when the user asks to "refresh the roster", "update the traders", "run the copy-trading pipeline", "check whether the traders to follow changed", or mentions copy-trading-refresh. Runs 1-2 times a month.
 ---
 
 # copy-trading-refresh
 
-Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
+Project: the copy-trading-intel repo. Spec:
 `docs/specs/2026-08-28-copy-trading-refresh-design.md`.
 
 ## Runbook
 
-1. `cd ~/Projects/trading/copy-trading-intel`
-2. **Scrape** (tarda varios minutos; resumable):
+1. `cd` into the project root.
+2. **Scrape** (takes several minutes; resumable):
    `python3 pipeline.py scrape`
-   - Si falla a mitad (red, rate-limit): re-correr el mismo comando — salta lo ya
-     bajado; un trader cuyo historial falló por red NO quedó marcado como hecho.
-   - Si un endpoint devuelve error persistente (HTTP 4xx/5xx repetido): PARAR y
-     reportar al operador el status exacto. Binance rota APIs sin aviso; no improvisar
-     endpoints nuevos sin confirmar.
-3. **Analyze** (segundos, sin red):
+   - If it fails midway (network, rate limit): re-run the same command — it skips what
+     was already downloaded; a trader whose history failed on the network was NOT
+     marked as done.
+   - If an endpoint returns a persistent error (repeated HTTP 4xx/5xx): STOP and report
+     the exact status to the operator. Binance rotates APIs without notice; do not
+     improvise new endpoints without confirming them.
+3. **Analyze** (seconds, no network):
    `python3 pipeline.py analyze`
-   - Valida ANTES de ingerir; si falla (exit 2) la DB queda intacta. Revisar el
-     stderr, reportar al operador, y solo usar `--force` si el operador lo aprueba (un
-     snapshot sin binance.csv ni con --force pasa — produciría roster vacío).
-   - `analyze` NUNCA escribe `analysis/roster.json` — eso es el paso 7.
-4. Leer `analysis/runs/<hoy>/diff.json`.
-5. **Gate del consejo**:
-   - `material: false` → ir al paso 7.
-   - `material: true` → invocar la skill `adversarial-review` con: el `diff.json`,
-     el `roster.json`, los CSV del snapshot (`data/snapshots/<hoy>/binance.csv`), y
-     la pregunta concreta: "El motor promovió/expulsó a <X>. Re-deriva sus números
-     desde el CSV y refuta o confirma cada cambio del diff. No apruebes por cortesía."
-6. **Merge de veredictos**: añadir al `TOP_*.md` una sección `## Consejo adversarial`
-   con confirma/objeta por cambio. Si el consejo OBJETA una promoción a tier A:
-   NO publicar ese cambio — presentar la objeción al operador y esperar su decisión.
-7. **Publicar**: `python3 pipeline.py publish --date <hoy>` — el ÚNICO comando que
-   escribe `analysis/roster.json` (lo que consume el mirror-bot). Solo tras pasar
-   el gate (o tras la decisión del operador si hubo objeciones).
-8. **Presentar al operador**: tabla del roster, ▲▼ del diff (cada trader trae
-   `trend.rank_prev/rank_now/alpha_delta`), altas/bajas con motivo, `unallocated`
-   si el roster es todo-B, objeciones del consejo si las hubo. Recordar el caveat
-   fijo: espera ~la mitad del alpha mostrado (winner's curse).
+   - It validates BEFORE ingesting; if it fails (exit 2) the DB is untouched. Check
+     stderr, report to the operator, and only use `--force` if the operator approves it
+     (a snapshot with no binance.csv does not pass even with --force — it would produce
+     an empty roster).
+   - `analyze` NEVER writes `analysis/roster.json` — that is step 7.
+4. Read `analysis/runs/<today>/diff.json`.
+5. **Council gate**:
+   - `material: false` → go to step 7.
+   - `material: true` → invoke the `adversarial-review` skill with: the `diff.json`,
+     the `roster.json`, the snapshot CSVs (`data/snapshots/<today>/binance.csv`), and
+     the concrete question: "The engine promoted/expelled <X>. Re-derive their numbers
+     from the CSV and refute or confirm every change in the diff. Do not approve out of
+     politeness."
+6. **Merge the verdicts**: add a `## Adversarial council` section to `TOP_*.md` with
+   confirms/objects per change. If the council OBJECTS to a promotion to tier A:
+   do NOT publish that change — present the objection to the operator and wait for
+   their decision.
+7. **Publish**: `python3 pipeline.py publish --date <today>` — the ONLY command that
+   writes `analysis/roster.json` (what the mirror bot consumes). Only after passing the
+   gate (or after the operator's decision if there were objections).
+8. **Present to the operator**: the roster table, the diff's ▲▼ (each trader carries
+   `trend.rank_prev/rank_now/alpha_delta`), entries/exits with reasons, `unallocated`
+   if the roster is all-B, and the council's objections if any. Remember the standing
+   caveat: expect ~half the alpha shown (winner's curse).
 
-## Qué NO hace
-- No configura el mirror-bot (el operador conecta `analysis/roster.json` a mano).
-- No corre por cron (invocación manual, 1-2x/mes).
-- No borra snapshots viejos: `data/snapshots/` es la fuente de verdad histórica.
+## What it does NOT do
+- It does not configure the mirror bot (the operator wires `analysis/roster.json` up by hand).
+- It does not run on cron (manual invocation, 1-2x/month).
+- It does not delete old snapshots: `data/snapshots/` is the historical source of truth.
 ```
 
-- [ ] **Step 2: Verificar** — nueva sesión de Claude Code: `/copy-trading-refresh` aparece y carga.
-- [ ] **Step 3: Commit del proyecto** (la skill vive fuera del repo; commitear la referencia): añadir al final de `SKILL.md` una línea en Scripts: `- pipeline.py — pipeline permanente (ver docs/specs/2026-08-28-...). Runbook de invocación: docs/specs/2026-08-28-...`. `git commit -m "docs: referencia al pipeline y skill copy-trading-refresh"`
+- [ ] **Step 2: Verify** — in a new Claude Code session: `/copy-trading-refresh` appears and loads.
+- [ ] **Step 3: Commit in the project** (the skill lives outside the repo; commit the reference): add a line to `SKILL.md`'s Scripts section: `- pipeline.py — the permanent pipeline (see docs/specs/2026-08-28-...)`. `git commit -m "docs: reference the pipeline and the copy-trading-refresh skill"`
 
 ---
 
-### Task 14: Primera corrida real de punta a punta
+### Task 14: First real end-to-end run
 
-- [ ] **Step 1:** `python3 pipeline.py scrape` (real, ~10-20 min). Verificar `data/snapshots/<hoy>/` con los dos `_raw.jsonl`.
-- [ ] **Step 2:** `python3 pipeline.py analyze`. Primera corrida → `material: true` esperado.
-- [ ] **Step 3:** Revisar `TOP_<mes>.md` manualmente: ¿el roster se parece al Top 5 auditado (con la data nueva puede variar)? ¿Los excluidos notables tienen sentido?
-- [ ] **Step 4:** Presentar el resultado al operador con el diff vs el Top 5 del 2026-08-25. El operador decide si lanzar el consejo adversarial en esta primera corrida (es material por definición).
-- [ ] **Step 5: Commit** — `git add analysis/runs/ && git commit -m "chore: primera corrida del pipeline"` (los runs SÍ se versionan; solo la data cruda está gitignored — verificar que `.gitignore` no excluya `analysis/runs/`).
+- [ ] **Step 1:** `python3 pipeline.py scrape` (for real, ~10-20 min). Verify `data/snapshots/<today>/` has both `_raw.jsonl`.
+- [ ] **Step 2:** `python3 pipeline.py analyze`. First run → `material: true` expected.
+- [ ] **Step 3:** Review `TOP_<month>.md` by hand: does the roster resemble the audited Top 5 (it may vary with new data)? Do the notable exclusions make sense?
+- [ ] **Step 4:** Present the result to the operator with the diff against the 2026-08-25 Top 5. The operator decides whether to convene the adversarial council on this first run (it is material by definition).
+- [ ] **Step 5: Commit** — `git add analysis/runs/ && git commit -m "chore: first pipeline run"` (runs ARE versioned; only the raw data is gitignored — check that `.gitignore` does not exclude `analysis/runs/`).
 
 ---
 
-## Self-Review + Revisión adversarial (2026-08-28)
+## Self-review + adversarial review (2026-08-28)
 
-El plan pasó por revisión adversarial de 3 revisores independientes (Fable, Kimi, GLM,
-modo diseño) y TODAS las correcciones están incorporadas arriba. Los cambios mayores vs
-la versión inicial:
+The plan went through adversarial review by 3 independent reviewers (Fable, Kimi, GLM, in
+design mode) and ALL corrections are incorporated above. The major changes against the
+initial version:
 
-1. **mdd es PORCENTUAL** (los 3 revisores + verificación directa) — umbrales 35/60, fixtures en %, test de regresión de escala (T11).
-2. **conc = top-1 >30%** (criterio auditado) — top-3>30 descalificaba a 5/6 supervivientes auditados. NULL si PnL total ≤0.
-3. **Phemex: de-scope explícito en v1** — se archiva (scrape/flatten/ingest, `side` desde `pos_side`) pero no se rankea.
-4. **Pesos all-B**: cap 10% siempre, remanente `unallocated` (nunca volcado en uno solo); score>0 para entrar al roster.
-5. **Validación PRE-ingest desde CSVs** — la DB no se envenena con snapshots rechazados; sin binance.csv ni `--force` pasa; exchange con historia y sin CSV falla.
-6. **`publish` separado de `analyze`** — el latest solo se escribe tras el gate del consejo.
-7. **Gate**: matching por `portfolio_id`, salidas de titulares (A o B) son materiales, `decopy_2neg` visible (flags frescos en trend), alpha_decay entre snapshots.
-8. **Scrape**: fallo de red ≠ trader hecho; cap real 30/página (pages=20, break solo con página vacía); unión histórica vía `extra_ids_binance`.
-9. **`insufficient`-only → W** (novato), no X (fraude). Tier A por n>300 solo en la corrida #1.
-10. **Roster con bloque `trend`** (`rank_prev/rank_now/alpha_delta`); `report` granular lee artefactos, no recomputa.
-11. Tests: assert vacuo eliminado, fixtures con epochs correctos (2025), nick real `龟兔赛跑985-重新起航`, importlib inline, tests nuevos (all-B, zero-losers con break-even, error de red, extra_ids, W-vs-X, DB no envenenada).
+1. **mdd is a PERCENTAGE** (all 3 reviewers + direct verification) — thresholds 35/60, fixtures in %, a scale regression test (T11).
+2. **conc = top-1 >30%** (the audited criterion) — top-3>30 disqualified 5/6 of the audited survivors. NULL if total PnL ≤0.
+3. **Phemex: explicitly de-scoped in v1** — archived (scrape/flatten/ingest, `side` from `pos_side`) but not ranked.
+4. **All-B weights**: 10% cap always, remainder `unallocated` (never dumped onto one trader); score>0 to enter the roster.
+5. **PRE-ingest validation from the CSVs** — the DB is not poisoned by rejected snapshots; with no binance.csv not even `--force` passes; an exchange with history and no CSV fails.
+6. **`publish` split from `analyze`** — the latest is only written after the council gate.
+7. **Gate**: matching by `portfolio_id`, incumbent exits (A or B) are material, `decopy_2neg` visible (fresh flags in trend), cross-snapshot alpha_decay.
+8. **Scrape**: a network failure ≠ a done trader; real cap of 30/page (pages=20, break only on an empty page); historical union via `extra_ids_binance`.
+9. **`insufficient`-only → W** (newcomer), not X (fraud). Tier A via n>300 only on run #1.
+10. **Roster with a `trend` block** (`rank_prev/rank_now/alpha_delta`); the granular `report` reads artifacts, it does not recompute.
+11. Tests: vacuous assert removed, fixtures with correct epochs (2025), the real nick `龟兔赛跑985-重新起航`, inline importlib, new tests (all-B, zero-losers with a break-even, network error, extra_ids, W-vs-X, DB not poisoned).
 
-- **Placeholders:** los únicos `...` están en Task 9 con instrucción explícita de copiar línea-a-línea los cuerpos desde `scripts/scrape_*.py` — aceptable porque el contenido exacto existe y está referenciado (con las 2 desviaciones obligatorias documentadas: ERR≠hecho y break por página vacía).
-- **Consistencia de tipos:** `flags` siempre JSON array en TEXT; `conc_top1` renombrado consistentemente (schema, metrics, detect, tests, regresión); `decopy_2neg` descalificante en `rank.BAD` y en `trend`; roster/removed/diff llevan `portfolio_id`.
+- **Placeholders:** the only `...` are in Task 9, with an explicit instruction to copy the bodies line by line from `scripts/scrape_*.py` — acceptable because the exact content exists and is referenced (with the 2 mandatory deviations documented: ERR≠done and breaking on an empty page).
+- **Type consistency:** `flags` always a JSON array in TEXT; `conc_top1` renamed consistently (schema, metrics, detect, tests, regression); `decopy_2neg` disqualifying in `rank.BAD` and in `trend`; roster/removed/diff all carry `portfolio_id`.
 ```
