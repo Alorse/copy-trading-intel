@@ -1,35 +1,3 @@
-# Copy-trading roster — 2026-08-28 (binance)
-
-| nick | tier | weight | score | roi% | alpha% | t | payoff | lev | mdd | n | n_alpha | warnings |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 梭哈到世界尽头 | B | 10% | 2.96 | 139.6 | 3.10 | 6.72 | 1.27 | 5 | 20.13 | 286 | 189 | alpha_decay, fresh_start |
-| Cooma | B | 10% | 2.36 | 1183.4 | 1.84 | 4.94 | 0.64 | 10 | 31.92 | 128 | 103 | alpha_decay |
-| 重生之我在币圈捡垃圾- | B | 10% | 1.64 | 1209.2 | 0.69 | 3.97 | 1.10 | 8 | 63.83 | 251 | 250 | fresh_start, mdd_high |
-
-**Universe**: 600 portfolios scraped → 590 with positions → 589 with metrics
-
-**Portfolio opened** (the record cannot start earlier — Trap 7):
-- 梭哈到世界尽头: 2026-06-07 (81d of visible track record)
-- Cooma: 2026-04-07 (142d of visible track record)
-- 重生之我在币圈捡垃圾-: 2026-06-12 (76d of visible track record)
-
-**Unallocated weight: 70%** (roster is all tier B — 10% cap per trader)
-
-## Changes vs previous run
-First run — no previous run.
-
-## Notable exclusions
-- **Omofun** (headline ROI 6531%): insufficient, lottery, roi_artifact, not_copyable, no_alpha, alpha_decay, fresh_start, regime_onesided
-- **小马031099** (headline ROI 3611%): insufficient, roi_artifact, ruin_risk, no_alpha, alpha_decay, fresh_start
-- **VickyKaushal** (headline ROI 3411%): insufficient, loss_hider, lottery, roi_artifact, not_copyable, no_alpha, mdd_high, alpha_decay, fresh_start, regime_onesided
-- **算死草** (headline ROI 3216%): insufficient, lottery, no_alpha, mdd_high, alpha_decay, fresh_start
-- **阿佩普** (headline ROI 2430%): lottery, roi_artifact, ruin_risk, no_alpha, mdd_high, alpha_decay, fresh_start
-- **小资金也有未来** (headline ROI 2389%): insufficient, lottery, ruin_risk, alpha_decay, fresh_start
-- **GSM OB** (headline ROI 2346%): insufficient, lottery, roi_artifact, ruin_risk, not_copyable, no_alpha, fresh_start
-- **爽翻天** (headline ROI 2320%): insufficient, lottery, mdd_high, alpha_decay, fresh_start
-- **帅锅炉工地搬砖** (headline ROI 2224%): insufficient, lottery, no_alpha, alpha_decay, fresh_start
-- **Bran Brandon** (headline ROI 2015%): insufficient, lottery, no_alpha, mdd_high, fresh_start
-
 ## Adversarial council — 2026-08-29
 
 Convened because `diff.material == true` (first run against this universe).
@@ -93,14 +61,3 @@ close-date ceiling is real but was present in *both* snapshots, so it is not wha
 of the unexplained residual sits in portfolios pinned at the 2000-row pagination cap.
 
 Fable was right on the mechanism. Recorded as Trap 7 in `SKILL.md`.
-
-## Standing caveats
-- **Single regime window**: the data covers few months and one cycle only; consistency within the cycle, not universal stability.
-- **Survivorship**: the Binance universe is the top-600 by 90D ROI; there is no control group of blown-up traders.
-- **Winner's curse**: with hundreds of candidates filtered down, expect ~half the alpha shown.
-- **Only closed positions** are visible (barring open-position data): a loss-hider's latent losses may never show up.
-- **i.i.d. t-stat**: alphas correlated by (symbol, month, side) inflate the t by ~10-15%; clustered, no roster case falls below 2.5.
-- **The record starts where the trader chose**: Binance serves nothing opened before a portfolio's startTime, so no pre-public history is verifiable. Of the portfolios whose pre-startTime record was still visible on 2026-08-25, 86% were net negative before going public. See "portfolio opened" below and Trap 7.
-
-> **Not financial advice.** Automated output of a statistical analysis over public data; the flags describe the shape of a track record, not a person's conduct. See DISCLAIMER.md.
-

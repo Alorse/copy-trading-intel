@@ -75,3 +75,20 @@ def test_reconciliation_without_snapshot_dir(con, tmp_path):
     text = open(p).read()
     assert "590 with positions → 1 with metrics" in text
     assert "scraped" not in text
+
+
+def test_council_verdicts_are_merged_when_present(con, tmp_path):
+    """The council is not code: an agent drops council.md into the run dir, and
+    the report must pick it up so a later regeneration does not wipe it."""
+    (tmp_path / "council.md").write_text("## Adversarial council\n\n- Fable: objects.")
+    p = report.write(con, "2026-09-01", "binance", _roster(), DIFF, tmp_path)
+    text = open(p).read()
+    assert "## Adversarial council" in text and "Fable: objects." in text
+
+
+def test_report_without_council_is_not_duplicated(con, tmp_path):
+    p = report.write(con, "2026-09-01", "binance", _roster(), DIFF, tmp_path)
+    text = open(p).read()
+    assert "Adversarial council" not in text
+    assert text.count("## Standing caveats") == 1       # guards against L += L
+    assert text.count("| suoha |") == 1

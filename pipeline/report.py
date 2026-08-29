@@ -85,6 +85,22 @@ def _portfolio_ages(con, snapshot_date, exchange, roster):
     return "\n".join(out)
 
 
+def _council(out_dir):
+    """The adversarial council's verdicts, if one was convened for this run.
+
+    The council is not code — an agent runs it and drops council.md into the run
+    dir (step 6 of the runbook). Reading it back here means a later `report` or
+    `analyze` does not wipe the verdicts off the report it generates.
+    """
+    path = os.path.join(str(out_dir), "council.md")
+    if not os.path.exists(path):
+        return ""
+    try:
+        return open(path).read().strip()
+    except OSError:
+        return ""
+
+
 def write(con, snapshot_date, exchange, roster, diff, out_dir, snap_dir=None):
     month = snapshot_date[:7]
     path = os.path.join(str(out_dir), f"TOP_{month}.md")
@@ -134,6 +150,9 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir, snap_dir=None):
         roi = f"{r['roi']:.0f}%" if r['roi'] is not None else "—"
         L.append(f"- **{r['nick']}** (headline ROI {roi}): "
                  f"{', '.join(json.loads(r['flags'] or '[]'))}")
+    council = _council(out_dir)
+    if council:
+        L += ["", council]
     L += ["", CAVEATS]
     with open(path, "w") as fh:
         fh.write("\n".join(L) + "\n")
