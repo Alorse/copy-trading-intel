@@ -58,8 +58,8 @@ def run(con, snapshot_date, exchange='binance'):
         if (m['t_stat'] or 0) < 2.5:
             f.append('no_alpha')
         # warnings
-        if mdd is not None and 35 <= mdd <= 60:
-            f.append('mdd_high')
+        if mdd is not None and mdd >= 35:   # banda ABIERTA: un mdd de 64 es
+            f.append('mdd_high')            # peor que uno de 40, no mejor
         if m['alpha_h1'] is not None and m['alpha_h2'] is not None \
            and m['alpha_h2'] < m['alpha_h1']:
             f.append('alpha_decay')

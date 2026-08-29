@@ -79,6 +79,18 @@ def test_warnings(con):
     assert not (set(f) & detect.DISQUALIFYING)
 
 
+def test_mdd_high_is_open_ended(con):
+    # caso 重生之我在币圈捡垃圾- (2026-08-28): mdd=63.8 quedaba SIN warning con
+    # la banda cerrada 35<=mdd<=60 — el peor drawdown salia limpio
+    _tm(con, "basura", mdd=63.8)
+    assert "mdd_high" in detect.run(con, D, EX)["basura"]
+
+
+def test_mdd_below_band_no_warning(con):
+    _tm(con, "sano", mdd=34.9)
+    assert "mdd_high" not in detect.run(con, D, EX)["sano"]
+
+
 def test_flags_persisted(con):
     _tm(con, "gg", wr=98.5, mdd=50.5)
     detect.run(con, D, EX)
