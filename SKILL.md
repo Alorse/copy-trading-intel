@@ -1,21 +1,24 @@
 ---
 name: copy-trading-intel
-description: "Scrape Phemex+Binance copy-trading public data for patterns."
-version: 2.0.0
-author: Alfredo Ortegón Sepúlveda — con asistencia de agentes LLM
+version: 3.0.0
+author: Alfredo Ortegón Sepúlveda — con asistencia de agentes LLM y auditoría adversarial
 license: MIT
+description: "Scrape Phemex+Binance copy-trading public data for patterns. v3: hallazgos corregidos tras auditoría."
 ---
+
+> **Versión 3.0.0 — vigente.** Reemplaza a `SKILL.v2.md`, que conservamos como registro:
+> contiene seis afirmaciones que la auditoría del 2026-08-25 demostró falsas contra su propia
+> data. La tabla "Lo que v2 afirma y la data desmiente" (más abajo) es el diff entre ambas.
+>
+> Todo lo de aquí es reproducible con los scripts de `analysis/` sobre un snapshot propio.
+> Evidencia completa en `analysis/FINDINGS_v2.md`, `analysis/RULES.md` y `analysis/TOP5.md`.
 
 # copy-trading-intel
 
 ## When to Use
 - Analizar copy-trading público de Phemex o Binance (traders, PnL, mejores pares).
-- Buscar/validar patrones para la estrategia mono-par (XRP).
-- Re-scrapear posiciones cerradas nuevas antes de un análisis.
-
-Inteligencia del copy-trading público multi-exchange: qué traders hay, qué posiciones
-abrieron/cerraron, en qué par ganaron, y qué patrones sobreviven al análisis.
-(Sucesor de `phemex-copy-intel`, absorbido al agregar Binance.)
+- Buscar/validar patrones para una estrategia mono-par.
+- Seleccionar traders a copiar (ver `analysis/TOP5.md`).
 
 ## Endpoints Phemex (públicos, GET, sin auth)
 
@@ -25,8 +28,12 @@ Headers: `User-Agent` browser, `Origin: https://phemex.com`, `Referer: https://p
 - **Lista de traders:** `GET /phemex-lb/public/data/v3/user/recommend?hideFullyCopied=false&keyword=&pageNum=1&pageSize=50&showChart=false&sortBy=PnlRate30d`
   - `data.rows[]`: `userId`, `nickName`, `pnlRate30d`, `pnl30d`, `tradeWinRate30d`, `mdd30d`, `aum`, `followerCount`, **`showPosition`** (true = historial visible → único escrapeable).
 - **Posiciones cerradas:** `GET /phemex-lb/public/data/position/closed/v2?pageNum=1&pageSize=100&userId=<id>`
-  - `data.rows[]`: `symbol`, `side`, `size`, `openPositionVal`, `margin`, `roi`, `closedPnl`, `realizedPnl` (neto), `openedTime`/`updatedTime` (ms), `fundingFee`, `exchangeFee`. Paginar hasta `rows < pageSize`.
-- Otros: `/phemex-lb/public/data/v3/user/symbol-metric`, `user/pnl-chart`, `user/pnl-rate-chart`, `position/current/v2`, `v3/user/leaders` (hallados en chunks JS `phemex.com/p-114/js/chunk-676ef36f.js`, const `CT_*`).
+  - `data.rows[]`: `symbol`, `side`, `size`, `openPositionVal`, `margin`, `roi`, `closedPnl`, `realizedPnl` (**neto**), `openedTime`/`updatedTime` (ms), `fundingFee`, `exchangeFee`. Paginar hasta `rows < pageSize`.
+  - ✅ Verificado: `realizedPnl = closedPnl − exchangeFee − fundingFee`, exacto.
+- Otros: `/phemex-lb/public/data/v3/user/symbol-metric`, `user/pnl-chart`, `user/pnl-rate-chart`, `position/current/v2`, `v3/user/leaders`.
+- **Posiciones ABIERTAS (sonda 2026-08-28):** `GET /phemex-lb/public/data/position/current/v2?userId=<id>` — ✅ **DISPONIBLE** (`code:0`, `data.total`, `data.rows[]`).
+  - Campos: `symbol`, `side` (Buy/Sell), `posSide` (Long/Short), `size`, `value` (notional), `positionMargin`, `avgEntryPrice`, `leverage`, `liquidationPrice`, `realizedPnl`, `positionId`, `transactTime`.
+  - ⚠️ **No trae PnL no realizado ni mark price** → `open_loss_divergence` no se puede calcular sin un feed de precios. Por eso NO está integrado en el pipeline v1 (que además solo rankea Binance).
 
 ## Endpoints Binance (públicos, POST JSON, sin auth)
 
@@ -34,78 +41,143 @@ Headers: `User-Agent` browser, `Content-Type: application/json`, `clienttype: we
 
 - **Lista de portfolios:** `POST /bapi/futures/v1/friendly/future/copy-trade/home-page/query-list`
   - Body: `{"pageNumber":1,"pageSize":30,"timeRange":"90D","dataType":"ROI","favoriteOnly":false,"hideFull":true,"nickname":"","order":"DESC","userAsset":0,"portfolioType":"PUBLIC"}`
-  - `data.list[]`: `leadPortfolioId`, `nickname`, `roi`, `pnl`, `aum`, `winRate`, `mdd`, `copierPnl`. ⚠️ pageSize se ignora (cap 30/página); paginar con `pageNumber`. `total` ~8,520 portfolios.
-  - `dataType`: ROI/PNL/AUM/SHARP_RATIO/WIN_RATE; `timeRange`: 30D/90D/180D/365D — combinar amplía cobertura.
+  - ⚠️ pageSize se ignora (cap 30/página). `total` ~8,520 portfolios.
 - **Historial de posiciones:** `POST /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history`
   - Body: `{"portfolioId":"<leadPortfolioId>","pageNumber":1,"pageSize":50}`
   - ⚠️ La variante `/public/` devuelve 0 rows — usar `/friendly/`.
-  - `data.list[]`: `symbol`, `side`, **`leverage`**, `isolated` (Cross/Isolated), `avgCost`, `avgClosePrice`, `closingPnl`, `roi`, `maxOpenInterest`, `closedVolume`, `opened`/`closed` (ms). **Incluye leverage real y margen — superior a Phemex.**
-- Otros: `lead-portfolio/order-history`, `transfer-history`, `copy-traders`, `lead-portfolio/detail`, `lead-data/positions` (mapa del repo GitHub doppelganger237/gendan).
+  - ⚠️ **Solo devuelve posiciones CERRADAS.** Las abiertas (y sus pérdidas latentes) son invisibles. Ver "Trampa 1".
+  - ✖ **Posiciones ABIERTAS: verificado NO disponible el 2026-08-28.** Sonda `scripts/probe_open_positions.py` sobre `/friendly/future/copy-trade/lead-portfolio/{positions,position-list,current-position,open-positions}` con `portfolioId` real: **HTTP 404 en los 4 candidatos** (con y sin paginación). No hay endpoint público de posiciones abiertas por lead-trader.
+  - ✅ `closingPnl` es **NETO** de fees. Verificado sobre 96,994 cierres completos: residuo contra el PnL de precio = **−7.85 bps del notional**, 93.7% negativo (≈ taker ida y vuelta). Fees ≈ **8 bps por round-trip**.
 
 ## Scripts
 
-- `scripts/scrape_positions.py` — Phemex: lista + historial (resumable). `python3 scripts/scrape_positions.py [--refresh]`.
-- `scripts/scrape_binance.py` — Binance: lista + historial (resumable). `python3 scripts/scrape_binance.py [--refresh]`. Ampliar cobertura editando `fetch_portfolios()` (pages/timeRange/dataType).
+- `scripts/scrape_positions.py` — Phemex (resumable).
+- `scripts/scrape_binance.py` — Binance (resumable).
+- `analysis/flatten.py` — **empieza por aquí.** Aplana los `.jsonl` anidados a CSV planos. Sin red, ~10s.
+- `analysis/*.py` — 14 scripts que reproducen cada número de `FINDINGS_v2.md` y `RULES.md`.
+- `pipeline.py` — pipeline permanente (ver `docs/specs/2026-08-28-copy-trading-refresh-design.md`). Runbook de invocación: `docs/specs/2026-08-28-copy-trading-refresh-design.md`.
 
-## Dataset (data/)
+## Dataset (data/) — snapshot 2026-08-25
 
-Snapshot 2026-08-25:
-- `positions_all.jsonl` — Phemex raw: 192 traders, 7,467 posiciones (2023-03-03 → 2026-08-25)
-- `all_traders.json` — Phemex: 250 traders de la lista (196 con showPosition)
-- `binance_portfolios.json` — Binance: 600 portfolios top ROI 90D (de ~8,520)
-- `binance_positions.jsonl` — Binance raw: historial por portfolioId
-- `best_pair_by_trader.json`, `aggregate_by_symbol.json`, `aggregate_no_lottery.json`, `pattern_focus.json`, `SUMMARY.json` — análisis Phemex 2026-08-25
+- `positions_all.jsonl` — Phemex: **192 traders** (no 196), 7,467 posiciones.
+- `binance_positions.jsonl` — Binance: 594 portfolios con posiciones (600 líneas), 108,616 posiciones.
+- `analysis/ohlc/` — velas de BTCUSDT: `btcusdt_1h.csv` (ventana del dataset) y `btcusdt_1h_long.csv` (2019-2026, para walk-forward).
 
-## Hallazgos Binance (2026-08-25, 594 portfolios / 108,616 posiciones / dic-2024→ago-2026)
+⚠️ **RANGO TEMPORAL REAL: 5 MESES, NO 20.** v2 dice "dic-2024→ago-2026". **Cero** posiciones
+cerraron antes de abril 2026. Cierres por mes: abr 996 · may 12,171 · jun 21,751 · jul 29,417 ·
+ago 43,477. El rango largo de v2 sale de fechas de *apertura* de unos pocos swings largos.
+**Hay un solo ciclo de régimen**: crash may–jun, pump jul–ago (BTC +25.8% en 7 semanas).
+No hay régimen lateral ni bajista prolongado. Todo claim de "estabilidad temporal" es, como
+máximo, "consistencia dentro de un ciclo".
 
-⚠️ Sesgo de muestra: top-600 portfolios por ROI 90D = **supervivientes** (no la masa). Datos con leverage y margen reales.
+---
 
-- **La élite gana en majors**: BTC +1.18M (7,204 pos, wr 56%), ETH +299k. Mejor par más frecuente: BTC (91×), ETH (76×).
-- **Tokenized stocks semiconductores = veta real**: SOXL +411k (wr 68%), SKHYNIX +380k, SNDK +220k, MU +149k, SPCX +135k, SAMSUNG +108k (wr 82%). Distribuido entre muchos traders, no lotería.
-- **SOL pierde** (−32k, 2,150 pos) — consistente con Phemex (−125k).
-- Leverage mediana 10x (p90 51x, max 150x); **94% cross** (solo 6% isolated).
-- **XRP en Binance PIERDE** (−4k, 760 pos): longs −12k, shorts +6.7k. wr 59% pero avg_loss 1.61× avg_win. Bucket 1-3d el peor (−14.8k); 12-24h el mejor (+5k). PnL por hora inestable.
-- **Conclusión Phemex-vs-Binance**: el "patrón XRP" de Phemex era DugEFresh (outlier 50x), no el par. En la élite Binance XRP no genera edge y la masa long pierde.
+# Hallazgos corregidos (2026-08-25)
 
-### Validación patrón BTC/ETH élite (2026-08-25, deep-dive)
-- **Distribución real pero top-heavy**: BTC 282/429 traders ganan (top-5 = 47% del PnL); ETH 259/414 (top-5 = 128% — el resto neto pierde). No es 1-hombre (como SUI/ONDO), pero tampoco edge uniforme.
-- **El lado sigue al régimen**: long en meses alcistas (jul-ago +163k/+826k BTC), short en el crash de mayo (shorts BTC +235k con longs −186k). La élite NO tiene bias estático: flippea con el régimen. Sin contexto de régimen, "comprar y ya" no replica su edge.
-- **Duración**: el dinero está en 1-3d (+255k/+178k) y 7-30d (+566k BTC). Scalps <1h y swing 12-24h pierden SIEMPRE (todas las tablas: XRP, BTC, ETH). Paradoja del "sweet spot 12-24h" del análisis Phemex inicial: era el bucket de DugEFresh, no un patrón universal.
-- **Leverage**: 6-20x concentra el PnL (BTC +752k, ETH +320k); >50x es neutral a negativo (ETH −80k) — la élite no gana por apalancamiento extremo sino por gestión.
-- **Estabilidad ex-agoosto**: BTC +405k sin agosto (edge no depende del pump). ETH solo +11.5k sin agosto — **el edge de ETH es mayormente EL evento de agosto**.
-- **Veredicto**: BTC es el único par con edge amplio, distribuido y estable en el tiempo. ETH es un beta de BTC con muestra contaminada por el evento.
+## Lo que v2 afirma y la data desmiente
 
-### Re-análisis Phemex sin DugEFresh (2026-08-25, filtros anti-sesgo)
-Criterios: ≥10 posiciones, ≥5 traders, ≥3 ganadores independientes, top-trader <60% del PnL, mediana de trader >0.
-- **Resultado: 0 de 15 pares positivos pasan.** Todos fallan por concentración (SUI top=95%, TAO 101%, XRP 111%) o mediana negativa.
-- Sin DugEFresh, XRP en Phemex queda en +3.3k pero top-trader=111% del PnL y mediana de trader NEGATIVA: la mayoría que tocó XRP perdió; 2 outliers (Rocky +3.7k, Number1 +3.6k en 1 trade c/u) pintan el agregado.
-- "Near-misses" menos sesgados: XLM (1.5k, 10/15 ganan, pero 24 trades y 1.3k del top) y SNDK (1k, 5/7) — muestras demasiado chicas para operar.
-- La masa de Phemex pierde consistente en BTC −173k, SOL −79k, ETH −25k, ZEC −19k.
-- **Conclusión**: en Phemex NO hay par operable tras quitar outliers — todo "par ganador" era 1-2 hombres. La señal útil de Phemex es la INVERSA (dónde pierde la masa). La señal positiva real está en la élite Binance (BTC).
+| claim de v2 | realidad verificada |
+|---|---|
+| "XRP la excepción: 64 traders, +38k **distribuido**" | DugEFresh = **91.3%** del PnL; mediana por trader **−1.5**; ganan 27/64 |
+| "12-24h pierde **SIEMPRE** (XRP, BTC, ETH)" | Es el **mejor** bucket en Phemex-XRP (+41.1k) y Binance-XRP (+5.0k). Solo pierde en BTC/ETH |
+| "La élite **flippea con el régimen**" | El lado coincide con la tendencia (MA200h) en **50.9%** — moneda al aire. El mix de lado apenas se mueve: 48→47→48→42% |
+| "shorts BTC +235k con longs −186k" | Son **dos meses distintos** empalmados: +235k es mayo, −186k es junio |
+| "**6-20x** concentra el PnL; >50x neutral" | Artefacto de rankear por ROI, que premia leverage por aritmética. Majors 30x, resto **10x** (v2 dice 5x) |
+| "dic-2024 → ago-2026" | 5 meses reales (ver arriba) |
 
-## Hallazgos Phemex (2026-08-25)
+## Lo que sí se sostiene de v2
 
-- Expectancy de la masa: **−190 USD/trade** (wr 46%, avg_loss 2.6× avg_win). PnL neto −1.4M.
-- Peores pares: BTC (−368k sin loterías), SOL (−125k), POPCAT (−602k).
-- "Mejores pares" = lotería casi siempre: SUI/ONDO = 1 trader con shorts de 127-157 días; TAO, XBR = 1 trader cada uno.
-- **XRP la excepción**: 64 traders, +38k distribuido.
+- Tokenized stocks de semiconductores concentran PnL real y distribuido (SKHYNIX, MU, SNDK).
+- BTC es el par menos concentrado: 437 traders, top-1 solo 15.8% del PnL.
+- La masa de Phemex pierde consistente (expectancy −190 USD/trade).
+- El "mejor par" de un trader suele ser lotería: revisar concentración siempre.
 
-## Patrones XRPUSDT (Phemex, 299 posiciones) — base mono-par
+## Hallazgos nuevos
 
-1. **Sesgo LONG**: longs +39.4k vs shorts −1.3k.
-2. **EVENT-DRIVEN**: casi todo el PnL del pump 19-23 ago 2026 (DugEFresh: 9 trades +35.8k wr 78% en ruptura; fuera de evento wr 24% −1k).
-3. **Sweet spot 12-24h** (+40k); `<1h` y `4-12h` pierden (ruido/salida a mitad).
-4. **Asimetría**: avg_loss/avg_win 0.21; perdedor máx 76h; nunca martingala.
-5. **Piramidar en fuerza**: size 10× solo tras confirmación del pump (~50x leverage — NO replicable).
-6. Domingo único día claramente negativo; horario sin patrón estable.
+**H1 — La habilidad SÍ persiste, pero solo medida sobre el historial multi-par completo.**
+Split por calendario, retorno neto, demean por símbolo×lado×mitad: **rho = +0.36 a +0.42, p=0.0001**.
+Dentro de un solo par la fiabilidad del estimador es **~0.13** — puro ruido. **Nunca rankees a un
+trader por sus operaciones de un par.**
 
-### Estrategia mono-par (XRP) — validar en forward-test
-- Solo rupturas/momentum confirmado, long-bias. Ride 12-24h. SL temprano + trailing.
-- Sin evento activo → NO operar. ⚠️ Nunca copiar el 50x: transferible es timing + gestión a 2-3x.
+**H2 — Seleccionar élite compra consistencia, no retorno medio.** Tercil top vs bottom en BTC
+out-of-sample: mediana +0.277% vs −0.138% (MWU z=+8.28), pero **media +0.261% vs +0.284%
+(p=0.881)**. Aciertan más seguido con ganancias más chicas.
 
-## Reglas
+**H3 — Una fila NO es una operación atómica.** Contrastando `avgCost` contra la vela de 1h de su
+apertura: 13.4% cae fuera del rango, y esas tienen duración mediana **54.2h vs 3.8h** y **42.1%
+de cierres parciales vs 5.2%**. Son agregados de scale-ins/scale-outs. Todo "win rate por fila"
+mide la política de cierre parcial tanto como el acierto.
 
-- ⚠️ **NUNCA renombrar/mover/borrar este árbol (ni ningún dataset) mientras un scraper background esté escribiendo**: hacer `process(list)` primero, esperar o matar y relanzar (los scrapers son resumables). Incidente 2026-08-25: rename con scraper corriendo → 440 portfolios perdidos y re-scrape de 45 min. Un `cp` no salva nada: crea inodos nuevos y lo que el proceso escriba después muere con el original.
-- Re-scrapear antes de cualquier análisis nuevo.
-- SIEMPRE revisar concentración por trader antes de declarar "par ganador" (lección SUI/ONDO).
-- ROI de copy-trading incluye leverage alto: ROI de posición ≠ edge replicable.
+**H4 — El leverage alto es riesgo de ruina, no gestión.** % de posiciones que consumieron >80%
+del margen: ≤10x **2.4%** · 11-25x **5.7%** · 26-60x **18.6%** · >60x **46.7%**. El MAE mediano
+es ~0.7% en todos los tramos: el apalancado no arriesga menos por operación.
+
+**H5 — Los stops fijos restan.** Walk-forward 2019-2026 (7 años, 3 ciclos): ningún nivel de stop
+mejora el retorno; uno de 5% es peor en 6 de 8 años. **Esto invalida el "SL temprano + trailing"
+que recomienda v2.** El control de riesgo sale del leverage (H4), no de los stops. Un stop muy
+ajustado (2%) sí baja el drawdown de 55% a 43%, pagando retorno: es un intercambio, no una mejora.
+
+**H6 — Entrar por momentum NO es un edge.** La regla "long con momentum fuerte + sobre MA200h"
+parecía funcionar dentro del dataset. En walk-forward 2019-2026: **p=0.244 contra entradas
+aleatorias**, equity ×5.59 contra **×7.72 de comprar y aguantar**, y +0.966%/op en años alcistas
+de BTC contra **−0.322% en los bajistas**. Es beta direccional. Parecía edge porque el dataset es
+un único ciclo alcista.
+
+---
+
+# Trampas (leer antes de cualquier análisis nuevo)
+
+**Trampa 1 — Traders que esconden las perdedoras.** El historial solo muestra posiciones
+**cerradas**. Un trader que nunca cierra una perdedora se ve perfecto y acumula pérdida no
+realizada. **Firma: win rate de cerradas ≥95% junto a un `mdd` de portfolio alto.**
+Ejemplos reales: GGbond哦 (98.5% aciertos, mdd 50.5%), 无人在稻 (98.9%, payoff 0.39),
+Una躺平记_ (**0 perdedoras en 174 cierres**, mdd 63.7%), NepNeptune (0 en 43, mdd 42.4%).
+**Encabezan cualquier ranking ingenuo.** Filtra `win_rate_cerradas ≤ 92%` y `payoff ≥ 0.5`.
+
+**Trampa 2 — El ROI y el PnL en USD no miden habilidad.** Los tres mejores por ROI del dataset:
+VickyKaushal (**+5,436%** → alpha **−0.72%**, t=−2.88), Omofun (+4,844% → alpha **−1.23%**),
+龟兔赛跑985 (+2,382% → **96.9% de su PnL es UN trade** a 145x). Por PnL absoluto:
+道亦有道 1994 ($551k → alpha +0.11%, t=0.46), 风雪哥 ($207k → alpha −0.16%, top-3 = 93% del PnL),
+geddong ($228k → alpha **−1.50%, t=−12.11**).
+**Usa alpha desapalancado contra la mediana de su mismo símbolo×mes×lado.**
+
+**Trampa 3 — Rankear pares por rentabilidad es circular.** Desapalancando, **188/197 pares (95%)**
+tienen retorno mediano por trader positivo: el dataset son los top-600 por ROI, ganan en todo.
+El ranking mide supervivencia, no edge del par.
+
+**Trampa 4 — Agregar en USD deja que el tamaño de cuenta decida.** SOL: agregado −32,229 pero
+mediana por trader **+21.2**. XRP: −3,966 con mediana **+3.0**. El trader típico ganó.
+
+**Trampa 5 — `mdd` es porcentaje, no fracción** (mediana 30.2, máx 102.7). Y el campo `win_rate`
+de Binance **no** es comparable con el win rate de posiciones cerradas: mide otra ventana.
+
+**Trampa 6 — Sesgo de supervivencia sin control.** Top-600 por ROI 90D. La selección es sobre
+rendimiento reciente, lo que **atenúa** las correlaciones H1→H2 (juega a favor de H1, en contra
+de cualquier nivel absoluto).
+
+---
+
+# Reglas operativas
+
+- ⚠️ **NUNCA renombrar/mover/borrar este árbol mientras un scraper background esté escribiendo.**
+  Hacer `process(list)` primero; esperar o matar y relanzar (son resumables). Incidente 2026-08-25:
+  rename con scraper corriendo → 440 portfolios perdidos y 45 min de re-scrape. Un `cp` no salva:
+  crea inodos nuevos y lo que el proceso escriba después muere con el original.
+- **NO re-scrapear por defecto.** v2 decía "re-scrapear antes de cualquier análisis nuevo"; eso
+  destruiría la base reproducible de `analysis/`. Re-scrapea solo cuando necesites datos **nuevos**,
+  y a un directorio nuevo. Para reproducir lo existente: `python3 analysis/flatten.py`.
+- **SIEMPRE revisar concentración** antes de declarar ganador a un par **o a un trader**
+  (lecciones SUI/ONDO y DugEFresh). Umbral usado: top-1 trade < 30% del PnL neto.
+- **Nunca rankear por ROI ni por PnL en USD.** Ver Trampa 2.
+- **Nunca evaluar a un trader por un solo par.** Ver H1.
+- **Declarar siempre si una cifra es neta o bruta**, y qué columna se usó.
+- Cualquier regla con expectancy **< 0.10-0.15% del notional es inoperable**: se la comen las fees
+  (8 bps round-trip). Por eso los scalps de <1h (+0.04%) no son viables.
+
+# Estado del proyecto
+
+- `analysis/FINDINGS_v2.md` — la auditoría completa, con lo que se sostiene y lo que se cae.
+- `analysis/RULES.md` — reglas candidatas para BTCUSDT + resultado del walk-forward.
+- `analysis/TOP5.md` — 5 traders a copiar, consenso de 4 análisis independientes, con descartados.
+- **Lo que falta**: forward-test real con datos nuevos (todo lo anterior vive en un solo ciclo de
+  régimen), una regla de salida validada, y observar a los candidatos en un bajista prolongado.

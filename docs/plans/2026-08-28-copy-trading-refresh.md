@@ -27,7 +27,7 @@
 - Matching de titulares entre corridas por `portfolio_id`, nunca por nick.
 - `analyze` no publica el latest (`analysis/roster.json`); eso lo hace `publish`, tras el gate.
 - Todos los paths relativos a la raíz del proyecto: la raíz de este repo.
-- Endpoints/headers exactos: los de `SKILL.v3.md` (Binance `/friendly/`, Phemex `api.phemex.com`).
+- Endpoints/headers exactos: los de `SKILL.md` (Binance `/friendly/`, Phemex `api.phemex.com`).
 - Commits en español, formato convencional, trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
 ## File Structure
@@ -625,7 +625,7 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
   - `ruin_risk`: `lev_p90 > 25 or ruin < −500`
   - `not_copyable`: `marg_med < 50 or dur_med < 0.5`
   - `no_alpha`: `t_stat < 2.5`
-  - `mdd_high` (warning): `35 ≤ mdd ≤ 60` — **escala PORCENTUAL** (mediana real ~30.15, GGbond哦=50.5; "Trampa 5" de SKILL.v3.md). Sin guard de loss_hider (el spec no lo pide).
+  - `mdd_high` (warning): `35 ≤ mdd ≤ 60` — **escala PORCENTUAL** (mediana real ~30.15, GGbond哦=50.5; "Trampa 5" de SKILL.md). Sin guard de loss_hider (el spec no lo pide).
   - `alpha_decay` (warning): `alpha_h2 < alpha_h1` (ambos no NULL). La mitad entre-snapshots la aplica `trend` (Task 6).
   - `inactive` (warning): sin posiciones con `closed_ms` en los últimos 30 días del máximo `closed_ms` del snapshot
   - `style_drift` NO va aquí — vive en `trend` (Task 6); `regime_onesided`: alpha mensual (de `monthly_alpha`) positivo en <50% de sus meses con dato, con ≥2 meses.
@@ -754,7 +754,7 @@ def run(con, snapshot_date, exchange='binance'):
         if n < 60 or na < 40 or (m['months_active'] or 0) < 3:
             f.append('insufficient')
         wr, payoff, mdd = m['wr'], m['payoff'], m['mdd']
-        # mdd en escala PORCENTUAL (mediana ~30, GGbond=50.5) — Trampa 5 de SKILL.v3
+        # mdd en escala PORCENTUAL (mediana ~30, GGbond=50.5) — Trampa 5 de SKILL.md
         if n >= 20 and ((wr is not None and wr > 92) or
                         payoff is None or
                         (payoff is not None and payoff < 0.5
@@ -1365,7 +1365,7 @@ def write(con, snapshot_date, exchange, roster, diff, out_dir):
 - Consumes: red (Binance/Phemex, endpoints y headers idénticos a `scripts/scrape_binance.py` y `scripts/scrape_positions.py` — copiar `UA`, URLs y cuerpos tal cual; NO importar los scripts viejos).
 - Produces: `scrape.run(snap_dir, exchanges=('binance','phemex'), pages_binance=20, pages_phemex=7, extra_ids_binance=(), http_post=None, http_get=None) -> dict {"binance": n_traders, "phemex": n_traders}`. Escribe `binance_raw.jsonl` / `phemex_raw.jsonl` en `snap_dir` (formato de línea idéntico al actual). Resumable: si el archivo ya existe en el snapshot dir, salta los trader_id presentes. `http_post`/`http_get` inyectables para tests (default = las funciones reales con urllib). Las listas de portfolios/traders se guardan también como `binance_list.json` / `phemex_list.json` en el snapshot dir.
 - **`extra_ids_binance`** (unión histórica del spec): portfolio_ids conocidos de corridas previas que ya NO están en la lista viva — se les baja igual el position-history (el endpoint acepta cualquier pid) con un registro mínimo `{'portfolioId': pid, 'nick': None, ..., 'positions': rows}`. Así el de-copy ve decaer a un trader justo cuando sale del top-600.
-- **⚠️ Cap real de la list API: 30/página aunque pidas 50** (SKILL.v3: "pageSize se ignora"). Por eso: `pages_binance=20` por default (≥600 portfolios) y el loop de `fetch_portfolios` corta SOLO con página vacía (`not lst`), NUNCA con `len(lst) < pageSize` — con el cap de 30 ese break cortaría en la página 1 y entregaría la mitad del universo pasando la validación ±50% por 3 traders.
+- **⚠️ Cap real de la list API: 30/página aunque pidas 50** (SKILL.md: "pageSize se ignora"). Por eso: `pages_binance=20` por default (≥600 portfolios) y el loop de `fetch_portfolios` corta SOLO con página vacía (`not lst`), NUNCA con `len(lst) < pageSize` — con el cap de 30 ese break cortaría en la página 1 y entregaría la mitad del universo pasando la validación ±50% por 3 traders.
 - **Fallo de red ≠ hecho**: si `fetch_history` recibe `{'code':'ERR'}` a mitad de paginación, NO se escribe el registro del trader (queda fuera de `done` y el resume lo reintenta). El bug heredado de `scripts/scrape_binance.py` (ERR → `positions: []` → marcado como completo para siempre) NO se copia. `fetch_history` devuelve `(rows, ok)` y solo `ok=True` escribe.
 - Diferencias vs scripts viejos: (1) escribe al snapshot dir, no a `data/*.jsonl` global; (2) funciones puras parametrizadas; (3) al final imprime resumen `{exchange: n}`; (4) los dos puntos de arriba.
 
@@ -1880,7 +1880,7 @@ def test_roster_is_five_and_sane(real):
 
 **Files:**
 - Create: `scripts/probe_open_positions.py` (throwaway hasta confirmar)
-- Modify (solo si el spike funciona): `pipeline/scrape.py`, `pipeline/ingest.py`, `SKILL.v3.md`
+- Modify (solo si el spike funciona): `pipeline/scrape.py`, `pipeline/ingest.py`, `SKILL.md`
 
 **Interfaces:**
 - Produces: respuesta a "¿hay endpoint público de posiciones ABIERTAS por lead-trader?" documentada. Si sí: scrape/ingest llenan `open_positions` y el flag `open_loss_divergence` (ya implementado en Task 5) se activa con data real.
@@ -1940,7 +1940,7 @@ if __name__ == '__main__':
 ```
 
 - [ ] **Step 2: Correr la sonda** con un `portfolioId` real (de `data/binance_portfolios.json`) y un `userId` real (de `data/all_traders.json`). Anotar salida.
-- [ ] **Step 3: Documentar el resultado** — añadir a `SKILL.v3.md` (sección Endpoints) una línea por exchange: endpoint confirmado + campos, o "verificado NO disponible el 2026-XX-XX".
+- [ ] **Step 3: Documentar el resultado** — añadir a `SKILL.md` (sección Endpoints) una línea por exchange: endpoint confirmado + campos, o "verificado NO disponible el 2026-XX-XX".
 - [ ] **Step 4 (solo si funciona):** en `pipeline/scrape.py` añadir la llamada por trader y volcar a `open_raw.jsonl` del snapshot; en `pipeline/ingest.py` poblar `open_positions` (columnas: symbol, side, notional, unrealized_pnl según los nombres reales que devuelva el endpoint). Test análogo a los de Task 9 con HTTP mockeado.
 - [ ] **Step 5: Commit** — `git commit -m "spike: sonda de posiciones abiertas (+ integracion si disponible)"`
 
@@ -2008,7 +2008,7 @@ Proyecto: `~/Projects/trading/copy-trading-intel`. Spec:
 ```
 
 - [ ] **Step 2: Verificar** — nueva sesión de Claude Code: `/copy-trading-refresh` aparece y carga.
-- [ ] **Step 3: Commit del proyecto** (la skill vive fuera del repo; commitear la referencia): añadir al final de `SKILL.v3.md` una línea en Scripts: `- pipeline.py — pipeline permanente (ver docs/specs/2026-08-28-...). Runbook de invocación: docs/specs/2026-08-28-...`. `git commit -m "docs: referencia al pipeline y skill copy-trading-refresh"`
+- [ ] **Step 3: Commit del proyecto** (la skill vive fuera del repo; commitear la referencia): añadir al final de `SKILL.md` una línea en Scripts: `- pipeline.py — pipeline permanente (ver docs/specs/2026-08-28-...). Runbook de invocación: docs/specs/2026-08-28-...`. `git commit -m "docs: referencia al pipeline y skill copy-trading-refresh"`
 
 ---
 

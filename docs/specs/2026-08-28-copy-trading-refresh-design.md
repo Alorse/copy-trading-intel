@@ -1,7 +1,7 @@
 # copy-trading-refresh — Diseño
 
 **Fecha:** 2026-08-28 · **Estado:** aprobado en diseño, pendiente de plan de implementación
-**Contexto previo:** sesión 8d3bb88a (auditoría adversarial del skill copy-trading-intel v2), `analysis/FINDINGS_v2.md`, `analysis/TOP5.md`, `SKILL.v3.md`.
+**Contexto previo:** auditoría adversarial de la skill copy-trading-intel v2, `analysis/FINDINGS_v2.md`, `analysis/TOP5.md`, `SKILL.md`.
 
 ## Objetivo
 
@@ -116,7 +116,7 @@ Cada criterio emite un flag por trader × snapshot. Umbrales calibrados con los 
 | `mdd_high` | mdd 35–60 |
 
 ⚠️ **Escala de mdd (Binance): PORCENTUAL, no fraccional** — mediana ~30.15, máx ~102.7
-(GGbond哦=50.5, 牛熊摆渡人=74.85). Es la "Trampa 5" de `SKILL.v3.md`; los umbrales 35/60 son
+(GGbond哦=50.5, 牛熊摆渡人=74.85). Es la "Trampa 5" de `SKILL.md`; los umbrales 35/60 son
 en esa escala. Un test de regresión debe assertar la escala (mediana del snapshot ∈ [10,60]).
 
 ### Regla de de-copy (vive en `trend`)
@@ -201,7 +201,7 @@ El matching titular↔corrida se hace por **`portfolio_id`** (estable), nunca po
 
 Probar endpoints de posiciones **abiertas**:
 - Binance: buscar `position/current` (o similar) en la familia `/bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/`.
-- Phemex: `position/current/v2` (confirmado que existe en SKILL.v3).
+- Phemex: `position/current/v2` (confirmado que existe en SKILL.md).
 
 Si funciona → `open_positions` se llena y `open_loss_divergence` es medición directa.
 Si no → el proxy WR/mdd queda como titular. El resultado del spike se documenta en el SKILL del proyecto.
