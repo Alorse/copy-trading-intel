@@ -13,12 +13,13 @@ August pump scores zero by construction: only beating those who did the same cou
 | # | trader | votes | n | med alpha | t | payoff | lev | ruin | top3 | mdd | notional |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | **Cooma** | GLM#1 + mine | 127 | +1.75% | **5.01** | 0.64 | 10x | **−92%** | 37% | 32 | $1,999 |
-| 2 | **梭哈到世界尽头** | GLM#5 + mine | **527** | +1.60% | **6.11** | 1.04 | **5x** | −398% | 59% | 20 | $506 |
+| 2 | **梭哈到世界尽头** | GLM#5 + mine | 527 → **286**† | +1.60% | **6.11** | 1.04 | **5x** | −398% | 59% | 20 | $506 |
 | 3 | **秋高看山势** | Fable#1 + Kimi#4 | 270 | +1.08%* | 3.14 | **1.55** | 10x | −231% | 33% | **15** | $41 |
 | 4 | **牛熊摆渡人** | GLM#2 + mine | 90 | **+6.89%** | 4.15 | **1.40** | 20x | −1173% | 49% | 75 | $627 |
 | 5 | **重生之我在币圈捡垃圾-** | Fable#5 + mine | 298 | +0.60%* | 3.36 | 0.82 | 6x | **−75%** | **9%** | 64 | $6,030 |
 
 *mean alpha. "ruin" = worst price loss × median leverage, as a % of margin.
+†his sample **shrank to 286** three days after this table was built — see the correction below.
 
 **None appeared on 3 of the 4 lists.** That alone says something: with 5 months of data the
 ranking depends heavily on the criterion. Treat it as a portfolio of correlated bets, not as five
@@ -32,10 +33,46 @@ isolated margin, with flat 10x leverage (does not scale aggression when winning)
 +2.22% in the pump.
 *Risk:* payoff 0.64 — their mean loss is 1.6× their mean gain. They live off an 85% hit rate.
 
-**2. 梭哈到世界尽头** — the best statistical evidence: **527 positions**, the largest sample in the
-consensus, with t=6.11 and the most conservative leverage (5x). mdd 20%.
+**2. 梭哈到世界尽头** — the largest sample in the consensus at the time (527 positions), with
+t=6.11 and the most conservative leverage (5x). mdd 20%.
 *Risk:* their 3 best trades are **59% of the PnL** — the highest concentration in the Top 5. And
 their alpha decays gently (H1 +1.95% → H2 +1.37%): the only one trending down.
+
+> ### ⚠️ Correction, 2026-08-29 — this entry no longer describes what is visible
+>
+> On the 2026-08-28 scrape his history is **286 positions, not 527**. Binance now serves nothing
+> opened before a portfolio's `startTime`, and his is **2026-06-07 23:34** (Trap 7 in `SKILL.md`).
+> 249 positions were deleted, 8 new ones appeared. The cut is exact: 249/249 deleted were opened
+> before `startTime`, 286/286 survivors after it.
+>
+> **What the deleted history contained is worse than the deletion.** Those 249 positions were net
+> **−$5,589**, and the last week before the portfolio opened was **−$8,292** over 114 closes —
+> including a single LABUSDT short at **−$7,754**. His last pre-portfolio close is 2026-06-07
+> **23:30**; the lead portfolio starts **23:34**; his $40k ETH core long opens 23:42. The +139%
+> headline ROI is measured from a starting point chosen four minutes after that week was
+> liquidated.
+>
+> **His decay is steeper than either snapshot alone shows.** Recomputed with the engine's own
+> formula:
+>
+> | | on the 527-position data | on the 286 visible today |
+> |---|---|---|
+> | alpha | **+4.21%** | +3.10% |
+> | months active | 6 | **3** |
+> | monthly alpha | +7.73% → +4.32% → +3.23% → **+2.96%** | +3.53% → +3.18% → +2.62% |
+> | May 2026 PnL | **−$6,943** | *invisible* |
+>
+> The engine now sees only the flat tail of a decaying series, and `months_active=3` sits exactly
+> on the `insufficient` threshold in `pipeline/detect.py`.
+>
+> **This is not specific to him.** Of the 177 portfolios whose pre-`startTime` history was still
+> visible on 2026-08-25, **86% were net negative before going public** (binomial p = 4.4e-20,
+> aggregate −$859,606). He is an extreme case of a population-wide selection effect, not an
+> outlier in kind. The `fresh_start` warning flags portfolios young enough that none of this is
+> checkable.
+>
+> Verified independently by two adversarial reviewers (Fable, GLM) and re-derived first-hand;
+> the reviewers disagreed on the mechanism and the `startTime` filter is what the data supports.
 
 **3. 秋高看山势** — the one who **improves month over month without exception**:
 +0.2 → +1.5 → +1.7 → +1.8. The only one in the group with payoff >1.5 and a moderate win rate

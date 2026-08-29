@@ -63,7 +63,7 @@ Headers: browser `User-Agent`, `Content-Type: application/json`, `clienttype: we
 - `binance_positions.jsonl` — Binance: 594 portfolios with positions (600 lines), 108,616 positions.
 - `analysis/ohlc/` — BTCUSDT candles: `btcusdt_1h.csv` (the dataset's window) and `btcusdt_1h_long.csv` (2019-2026, for the walk-forward).
 
-⚠️ **REAL TIME RANGE: 5 MONTHS, NOT 20.** v2 says "Dec-2024→Aug-2026". **Zero** positions closed
+⚠️ **REAL TIME RANGE: 5 MONTHS, NOT 20** (and shrinking — see Trap 7). v2 says "Dec-2024→Aug-2026". **Zero** positions closed
 before April 2026. Closes per month: Apr 996 · May 12,171 · Jun 21,751 · Jul 29,417 ·
 Aug 43,477. v2's long range comes from the *opening* dates of a handful of long swings.
 **There is a single regime cycle**: the May–June crash, the July–August pump (BTC +25.8% in 7
@@ -155,6 +155,43 @@ different window.
 **Trap 6 — Survivorship with no control.** Top-600 by 90D ROI. The selection is on recent
 performance, which **attenuates** the H1→H2 correlations (working in H1's favour, against any
 absolute level).
+
+**Trap 7 — The visible track record starts where the trader chose, and the rest is gone.**
+Binance serves a lead portfolio's history only from its `startTime` (when the portfolio went
+public). Verified across two snapshots 3 days apart: on 2026-08-25, **177 of 485** portfolios
+still returned positions opened before their own `startTime` (17,759 of them); on 2026-08-28,
+**0 of 590** did. That single filter accounts for **90.7%** of the 19,581 positions that
+vanished in between.
+
+Three limits bound what you can ever see, and only the first one moves:
+
+| limit | what it does |
+|---|---|
+| `opened >= startTime` | hard floor at the portfolio's public start. Nothing earlier, ever. |
+| `closed >= scrape − ~120d` | trailing window on close date. Present in both snapshots; not new. |
+| ~2000 rows per portfolio | client-side pagination cap (40 × 50). Only bites on hyperactive traders — 98% of the unexplained residual sits there. |
+
+**Why this is not just data hygiene:** the pre-public record was systematically bad. Of the 177
+portfolios whose pre-`startTime` history was still visible on 2026-08-25, **86% were net
+negative before going public** (131 of 153 with ≥5 closes, binomial p = **4.4e-20**), aggregate
+**−$859,606**. Traders open the public portfolio *after* the losses. The extreme case in the
+audited roster: 梭哈到世界尽头 closed a **−$8,292** week and opened his lead portfolio **4
+minutes later**; his +139% headline ROI is measured from that point.
+
+Consequences:
+- `startTime` is stored in `trader_snapshot.start_time` (from `<exchange>_list.json`) and drives
+  the `fresh_start` warning in `pipeline/detect.py`.
+- `months_active`, `n` and the alpha trend all shrink as this filter tightens. Recomputing
+  梭哈到世界尽头 on the pre-filter snapshot gives **alpha +4.21%, 6 months, monthly decay
+  +7.73% → +2.96%**; on the current one, **+3.10%, 3 months, +3.53% → +2.62%**. The engine sees
+  the flat tail of a decaying series.
+- **Never delete an old raw snapshot.** It holds evidence the API will not serve again.
+
+The top-600-by-ROI universe is overwhelmingly young, which is why the flag is not rare: median
+portfolio age **49 days**, p75 113d, and **76% are under 120 days** (447 of 590 on 2026-08-28).
+That is survivorship wearing another hat — a short lucky run is exactly what produces a top 90D
+ROI. Treat `fresh_start` as a statement about the universe, not as a discriminator between
+traders: read it alongside the "Portfolio opened" block the report prints.
 
 ---
 
