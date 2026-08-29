@@ -5,7 +5,7 @@ D, EX = "2026-09-01", "binance"
 
 
 def _tm(con, tid, **kw):
-    # mdd en escala PORCENTUAL (como la data real de Binance)
+    # mdd on a PERCENTAGE scale (like Binance's real data)
     base = dict(n=100, n_alpha=80, alpha=0.01, t_stat=3.0, payoff=1.2, wr=70.0,
                 conc_top1=20.0, ruin=-100.0, mdd=20.0, lev_med=5, lev_p90=10,
                 marg_med=500.0, dur_med=4.0, months_active=4, alpha_h1=0.01,
@@ -18,7 +18,7 @@ def _tm(con, tid, **kw):
         (D, EX, tid, tid, *base.values()))
     con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
                 (D, EX, tid, tid, 50.0, 0, 0, 0, base["mdd"]))
-    # una posicion reciente para no disparar inactive
+    # a recent position so `inactive` is not triggered
     con.execute(
         "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
         "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
@@ -34,12 +34,12 @@ def test_clean_trader_no_flags(con):
 
 
 def test_loss_hider_high_wr(con):
-    _tm(con, "gg", wr=98.5, mdd=50.5)               # caso GGbond, escala %
+    _tm(con, "gg", wr=98.5, mdd=50.5)               # GGbond case, % scale
     assert "loss_hider" in detect.run(con, D, EX)["gg"]
 
 
 def test_loss_hider_zero_losers_with_breakeven(con):
-    # caso Una: cero perdedoras (payoff NULL) pero wr<100 por un break-even
+    # Una case: zero losers (payoff NULL) but wr<100 because of a break-even
     _tm(con, "una", payoff=None, wr=99.4)
     assert "loss_hider" in detect.run(con, D, EX)["una"]
 
@@ -80,8 +80,8 @@ def test_warnings(con):
 
 
 def test_mdd_high_is_open_ended(con):
-    # caso 重生之我在币圈捡垃圾- (2026-08-28): mdd=63.8 quedaba SIN warning con
-    # la banda cerrada 35<=mdd<=60 — el peor drawdown salia limpio
+    # 重生之我在币圈捡垃圾- case (2026-08-28): mdd=63.8 got NO warning under
+    # the closed band 35<=mdd<=60 — the worst drawdown came out clean
     _tm(con, "basura", mdd=63.8)
     assert "mdd_high" in detect.run(con, D, EX)["basura"]
 

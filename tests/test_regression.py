@@ -1,20 +1,20 @@
-"""Reproduce el analisis auditado del 2026-08-25 con el pipeline nuevo.
-Referencia: analysis/TOP5.md y FINDINGS_v2.md."""
+"""Reproduces the audited 2026-08-25 analysis with the new pipeline.
+Reference: analysis/TOP5.md and FINDINGS_v2.md."""
 import json, os, pathlib, pytest
 from pipeline import db as dbmod, flatten, ingest, metrics, detect, rank
 
 ROOT = pathlib.Path(__file__).parent.parent
 SNAP = ROOT / "data" / "snapshots" / "2026-08-25"
 
-# La data cruda NO se versiona (ver .gitignore): son dumps de las APIs de
-# Binance/Phemex y no se redistribuyen. Estos 4 tests son opt-in: corren si
-# colocas un snapshot en data/snapshots/2026-08-25/. Sin el, se saltan.
+# The raw data is NOT versioned (see .gitignore): they are dumps of the
+# Binance/Phemex APIs and are not redistributed. These 4 tests are opt-in: they
+# run if you drop a snapshot into data/snapshots/2026-08-25/. Without it, they skip.
 pytestmark = pytest.mark.skipif(
     not (SNAP / "binance_raw.jsonl").exists(),
-    reason=f"opt-in: requiere un snapshot crudo en {SNAP.relative_to(ROOT)}/ "
-           "(binance_raw.jsonl / phemex_raw.jsonl). Genera el tuyo con "
-           "`python3 pipeline.py scrape --date <YYYY-MM-DD>`; los valores "
-           "esperados aqui son los del snapshot auditado 2026-08-25.")
+    reason=f"opt-in: needs a raw snapshot in {SNAP.relative_to(ROOT)}/ "
+           "(binance_raw.jsonl / phemex_raw.jsonl). Generate your own with "
+           "`python3 pipeline.py scrape --date <YYYY-MM-DD>`; the values "
+           "expected here are those of the audited 2026-08-25 snapshot.")
 
 
 @pytest.fixture(scope="module")
@@ -35,7 +35,7 @@ def _by_nick(con):
 
 
 def test_mdd_scale_is_percentage(real):
-    """Guarda contra la regresion de escala: mdd es PORCENTUAL (Trampa 5)."""
+    """Guards against the scale regression: mdd is a PERCENTAGE (Trap 5)."""
     con, flags, roster = real
     med = con.execute(
         "SELECT mdd FROM trader_snapshot WHERE snapshot_date='2026-08-25' "
@@ -43,13 +43,13 @@ def test_mdd_scale_is_percentage(real):
         "LIMIT 1 OFFSET (SELECT COUNT(*)/2 FROM trader_snapshot "
         "WHERE snapshot_date='2026-08-25' AND exchange='binance' "
         "AND mdd IS NOT NULL)").fetchone()[0]
-    assert 10 <= med <= 60          # mediana real ~30.15; si sale <1, la escala se rompio
+    assert 10 <= med <= 60          # real median ~30.15; if <1, the scale broke
 
 
 def test_known_top_traders_survive(real):
     con, flags, roster = real
     m = _by_nick(con)
-    # 梭哈到世界尽头: n=527, t~6, lev 5x, conc top-1 = 26.1% — sobrevive
+    # 梭哈到世界尽头: n=527, t~6, lev 5x, top-1 conc = 26.1% — survives
     s = m["梭哈到世界尽头"]
     assert s["n"] > 400 and s["t_stat"] > 4
     assert s["conc_top1"] < 30
@@ -62,7 +62,7 @@ def test_known_frauds_are_flagged(real):
     assert "roi_artifact" in json.loads(m["VickyKaushal"]["flags"]) or \
            "no_alpha" in json.loads(m["VickyKaushal"]["flags"])
     assert "loss_hider" in json.loads(m["GGbond哦"]["flags"])
-    # OJO: el nick real en la data lleva sufijo — es 龟兔赛跑985-重新起航
+    # CAREFUL: the real nick in the data carries a suffix — 龟兔赛跑985-重新起航
     assert "lottery" in json.loads(m["龟兔赛跑985-重新起航"]["flags"])
     assert "ruin_risk" in json.loads(m["牛熊摆渡人"]["flags"])   # lev p90 / -1173%
 
@@ -71,5 +71,5 @@ def test_roster_is_five_and_sane(real):
     con, flags, roster = real
     assert len(roster["traders"]) <= 5
     total = sum(t["weight"] for t in roster["traders"]) + roster["unallocated"]
-    assert abs(total - 1.0) < 1e-9   # asignado + sin asignar = 1.0 (corrida #1
-                                     # puede ser todo-B -> unallocated > 0)
+    assert abs(total - 1.0) < 1e-9   # allocated + unallocated = 1.0 (run #1 can
+                                     # be all-B -> unallocated > 0)

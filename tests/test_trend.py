@@ -22,7 +22,7 @@ def test_first_run_is_material(con):
 
 
 def test_trend_bonus_from_monthly_slope(con):
-    _tm(con, "2026-09-01", "A", 0.01)   # pendiente positiva en monthly
+    _tm(con, "2026-09-01", "A", 0.01)   # positive slope in monthly
     trend.run(con, "2026-09-01", EX)
     tb = con.execute("SELECT trend_bonus FROM trader_metrics "
                      "WHERE trader_id='A'").fetchone()[0]
@@ -39,14 +39,14 @@ def test_decopy_two_negative_snapshots_and_gate_sees_it(con):
         "SELECT flags FROM trader_metrics WHERE trader_id='B' "
         "AND snapshot_date='2026-09-01'").fetchone()[0])
     assert "decopy_2neg" in flags
-    # el gate ve el flag ANADIDO EN ESTA CORRIDA (no flags stale del fetch inicial)
+    # the gate sees the flag ADDED IN THIS RUN (not stale flags from the initial fetch)
     assert d["new_disqualified_incumbents"][0]["portfolio_id"] == "B"
     assert d["material"] is True
 
 
 def test_alpha_decay_between_snapshots(con):
     _tm(con, "2026-08-01", "E", 0.020)
-    _tm(con, "2026-09-01", "E", 0.012)     # positivo pero decreciente
+    _tm(con, "2026-09-01", "E", 0.012)     # positive but declining
     trend.run(con, "2026-09-01", EX)
     flags = json.loads(con.execute(
         "SELECT flags FROM trader_metrics WHERE trader_id='E' "

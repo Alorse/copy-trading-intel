@@ -1,5 +1,5 @@
-"""Bateria anti-inflado. Cada regla emite un flag por trader.
-Casos de referencia: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
+"""Anti-inflation battery. Each rule emits one flag per trader.
+Reference cases: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
 import json
 
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
@@ -36,7 +36,7 @@ def run(con, snapshot_date, exchange='binance'):
         if n < 60 or na < 40 or (m['months_active'] or 0) < 3:
             f.append('insufficient')
         wr, payoff, mdd = m['wr'], m['payoff'], m['mdd']
-        # mdd en escala PORCENTUAL (mediana ~30, GGbond=50.5) - Trampa 5 de SKILL.v3
+        # mdd on a PERCENTAGE scale (median ~30, GGbond=50.5) - Trap 5 in SKILL.md
         if n >= 20 and ((wr is not None and wr > 92) or
                         payoff is None or
                         (payoff is not None and payoff < 0.5
@@ -58,8 +58,8 @@ def run(con, snapshot_date, exchange='binance'):
         if (m['t_stat'] or 0) < 2.5:
             f.append('no_alpha')
         # warnings
-        if mdd is not None and mdd >= 35:   # banda ABIERTA: un mdd de 64 es
-            f.append('mdd_high')            # peor que uno de 40, no mejor
+        if mdd is not None and mdd >= 35:   # OPEN band: an mdd of 64 is worse
+            f.append('mdd_high')            # than one of 40, not better
         if m['alpha_h1'] is not None and m['alpha_h2'] is not None \
            and m['alpha_h2'] < m['alpha_h1']:
             f.append('alpha_decay')

@@ -41,29 +41,29 @@ def test_binance_scrape_writes_snapshot(tmp_path):
 def test_binance_scrape_resumes(tmp_path):
     scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
-    assert counts["binance"] == 0          # ya estaba, no re-scrapea
+    assert counts["binance"] == 0          # already there, no re-scrape
     lines = (tmp_path / "binance_raw.jsonl").read_text().strip().splitlines()
-    assert len(lines) == 1                  # sin duplicados
+    assert len(lines) == 1                  # no duplicates
 
 
 def test_network_error_does_not_mark_trader_done(tmp_path):
     def _err_post(url, body):
         if "query-list" in url:
             return _fake_post(url, body)
-        return {"code": "ERR"}              # historial siempre falla
+        return {"code": "ERR"}              # history always fails
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_err_post)
-    assert counts["binance"] == 0           # nada escrito
+    assert counts["binance"] == 0           # nothing written
     raw = tmp_path / "binance_raw.jsonl"
     assert not raw.exists() or raw.read_text().strip() == ""
-    # al reintentar con red sana, el trader SI se baja (no quedo marcado hecho)
+    # on retry with a healthy network the trader IS fetched (never marked done)
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post)
     assert counts["binance"] == 1
 
 
-def test_extra_ids_union_historica(tmp_path):
+def test_extra_ids_historical_union(tmp_path):
     counts = scrape.run(tmp_path, exchanges=("binance",), http_post=_fake_post,
                         extra_ids_binance=("P_OLD",))
-    assert counts["binance"] == 2           # P1 (lista viva) + P_OLD (historico)
+    assert counts["binance"] == 2           # P1 (live listing) + P_OLD (historical)
     lines = [json.loads(l) for l in
              (tmp_path / "binance_raw.jsonl").read_text().strip().splitlines()]
     ids = {l["portfolioId"] for l in lines}
@@ -77,7 +77,7 @@ def test_phemex_scrape_writes_and_resumes(tmp_path):
     assert line["userId"] == 7 and line["nick"] == "bob"
     assert line["positions"][0]["symbol"] == "ETHUSDT"
     counts = scrape.run(tmp_path, exchanges=("phemex",), http_get=_fake_get)
-    assert counts["phemex"] == 0            # resume: no re-scrapea
+    assert counts["phemex"] == 0            # resume: no re-scrape
     lines = (tmp_path / "phemex_raw.jsonl").read_text().strip().splitlines()
     assert len(lines) == 1
 

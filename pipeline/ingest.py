@@ -1,4 +1,4 @@
-"""CSV de un snapshot -> SQLite. Idempotente por (snapshot_date, exchange)."""
+"""Snapshot CSVs -> SQLite. Idempotent per (snapshot_date, exchange)."""
 import csv, os
 from pipeline import db as dbmod
 
@@ -21,8 +21,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
     snap_dir = str(snap_dir)
     counts = {}
     for ex in ('binance', 'phemex'):
-        # limpiar SIEMPRE: si el CSV desaparecio en un re-ingest, la data vieja
-        # de ese exchange no debe sobrevivir en la DB
+        # ALWAYS clear: if the CSV vanished on a re-ingest, that exchange's old
+        # data must not survive in the DB
         dbmod.clear_snapshot(con, snapshot_date, ex)
         path = os.path.join(snap_dir, f'{ex}.csv')
         if not os.path.exists(path):
@@ -46,8 +46,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                 tid = r['trader_id']
                 marg, oval = _f(r['margin'], 0), _f(r['open_val'], 0)
                 lev = oval / marg if marg else 0
-                # side REAL de la posicion = pos_side (Long/Short/Merged);
-                # el side del CSV es Buy/Sell y NO es el lado de la posicion
+                # the REAL side of the position is pos_side (Long/Short/Merged);
+                # the CSV's side is Buy/Sell and is NOT the position side
                 pos_rows.append((snapshot_date, ex, tid, r['nick'], r['symbol'],
                                  r['pos_side'], _i(r['opened_ms']), _i(r['closed_ms']),
                                  _f(r['dur_h']), oval, lev, marg,

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# pipeline.py — entrypoint del pipeline copy-trading-refresh
-"""Uso:
+# pipeline.py — entrypoint for the copy-trading-refresh pipeline
+"""Usage:
   python3 pipeline.py scrape  [--date YYYY-MM-DD] [--exchange all|binance|phemex]
   python3 pipeline.py analyze [--date YYYY-MM-DD] [--force]
-  python3 pipeline.py publish --date YYYY-MM-DD     (unico que escribe analysis/roster.json)
+  python3 pipeline.py publish --date YYYY-MM-DD     (the only one that writes analysis/roster.json)
   python3 pipeline.py metrics|detect|trend|rank|report --date YYYY-MM-DD
-     (orden obligatorio: metrics -> detect -> trend -> rank -> report;
-      metrics resetea flags/trend_bonus — un rank sin detect+trend rankea sin flags)
+     (mandatory order: metrics -> detect -> trend -> rank -> report;
+      metrics resets flags/trend_bonus — a rank without detect+trend ranks with no flags)
 """
 import argparse, csv, datetime as dt, glob, json, os, shutil, sys
 from pipeline import db as dbmod, flatten, ingest, metrics, detect, trend, rank, report
@@ -21,7 +21,7 @@ def _paths(root, date):
 
 
 def _csv_counts(snap_dir, ex):
-    """(n_traders, n_positions) del CSV del snapshot, o None si no existe/vacio."""
+    """(n_traders, n_positions) from the snapshot CSV, or None if missing/empty."""
     path = os.path.join(snap_dir, f'{ex}.csv')
     if not os.path.exists(path):
         return None
@@ -33,17 +33,17 @@ def _csv_counts(snap_dir, ex):
 
 
 def _validate_pre(con, snap_dir, date, force):
-    """ANTES de ingest, desde los CSV — la DB no se toca si falla."""
+    """BEFORE ingest, straight from the CSVs — the DB is left untouched on failure."""
     raws = [p for p in glob.glob(os.path.join(snap_dir, '*_raw.jsonl'))
             if os.path.getsize(p) > 0]
     if not os.path.isdir(snap_dir) or not raws:
-        print(f"VALIDACION: {snap_dir} no existe o no tiene *_raw.jsonl — "
-              f"¿typo en --date?", file=sys.stderr)
-        return False                       # esto ni --force lo salta
+        print(f"VALIDATION: {snap_dir} does not exist or has no *_raw.jsonl — "
+              f"typo in --date?", file=sys.stderr)
+        return False                       # not even --force skips this one
     if _csv_counts(snap_dir, 'binance') is None:
-        print("VALIDACION: sin binance.csv (o vacio) — v1 analiza Binance; "
-              "seguir produciria un roster VACIO", file=sys.stderr)
-        return False                       # esto TAMPOCO lo salta --force
+        print("VALIDATION: no binance.csv (or empty) — v1 analyses Binance; "
+              "carrying on would produce an EMPTY roster", file=sys.stderr)
+        return False                       # --force does NOT skip this one either
     ok = True
     for ex in ('binance', 'phemex'):
         prev = con.execute(
@@ -52,8 +52,8 @@ def _validate_pre(con, snap_dir, date, force):
             (ex, date)).fetchone()
         cur = _csv_counts(snap_dir, ex)
         if prev and cur is None:
-            print(f"VALIDACION {ex}: tenia snapshot previo ({prev['snapshot_date']}) "
-                  f"pero hoy no hay CSV — scrape incompleto", file=sys.stderr)
+            print(f"VALIDATION {ex}: had a previous snapshot ({prev['snapshot_date']}) "
+                  f"but there is no CSV today — incomplete scrape", file=sys.stderr)
             ok = False
             continue
         if not prev or cur is None:
@@ -61,18 +61,18 @@ def _validate_pre(con, snap_dir, date, force):
         for field, c, p in (('n_traders', cur[0], prev['n_traders']),
                             ('n_positions', cur[1], prev['n_positions'])):
             if p and not (0.5 * p <= c <= 1.5 * p):
-                print(f"VALIDACION {ex}.{field}: {c} vs {p} en "
-                      f"{prev['snapshot_date']} (fuera de ±50%)", file=sys.stderr)
+                print(f"VALIDATION {ex}.{field}: {c} vs {p} on "
+                      f"{prev['snapshot_date']} (outside ±50%)", file=sys.stderr)
                 ok = False
     if not ok and not force:
-        print("Abortando SIN tocar la DB; usa --force para continuar.",
+        print("Aborting WITHOUT touching the DB; use --force to continue.",
               file=sys.stderr)
         return False
     return True
 
 
 def _known_ids(con, snap_dir):
-    """Union historica: ids de la DB que aun no estan bajados en este snapshot."""
+    """Historical union: DB ids not yet downloaded into this snapshot."""
     hist = {r[0] for r in con.execute(
         "SELECT DISTINCT trader_id FROM positions WHERE exchange='binance'")}
     done = set()
@@ -89,8 +89,8 @@ def _known_ids(con, snap_dir):
 def main(argv=None, project_root=None):
     root = project_root or os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser(
-        epilog='Orden de subcomandos granulares: metrics -> detect -> trend -> '
-               'rank -> report (metrics resetea flags/trend_bonus).')
+        epilog='Order of the granular subcommands: metrics -> detect -> trend -> '
+               'rank -> report (metrics resets flags/trend_bonus).')
     ap.add_argument('cmd', choices=['scrape', 'analyze', 'publish', 'metrics',
                                     'detect', 'trend', 'rank', 'report'])
     ap.add_argument('--date', default=dt.date.today().isoformat())
@@ -102,11 +102,11 @@ def main(argv=None, project_root=None):
     if a.cmd == 'publish':
         src = os.path.join(P['run'], 'roster.json')
         if not os.path.exists(src):
-            print(f"publish: no existe {src} — corre analyze primero",
+            print(f"publish: {src} does not exist — run analyze first",
                   file=sys.stderr)
             return 1
         shutil.copy(src, P['latest'])
-        print('publicado:', P['latest'])
+        print('published:', P['latest'])
         return 0
 
     os.makedirs(os.path.join(root, 'data'), exist_ok=True)
@@ -119,7 +119,7 @@ def main(argv=None, project_root=None):
             return 0
         if a.cmd == 'analyze':
             print('flatten:', flatten.flatten_snapshot(P['snap'])
-                  if os.path.isdir(P['snap']) else 'snapshot dir inexistente')
+                  if os.path.isdir(P['snap']) else 'snapshot dir does not exist')
             if not _validate_pre(con, P['snap'], a.date, a.force):
                 return 2
             print('ingest:', ingest.ingest_snapshot(con, P['snap'], a.date))
@@ -143,8 +143,8 @@ def main(argv=None, project_root=None):
                       indent=1, ensure_ascii=False)
             p = report.write(con, a.date, 'binance', roster, diff, P['run'],
                              snap_dir=P['snap'])
-            # NO se copia a analysis/roster.json aqui: eso es `publish`, tras el gate
-            print('reporte:', p)
+            # NOT copied to analysis/roster.json here: that is `publish`, after the gate
+            print('report:', p)
             print('material:', diff['material'])
             return 0
         if a.cmd == 'metrics':
@@ -156,12 +156,12 @@ def main(argv=None, project_root=None):
         if a.cmd == 'rank':
             print(json.dumps(rank.run(con, a.date), ensure_ascii=False)); return 0
         if a.cmd == 'report':
-            # lee los artefactos de la corrida — NO recomputa trend/rank
-            # (recomputar sin prev_roster produciria un diff distinto al de analyze)
+            # reads the run artifacts — does NOT recompute trend/rank
+            # (recomputing without prev_roster would yield a diff unlike analyze's)
             rp = os.path.join(P['run'], 'roster.json')
             dp = os.path.join(P['run'], 'diff.json')
             if not (os.path.exists(rp) and os.path.exists(dp)):
-                print("report: faltan roster.json/diff.json — corre analyze primero",
+                print("report: roster.json/diff.json missing — run analyze first",
                       file=sys.stderr)
                 return 1
             print(report.write(con, a.date, 'binance', json.load(open(rp)),

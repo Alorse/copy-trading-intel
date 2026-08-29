@@ -1,4 +1,4 @@
-"""Scrape Binance+Phemex a un snapshot fechado. Resumable dentro del snapshot."""
+"""Scrapes Binance+Phemex into a dated snapshot. Resumable within the snapshot."""
 import json, os, time, urllib.request
 
 BUA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -17,7 +17,7 @@ PH_POS = 'https://api.phemex.com/phemex-lb/public/data/position/closed/v2'
 
 
 def _post(url, body, tries=3):
-    # identico a scripts/scrape_binance.py::post
+    # identical to scripts/scrape_binance.py::post
     for i in range(tries):
         try:
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=BUA)
@@ -30,7 +30,7 @@ def _post(url, body, tries=3):
 
 
 def _get(url, tries=3):
-    # identico a scripts/scrape_positions.py::get, headers PUA
+    # identical to scripts/scrape_positions.py::get, PUA headers
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers=PUA)
@@ -54,8 +54,8 @@ def _done_ids(path, key):
 
 
 def _fetch_portfolios(pages, post, time_range='90D', data_type='ROI'):
-    """OJO: la API capea a 30/pagina aunque se pida 50 — cortar SOLO con
-    pagina vacia, nunca con len(lst) < pageSize (cortaria en la pagina 1)."""
+    """CAREFUL: the API caps at 30/page even when 50 is requested — break ONLY on
+    an empty page, never on len(lst) < pageSize (that would break on page 1)."""
     rows = {}
     for p in range(1, pages + 1):
         body = {'pageNumber': p, 'pageSize': 50, 'timeRange': time_range,
@@ -75,9 +75,9 @@ def _fetch_portfolios(pages, post, time_range='90D', data_type='ROI'):
 
 
 def _fetch_history(pid, post):
-    """Devuelve (rows, ok). ok=False si hubo ERR a mitad de paginacion —
-    en ese caso el caller NO escribe el registro (el resume lo reintenta).
-    NO copiar el bug de scripts/scrape_binance.py (ERR -> [] -> 'hecho')."""
+    """Returns (rows, ok). ok=False if an ERR hit mid-pagination — in that case
+    the caller does NOT write the record (the resume retries it).
+    Do NOT copy the bug in scripts/scrape_binance.py (ERR -> [] -> 'done')."""
     all_rows, page = [], 1
     while page <= 40:
         d = post(HIST_URL, {'portfolioId': pid, 'pageNumber': page, 'pageSize': 50})
@@ -98,22 +98,22 @@ def _scrape_binance(snap_dir, pages, post, extra_ids=()):
     portfolios = _fetch_portfolios(pages, post)
     json.dump(portfolios, open(os.path.join(snap_dir, 'binance_list.json'), 'w'),
               indent=1, ensure_ascii=False)
-    print(f'lista binance: {len(portfolios)} portfolios', flush=True)
+    print(f'binance listing: {len(portfolios)} portfolios', flush=True)
     raw = os.path.join(snap_dir, 'binance_raw.jsonl')
     done = _done_ids(raw, 'portfolioId')
     live_ids = {p['leadPortfolioId'] for p in portfolios}
     todo = [p for p in portfolios if p['leadPortfolioId'] not in done]
-    # union historica: ids conocidos que ya no estan en la lista viva
+    # historical union: known ids no longer present in the live listing
     todo += [{'leadPortfolioId': pid} for pid in extra_ids
              if pid not in live_ids and pid not in done]
-    print(f'binance a scrapear: {len(todo)} | ya hechos: {len(done)}', flush=True)
+    print(f'binance to scrape: {len(todo)} | already done: {len(done)}', flush=True)
     out = open(raw, 'a')
     fetched = 0
     for p in todo:
         pid = p['leadPortfolioId']
         rows, ok = _fetch_history(pid, post)
-        if not ok:            # fallo de red != trader hecho: no escribir
-            print(f'  ERR historial {pid} — se reintenta en el proximo resume',
+        if not ok:            # a network failure != a done trader: do not write
+            print(f'  ERR history {pid} — will be retried on the next resume',
                   flush=True)
             time.sleep(0.5)
             continue
@@ -149,7 +149,7 @@ def _fetch_trader_list(pages, get):
 
 
 def _fetch_closed(uid, get):
-    """Devuelve (rows, ok); ok=False si la red fallo (no marcar hecho)."""
+    """Returns (rows, ok); ok=False if the network failed (do not mark as done)."""
     all_rows, page, empty = [], 1, 0
     while page <= 30 and empty < 2:
         d = get(f"{PH_POS}?pageNum={page}&pageSize=100&userId={uid}")
@@ -172,17 +172,17 @@ def _scrape_phemex(snap_dir, pages, get):
     traders = _fetch_trader_list(pages, get)
     json.dump(traders, open(os.path.join(snap_dir, 'phemex_list.json'), 'w'),
               indent=1, ensure_ascii=False)
-    print(f'lista phemex: {len(traders)} traders', flush=True)
+    print(f'phemex listing: {len(traders)} traders', flush=True)
     raw = os.path.join(snap_dir, 'phemex_raw.jsonl')
     done = _done_ids(raw, 'userId')
     todo = [t for t in traders if t['showPosition'] and t['userId'] not in done]
-    print(f'phemex a scrapear: {len(todo)} | ya hechos: {len(done)}', flush=True)
+    print(f'phemex to scrape: {len(todo)} | already done: {len(done)}', flush=True)
     out = open(raw, 'a')
     fetched = 0
     for t in todo:
         rows, ok = _fetch_closed(t['userId'], get)
-        if not ok:            # fallo de red != trader hecho
-            print(f"  ERR posiciones {t['userId']} — se reintenta en el resume",
+        if not ok:            # a network failure != a done trader
+            print(f"  ERR positions {t['userId']} — will be retried on resume",
                   flush=True)
             time.sleep(0.4)
             continue
@@ -192,7 +192,7 @@ def _scrape_phemex(snap_dir, pages, get):
         out.flush()
         fetched += 1
         if fetched % 25 == 0:
-            print(f'  {fetched} traders nuevos', flush=True)
+            print(f'  {fetched} new traders', flush=True)
         time.sleep(0.4)
     out.close()
     return fetched

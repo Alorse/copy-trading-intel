@@ -1,5 +1,5 @@
-"""Score, tiers y pesos -> roster. Cap de 5 traders (A+B).
-Matching entre corridas SIEMPRE por portfolio_id (el nick es renombrable)."""
+"""Score, tiers and weights -> roster. Capped at 5 traders (A+B).
+Runs are ALWAYS matched by portfolio_id (the nick can be renamed)."""
 import json, datetime as dt
 from pipeline import detect as det
 
@@ -11,9 +11,9 @@ def _round05(x):
 
 
 def _weights(roster):
-    """A y B: pool 70/30. Solo A: pool 1.0. Solo B: cap 0.10 c/u y el
-    remanente queda SIN ASIGNAR (suma < 1.0) - nunca se vuelca en uno solo.
-    Devuelve el peso no asignado."""
+    """A and B: 70/30 pools. A only: pool 1.0. B only: cap of 0.10 each and the
+    remainder stays UNALLOCATED (sums < 1.0) - never dumped onto a single one.
+    Returns the unallocated weight."""
     A = [t for t in roster if t['tier'] == 'A']
     B = [t for t in roster if t['tier'] == 'B']
     poolA = 1.0 if (A and not B) else 0.70
@@ -22,7 +22,7 @@ def _weights(roster):
         tot = sum(t['score'] for t in grp)
         for t in grp:
             t['weight'] = pool * t['score'] / tot if tot else 0.0
-    # cap iterativo de B: el exceso se reparte dentro de B entre los no capeados
+    # iterative cap on B: the excess is spread within B among the uncapped ones
     for _ in range(len(B)):
         excess = sum(max(0.0, t['weight'] - 0.10) for t in B)
         if excess < 1e-9:
@@ -38,7 +38,7 @@ def _weights(roster):
     for t in B:
         t['weight'] = min(t['weight'], 0.10)
     b_excess = poolB - sum(t['weight'] for t in B) if B else 0.0
-    if A and b_excess > 1e-9:                 # exceso de B pasa a A si A existe
+    if A and b_excess > 1e-9:                 # B's excess goes to A if A exists
         totA = sum(t['weight'] for t in A)
         for t in A:
             t['weight'] += b_excess * t['weight'] / totA if totA else 0.0
@@ -46,11 +46,11 @@ def _weights(roster):
         t['weight'] = _round05(t['weight'])
     assigned = sum(t['weight'] for t in roster)
     drift = 1.0 - assigned
-    if A and abs(drift) > 1e-9:               # ajuste de redondeo SOLO sobre A
+    if A and abs(drift) > 1e-9:               # rounding adjustment ONLY on A
         mx = max(A, key=lambda t: t['weight'])
         mx['weight'] = _round05(mx['weight'] + drift)
         assigned = sum(t['weight'] for t in roster)
-    return max(0.0, round(1.0 - assigned, 2))  # unallocated (solo-B lo deja >0)
+    return max(0.0, round(1.0 - assigned, 2))  # unallocated (B-only leaves it >0)
 
 
 def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
@@ -87,13 +87,13 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                   key=lambda c: -c['score'])
     roster = surv[:5]
     for c in roster:
-        # n>300 sustituye historial SOLO en la primera corrida del pipeline
+        # n>300 stands in for history ONLY on the pipeline's first run
         c['tier'] = 'A' if (not c['warns'] and
                             (seen.get(c['tid'], 1) >= 2 or
                              (total_snaps <= 1 and (c['m']['n'] or 0) > 300))) \
                     else 'B'
     unallocated = _weights(roster)
-    # rank del snapshot previo por score (para el bloque trend del roster)
+    # previous snapshot's rank by score (for the roster's trend block)
     prev_rank = {}
     if prev_m:
         ordered = sorted(prev_m.values(),
@@ -104,7 +104,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
         if c['tid'] in in_roster:
             tier = c['tier']
         elif c['flags'] & BAD == {'insufficient'}:
-            tier = 'W'                        # novato, no fraude (spec)
+            tier = 'W'                        # newcomer, not fraud (spec)
         elif c['disq']:
             tier = 'X'
         else:
@@ -124,9 +124,9 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
             'tier': c['tier'], 'weight': c['weight'], 'score': round(c['score'], 3),
             'metrics': {'alpha': m['alpha'], 't': m['t_stat'], 'payoff': m['payoff'],
                         'lev_med': m['lev_med'], 'mdd': m['mdd'], 'n': m['n'],
-                        # el t descansa sobre n_alpha (<= n): divulgarlo
+                        # the t rests on n_alpha (<= n): disclose it
                         'n_alpha': m['n_alpha'],
-                        # ROI de portada del elegido, no solo el del excluido
+                        # headline ROI of the picked trader, not just the excluded one
                         'roi': roi.get(c['tid'])},
             'warnings': sorted(c['warns']),
             'trend': {'rank_prev': prev_rank.get(c['tid']), 'rank_now': i + 1,
@@ -143,7 +143,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                 continue
             c = by_id.get(pid)
             reason = (', '.join(sorted(c['flags'] & BAD)) if c and (c['flags'] & BAD)
-                      else 'fuera del top-5 por score' if c else 'fuera del universo')
+                      else 'out of the top-5 by score' if c else 'out of the universe')
             removed.append({'portfolio_id': pid, 'nick': t['nick'], 'reason': reason})
     if diff is not None:
         prev_traders = (prev_roster or {}).get('traders', [])
@@ -154,7 +154,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
         diff['removed_a'] = sorted(id2nick.get(i, i) for i in prev_a - now_a)
         now_w = {t['portfolio_id']: t['weight'] for t in out_traders}
         moves = []
-        for t in prev_traders:               # titulares: cambio o SALIDA (prev->0)
+        for t in prev_traders:               # incumbents: change or EXIT (prev->0)
             pid = t.get('portfolio_id')
             w_now = now_w.get(pid, 0.0)
             if abs(w_now - t.get('weight', 0)) > 0.10 or pid not in now_w:

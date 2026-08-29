@@ -1,4 +1,4 @@
-"""Aplana los *_raw.jsonl de un snapshot a CSV planos. Sin red."""
+"""Flattens a snapshot's *_raw.jsonl into flat CSVs. No network."""
 import json, csv, os
 
 

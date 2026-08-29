@@ -16,8 +16,8 @@ def test_ingest_counts_and_rows(con, snap_dir):
     assert r["avg_cost"] == 100.0
     p = con.execute("SELECT * FROM positions WHERE exchange='phemex'").fetchone()
     assert p["leverage"] == 10.0            # 2000/200
-    assert p["closing_pnl"] == 99.0         # realized (neto)
-    assert p["side"] == "Short"             # pos_side, NO el Buy/Sell del CSV
+    assert p["closing_pnl"] == 99.0         # realized (net)
+    assert p["side"] == "Short"             # pos_side, NOT the CSV's Buy/Sell
     ts = con.execute("SELECT * FROM trader_snapshot WHERE exchange='binance'").fetchone()
     assert ts["mdd"] == 0.2 and ts["nick"] == "alice"
     snaps = con.execute("SELECT * FROM snapshots ORDER BY exchange").fetchall()
@@ -27,6 +27,6 @@ def test_ingest_counts_and_rows(con, snap_dir):
 
 def test_ingest_is_idempotent(con, snap_dir):
     _load(con, snap_dir)
-    _load(con, snap_dir)   # re-ingest mismo snapshot
+    _load(con, snap_dir)   # re-ingest of the same snapshot
     n = con.execute("SELECT COUNT(*) FROM positions").fetchone()[0]
-    assert n == 2          # 1 binance + 1 phemex, sin duplicar
+    assert n == 2          # 1 binance + 1 phemex, no duplication

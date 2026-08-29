@@ -22,15 +22,15 @@ def test_report_contains_sections(con, tmp_path):
             "weight_moves": [], "new_disqualified_incumbents": [], "material": True}
     p = report.write(con, "2026-09-01", "binance", roster, diff, tmp_path)
     text = open(p).read()
-    assert "suoha" in text and "Cambios" in text
+    assert "suoha" in text and "Changes" in text
     assert "vicky" in text and "roi_artifact" in text
-    assert "winner" in text.lower() or "mitad del alpha" in text
-    assert "i.i.d." in text and "clusterizado" in text
-    assert "Primera corrida" in text
-    # n_alpha divulgado: cabecera y valor de la fila
+    assert "winner" in text.lower() or "half the" in text
+    assert "i.i.d." in text and "clustered" in text
+    assert "First run" in text
+    # n_alpha disclosed: header and row value
     assert "n_alpha" in text
     assert "| 527 | 384 |" in text
-    # ROI de portada del propio roster (no solo el de los excluidos)
+    # headline ROI of the roster itself (not just the excluded ones)
     assert "roi%" in text and "412.5" in text
 
 
@@ -48,7 +48,7 @@ DIFF = {"snapshot": "2026-09-01", "prev": None, "added_a": [], "removed_a": [],
 
 
 def test_reconciliation_line(con, tmp_path):
-    # scrapeados -> con posiciones -> con metricas: el embudo debe ser auditable
+    # scraped -> with positions -> with metrics: the funnel must be auditable
     con.execute("INSERT INTO snapshots VALUES ('2026-09-01','binance',590,92932,'')")
     for i in range(3):
         con.execute(
@@ -62,16 +62,16 @@ def test_reconciliation_line(con, tmp_path):
     p = report.write(con, "2026-09-01", "binance", _roster(), DIFF, tmp_path,
                      snap_dir=snap)
     text = open(p).read()
-    assert "600 portfolios scrapeados → 590 con posiciones → 3 con métricas" in text
+    assert "600 portfolios scraped → 590 with positions → 3 with metrics" in text
 
 
 def test_reconciliation_without_snapshot_dir(con, tmp_path):
-    # sin el list.json del scrape, la linea omite el primer escalon y no revienta
+    # without the scrape's list.json the line drops the first step and does not blow up
     con.execute("INSERT INTO snapshots VALUES ('2026-09-01','binance',590,92932,'')")
     con.execute("INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,n) "
                 "VALUES ('2026-09-01','binance','t','t',10)")
     con.commit()
     p = report.write(con, "2026-09-01", "binance", _roster(), DIFF, tmp_path)
     text = open(p).read()
-    assert "590 con posiciones → 1 con métricas" in text
-    assert "scrapeados" not in text
+    assert "590 with positions → 1 with metrics" in text
+    assert "scraped" not in text

@@ -12,7 +12,7 @@ def _tm(con, tid, t=4.0, alpha=0.015, payoff=1.2, tb=0.5, n=400, flags='[]'):
 
 
 def test_score_formula_and_warning_penalty(con):
-    _tm(con, "A")                                   # limpio
+    _tm(con, "A")                                   # clean
     _tm(con, "B", flags='["alpha_decay"]')          # 1 warning
     r = rank.run(con, D, EX)
     sa = next(t for t in r["traders"] if t["nick"] == "A")["score"]
@@ -23,8 +23,8 @@ def test_score_formula_and_warning_penalty(con):
 
 
 def test_metrics_block_exposes_n_alpha(con):
-    # el t-stat descansa sobre n_alpha (posiciones con alpha calculable),
-    # que puede ser mucho menor que n — el roster debe divulgarlo
+    # the t-stat rests on n_alpha (positions with computable alpha), which can
+    # be far smaller than n — the roster must disclose it
     con.execute(
         "INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,n,n_alpha,"
         "alpha,t_stat,payoff,trend_bonus,flags) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
@@ -35,8 +35,8 @@ def test_metrics_block_exposes_n_alpha(con):
 
 
 def test_metrics_block_exposes_roi(con):
-    # el ROI de portada del propio roster: sin el, el reporte exige mirar el
-    # ROI de los excluidos y no el de los elegidos
+    # the roster's own headline ROI: without it the report forces you to look at
+    # the excluded traders' ROI and not the picked ones'
     _tm(con, "vet")
     con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
                 (D, EX, "vet", "vet", 412.5, 0, 0, 0, 20.0))
@@ -52,7 +52,7 @@ def test_disqualified_excluded_and_cap5(con):
     r = rank.run(con, D, EX)
     nicks = [t["nick"] for t in r["traders"]]
     assert "bad" not in nicks and len(nicks) == 5
-    assert nicks[0] == "t0"                          # mayor score primero
+    assert nicks[0] == "t0"                          # highest score first
 
 
 def test_tiers_and_weights(con):
@@ -64,7 +64,7 @@ def test_tiers_and_weights(con):
     assert abs(sum(t["weight"] for t in r["traders"]) - 1.0) < 1e-9
     assert by["rookie"]["weight"] <= 0.10 + 1e-9
     assert all(abs(t["weight"] * 20 - round(t["weight"] * 20)) < 1e-6
-               for t in r["traders"])                # multiplos de 0.05
+               for t in r["traders"])                # multiples of 0.05
 
 
 def test_material_on_tier_a_change(con):
@@ -74,21 +74,21 @@ def test_material_on_tier_a_change(con):
                          "tier": "A", "weight": 0.5}]}
     rank.run(con, D, EX, diff=diff, prev_roster=prev)
     assert "vet" in diff["added_a"] and "otro" in diff["removed_a"]
-    # la salida del titular tambien aparece como weight_move prev->0
+    # the incumbent's exit also shows up as a weight_move prev->0
     assert any(m["nick"] == "otro" and m["now"] == 0.0
                for m in diff["weight_moves"])
     assert diff["material"] is True
 
 
 def test_weights_all_B_respects_cap_and_leaves_unallocated(con):
-    # corrida #1 tipica: nadie califica a tier A (todos con warning)
+    # typical run #1: nobody qualifies for tier A (everyone has a warning)
     for i in range(5):
         _tm(con, f"b{i}", t=4.0 - i * 0.1, n=100, flags='["alpha_decay"]')
     r = rank.run(con, D, EX)
     assert all(t["tier"] == "B" for t in r["traders"])
-    assert all(t["weight"] <= 0.10 + 1e-9 for t in r["traders"])   # cap SIEMPRE
+    assert all(t["weight"] <= 0.10 + 1e-9 for t in r["traders"])   # cap ALWAYS
     assert abs(sum(t["weight"] for t in r["traders"]) - 0.50) < 1e-9
-    assert abs(r["unallocated"] - 0.50) < 1e-9   # remanente declarado, no volcado
+    assert abs(r["unallocated"] - 0.50) < 1e-9   # remainder declared, not dumped
 
 
 def test_insufficient_only_goes_to_W_not_X(con):

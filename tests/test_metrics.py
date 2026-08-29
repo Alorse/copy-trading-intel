@@ -14,11 +14,11 @@ def _pos(con, tid, sym, side, opened, cost, close, pnl, lev=5.0, nick=None):
 
 
 def _seed(con):
-    # 21 traders "masa" en la celda (BTCUSDT, 2025-04, Long): pr = 0 -> benchmark 0
-    base = 1743500000000            # 2025-04-01 UTC (OJO: 2025, no 2026)
+    # 21 "crowd" traders in the cell (BTCUSDT, 2025-04, Long): pr = 0 -> benchmark 0
+    base = 1743500000000            # 2025-04-01 UTC (CAREFUL: 2025, not 2026)
     for i in range(21):
         _pos(con, f"m{i}", "BTCUSDT", "Long", base + i, 100, 100, 0.0)
-    # trader objetivo: 5 trades, pr = +2%,+2%,+2%,+2%,-1% -> alpha igual (bench 0)
+    # target trader: 5 trades, pr = +2%,+2%,+2%,+2%,-1% -> same alpha (bench 0)
     for j, (c, pnl) in enumerate([(102, 20)] * 4 + [(99, -10)]):
         _pos(con, "T", "BTCUSDT", "Long", base + 1000 + j, 100, c, pnl)
     con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?)",
@@ -36,23 +36,23 @@ def test_alpha_and_stats(con):
     assert abs(m["payoff"] - 2.0) < 1e-9            # .02 / .01
     assert abs(m["wr"] - 80.0) < 1e-9
     assert abs(m["ruin"] - (-5.0)) < 1e-9           # -0.01 * 5 * 100
-    assert m["mdd"] == 25.0                         # escala PORCENTUAL
+    assert m["mdd"] == 25.0                         # PERCENTAGE scale
     mo = json.loads(m["monthly_alpha"])
-    assert abs(mo["2025-04"] - 0.014) < 1e-9        # mes con >=5 alphas presente
+    assert abs(mo["2025-04"] - 0.014) < 1e-9        # month with >=5 alphas present
     pr = con.execute(
         "SELECT price_return, alpha FROM positions WHERE trader_id='T' "
         "ORDER BY opened_ms").fetchall()
     assert abs(pr[0]["price_return"] - 0.02) < 1e-9
-    assert abs(pr[0]["alpha"] - 0.02) < 1e-9        # benchmark de la celda = 0
+    assert abs(pr[0]["alpha"] - 0.02) < 1e-9        # cell benchmark = 0
 
 
 def test_invalid_rows_get_null_pr_and_dont_count(con):
     _seed(con)
-    _pos(con, "T", "BTCUSDT", "Long", 1743500000000, 0, 110, 5)   # avg_cost 0 -> invalida
+    _pos(con, "T", "BTCUSDT", "Long", 1743500000000, 0, 110, 5)   # avg_cost 0 -> invalid
     con.commit()
     metrics.compute(con, D, EX, min_cell=20)
     r = con.execute("SELECT price_return FROM positions WHERE trader_id='T' "
                     "AND avg_cost=0").fetchone()
     assert r["price_return"] is None
     m = con.execute("SELECT n FROM trader_metrics WHERE trader_id='T'").fetchone()
-    assert m["n"] == 5                               # la invalida NO cuenta en n
+    assert m["n"] == 5                               # the invalid one does NOT count in n

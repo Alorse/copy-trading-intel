@@ -1,4 +1,4 @@
-"""Compara snapshots: quien mejora, quien decae, de-copy y style_drift."""
+"""Compares snapshots: who improves, who decays, de-copy and style_drift."""
 import json
 from pipeline import detect as det
 
@@ -30,7 +30,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
         old = {r['trader_id']: r for r in con.execute(
             "SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
             (prev, exchange))}
-    updated = {}                      # flags FRESCOS post-update (evita leer stale)
+    updated = {}                      # FRESH post-update flags (avoids reading stale)
     for tid, m in cur.items():
         flags = json.loads(m['flags'] or '[]')
         s = _slope(json.loads(m['monthly_alpha'] or '{}'))
@@ -42,7 +42,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
                 bonus = _clamp((bonus + sign) / 2)
                 if m['alpha'] < 0 and o['alpha'] < 0 and 'decopy_2neg' not in flags:
                     flags.append('decopy_2neg')
-                # mitad entre-snapshots de alpha_decay (spec): alpha bajo vs prev
+                # cross-snapshot half of alpha_decay (spec): alpha fell vs prev
                 if m['alpha'] < o['alpha'] and 'alpha_decay' not in flags:
                     flags.append('alpha_decay')
             for col in ('lev_med', 'marg_med'):
@@ -56,7 +56,7 @@ def run(con, snapshot_date, exchange='binance', prev_roster=None):
     con.commit()
     newly_disq = []
     if prev_roster:
-        # matching por portfolio_id (estable) - el nick es renombrable
+        # matched by portfolio_id (stable) - the nick can be renamed
         for t in prev_roster.get('traders', []):
             tid = t.get('portfolio_id')
             if tid not in updated:

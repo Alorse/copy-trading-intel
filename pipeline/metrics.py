@@ -1,5 +1,5 @@
-"""Motor de metricas por trader. Replica top5_final.py sobre SQLite.
-alpha = price_return des-apalancado - mediana de celda (symbol, mes, side)."""
+"""Per-trader metrics engine. Mirrors top5_final.py on top of SQLite.
+alpha = de-leveraged price_return - median of its cell (symbol, month, side)."""
 import json, statistics as st, collections, datetime as dt
 
 
@@ -27,21 +27,21 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                   'sym': r['symbol'], 'side': r['side'], 'o': r['opened_ms'],
                   'pr': pr, 'pnl': r['closing_pnl'] or 0, 'lev': r['leverage'] or 0,
                   'marg': r['margin'] or 0, 'dur': r['dur_h'] or 0,
-                  'mes': _month(r['opened_ms']) if r['opened_ms'] else None})
+                  'month': _month(r['opened_ms']) if r['opened_ms'] else None})
     cell = collections.defaultdict(list)
     for x in R:
         if x['pr'] is not None:
-            cell[(x['sym'], x['mes'], x['side'])].append(x['pr'])
+            cell[(x['sym'], x['month'], x['side'])].append(x['pr'])
     bench = {k: st.median(v) for k, v in cell.items() if len(v) >= min_cell}
     upd = []
     for x in R:
-        b = bench.get((x['sym'], x['mes'], x['side']))
+        b = bench.get((x['sym'], x['month'], x['side']))
         x['alpha'] = (x['pr'] - b) if (x['pr'] is not None and b is not None) else None
         upd.append((x['pr'], x['alpha'], x['rowid']))
     con.executemany("UPDATE positions SET price_return=?, alpha=? WHERE rowid=?", upd)
 
-    # metricas por trader SOLO sobre filas validas (pr no NULL) - como top5_final.py,
-    # que descarta las invalidas antes de contar (n<60, celdas, pnl, meses)
+    # per-trader metrics ONLY over valid rows (pr not NULL) - same as top5_final.py,
+    # which drops the invalid ones before counting (n<60, cells, pnl, months)
     T = collections.defaultdict(list)
     for x in R:
         if x['pr'] is not None:
@@ -59,8 +59,8 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
         payoff = (st.mean(w) / abs(st.mean(l))) if (w and l) else None
         tot = sum(z['pnl'] for z in v)
         best = max(z['pnl'] for z in v)
-        # top-1 (criterio auditado); NULL si el trader pierde en neto - un
-        # perdedor no es "loteria", cae por no_alpha/score
+        # top-1 (the audited criterion); NULL if the trader is net negative - a
+        # loser is not a "lottery", it fails via no_alpha/score
         conc = (best / tot * 100) if tot > 0 else None
         t_stat = 0.0
         if len(al) >= 2 and st.pstdev(al) > 0:
@@ -75,7 +75,7 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
         mo = collections.defaultdict(list)
         for z in v:
             if z['alpha'] is not None:
-                mo[z['mes']].append(z['alpha'])
+                mo[z['month']].append(z['alpha'])
         monthly = {m: st.mean(a) for m, a in sorted(mo.items()) if len(a) >= 5}
         s = snap.get(tid)
         out.append((snapshot_date, exchange, tid, v[0]['nick'], len(v), len(al),
@@ -83,7 +83,7 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                     s['mdd'] if s else None, lev_med, lev_p90,
                     st.median(z['marg'] for z in v) if v else None,
                     st.median(z['dur'] for z in v) if v else None,
-                    len(set(z['mes'] for z in v if z['mes'])), h1, h2,
+                    len(set(z['month'] for z in v if z['month'])), h1, h2,
                     json.dumps(monthly)))
     con.executemany(
         "INSERT OR REPLACE INTO trader_metrics (snapshot_date,exchange,trader_id,nick,"

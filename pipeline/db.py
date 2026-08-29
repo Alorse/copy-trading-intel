@@ -1,4 +1,4 @@
-"""Capa analitica SQLite. La DB es derivada: se reconstruye desde data/snapshots/."""
+"""SQLite analytics layer. The DB is derived: rebuilt from data/snapshots/."""
 import sqlite3
 
 SCHEMA = """
