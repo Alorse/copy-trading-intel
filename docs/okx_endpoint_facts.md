@@ -43,3 +43,25 @@
   diffed against the reported `pnl` over 558 closed BTC-USDT-SWAP rows across the first 5
   ranking pages: residual is positive (gross > net) in 96.6% of rows, median 6.5 bps of
   notional — same order of magnitude as Binance's 7.85 bps.
+
+## Correction: the 100-row cap applies to closed+open-from-history combined, not just closed
+(adversarial audit, 2026-08-29)
+
+The original manifest logic flagged `closed_capped = len(closed) >= 100`. That's wrong: OKX's
+100-row cap applies to the raw `public-subpositions-history` response — closed rows **and**
+still-open-from-history rows (`closeTime == ""`) together — not to the closed subset alone. A
+trader with e.g. 97 closed + 3 still-open lots in their 100-row history response was previously
+recorded as *not* capped (97 < 100), even though their history is in fact truncated exactly like
+a 100-closed trader's.
+
+Recomputed offline (no re-scrape — `scripts/scrape_okx_positions.py --recompute-caps`, reading
+only the already-scraped `okx_positions.jsonl` + `okx_open_positions.jsonl`; a still-open-from-
+history row is identified by the presence of a `closeTime` key, even when it's `""` — public-
+current-subpositions rows never carry that key): **37 of 142 traders with ≥1 closed position
+(26%) are capped**, not 36 (25%) as the pre-correction manifest showed. One additional trader
+(`Kunpeng Plan`, 97 closed + 3 still-open = 100 raw history rows) was newly identified as capped
+— see `analysis/TOP5_OKX.md`'s "Adversarial audit corrections" section for what that meant for
+the ranking (a $490k headline pnl vs $1,353 computed from the visible window is the same story
+this correction predicts). The manifest schema also gained `n_hist` (the raw history row count)
+and per-endpoint `hist_status`/`cur_status`, so a partial 60004 (one endpoint missing, not both)
+no longer gets flattened into a blanket `status: "ok"`.

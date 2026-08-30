@@ -129,7 +129,10 @@ first file, so "already processed" can't be derived from it alone). Quirks disco
 full universe (see `docs/okx_endpoint_facts.md` for the evidence):
 
 - `public-subpositions-history` **caps silently at 100 rows** per trader — no `page`/`limit`/
-  `before`/`after` param changes the result. `okx_positions_manifest.jsonl` flags `closed_capped`.
+  `before`/`after` param changes the result. `okx_positions_manifest.jsonl` flags `closed_capped`
+  (as of the 2026-08-29 adversarial-audit correction, this is `n_hist >= 100` — closed **+**
+  still-open-from-history rows combined, not just the closed count — since that's what the
+  100-row cap actually applies to).
 - A minority of ranked traders return `{"code":"60004","msg":"Trader doesn't exist"}` on the
   position endpoints specifically, despite ranking and `public-stats` working fine for the same
   `uniqueCode`. Treated as terminal (not retried), not a scrape error.
