@@ -40,7 +40,16 @@ data/okx_open_positions.jsonl     — one row per OPEN position: public-current-
                                      carries `upl`).
 data/okx_positions_manifest.jsonl — resumability ledger, one row per uniqueCode already
                                      attempted: {uniqueCode, nickName, n_closed, n_open,
-                                     closed_capped, status}. Needed because a trader with
+                                     n_hist, closed_capped, hist_status, cur_status, status}.
+                                     `closed_capped` is `n_hist >= 100` — the history
+                                     endpoint's cap applies to closed+still-open-from-history
+                                     combined, not just the closed count (adversarial-audit
+                                     correction, 2026-08-29: the old definition undercounted
+                                     capping for traders with open lots mixed into their
+                                     100-row history response). `hist_status`/`cur_status`
+                                     record each position endpoint's outcome separately so a
+                                     partial 60004 (one endpoint missing, not both) isn't
+                                     flattened into a blanket 'ok'. Needed because a trader with
                                      zero closed positions writes nothing to
                                      okx_positions.jsonl, so "done" can't be derived from
                                      that file alone (unlike scrape_binance.py).
@@ -51,6 +60,11 @@ Usage: python3 scripts/scrape_okx_positions.py [--traders N] [--pages N] [--stat
                 measured 27-page universe with room to grow)
   --stats       also fetch public-stats?lastDays=3 per trader into
                 data/okx_trader_stats.jsonl (resumable, shares scrape_okx.fetch_stats)
+  --recompute-caps  offline-only: re-derive n_hist/closed_capped on the existing
+                data/okx_positions_manifest.jsonl from the already-scraped JSONL files
+                (see recompute_cap_flags's docstring). No network calls, does not
+                re-fetch anything; run once after the adversarial-audit correction to
+                the cap definition (2026-08-29).
 """
 import json, time, os, sys
 
@@ -63,8 +77,13 @@ HISTORY_CAP = 100
 
 
 def fetch_closed_and_open(unique_code, get_fn):
-    """Returns (closed_rows, open_rows, status) for one trader, or None on a
-    retryable failure (network/API error on either endpoint — NOT 60004)."""
+    """Returns a dict with closed_rows/open_rows/n_hist/hist_status/cur_status/status
+    for one trader, or None on a retryable failure (network/API error on either
+    endpoint — NOT 60004).
+
+    `n_hist` is the raw row count returned by the history endpoint (closed +
+    still-open-from-history combined) — that's what OKX's silent 100-row cap
+    actually caps, not just the closed subset."""
     h = get_fn(HIST_URL.format(unique_code))
     h_missing = h.get('code') == '60004'
     if not h_missing and h.get('code') != '0':
@@ -81,8 +100,72 @@ def fetch_closed_and_open(unique_code, get_fn):
 
     seen = {r['subPosId'] for r in cur_rows if r.get('subPosId')}
     open_rows = cur_rows + [r for r in open_from_hist if r.get('subPosId') not in seen]
+    hist_status = 'not_found' if h_missing else 'ok'
+    cur_status = 'not_found' if c_missing else 'ok'
     status = 'not_found' if (h_missing and c_missing) else 'ok'
-    return closed, open_rows, status
+    return {'closed': closed, 'open_rows': open_rows, 'n_hist': len(hist_rows),
+            'hist_status': hist_status, 'cur_status': cur_status, 'status': status}
+
+
+def recompute_cap_flags(data_dir='data'):
+    """Offline re-derivation of `n_hist`/`closed_capped` for a manifest written by the
+    pre-audit scraper (which only recorded `len(closed) >= HISTORY_CAP`, undercounting
+    caps for traders whose 100-row history response mixed in still-open lots). Reads
+    only local JSONL — no network calls.
+
+    `okx_open_positions.jsonl` merges two sources: public-current-subpositions rows
+    (never carry a `closeTime` key) and history's still-open rows (always carry
+    `closeTime`, even though it's `""`). That key's presence is how a row's origin is
+    recovered after the merge. The one gap: a still-open history row that shares a
+    subPosId with a current-subpositions row was dropped by the original merge (the
+    current-subpositions copy wins), so it's invisible here too — this recompute is a
+    best-effort re-derivation, not a perfect reconstruction, and is documented as such.
+
+    Returns the number of manifest rows updated."""
+    closed_path = os.path.join(data_dir, 'okx_positions.jsonl')
+    open_path = os.path.join(data_dir, 'okx_open_positions.jsonl')
+    manifest_path = os.path.join(data_dir, 'okx_positions_manifest.jsonl')
+
+    n_closed_by_uid = {}
+    if os.path.exists(closed_path):
+        counts = {}
+        for line in open(closed_path):
+            line = line.strip()
+            if not line:
+                continue
+            uid = json.loads(line)['uniqueCode']
+            counts[uid] = counts.get(uid, 0) + 1
+        n_closed_by_uid = counts
+
+    n_hist_open_by_uid = {}
+    if os.path.exists(open_path):
+        counts = {}
+        for line in open(open_path):
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            if 'closeTime' in r:
+                uid = r['uniqueCode']
+                counts[uid] = counts.get(uid, 0) + 1
+        n_hist_open_by_uid = counts
+
+    if not os.path.exists(manifest_path):
+        return 0
+
+    rows = [json.loads(line) for line in open(manifest_path) if line.strip()]
+    n_updated = 0
+    for row in rows:
+        uid = row['uniqueCode']
+        n_hist = n_closed_by_uid.get(uid, 0) + n_hist_open_by_uid.get(uid, 0)
+        row['n_hist'] = n_hist
+        row['closed_capped'] = n_hist >= HISTORY_CAP
+        n_updated += 1
+
+    with open(manifest_path, 'w') as fh:
+        for row in rows:
+            fh.write(json.dumps(row, ensure_ascii=False) + '\n')
+    return n_updated
 
 
 def _manifest_done(path):
@@ -130,7 +213,7 @@ def run(out_dir='data', pages=50, traders_cap=None, http_get=None, fetch_stats_f
             print(f'  ERR positions {code} - will be retried on resume', flush=True)
             time.sleep(0.4)
             continue
-        closed, open_rows, status = result
+        closed, open_rows = result['closed'], result['open_rows']
         for row in closed:
             closed_out.write(json.dumps({'uniqueCode': code, 'nickName': r.get('nickName'),
                                           'leadDays': r.get('leadDays'), **row},
@@ -142,8 +225,10 @@ def run(out_dir='data', pages=50, traders_cap=None, http_get=None, fetch_stats_f
         open_out.flush()
         manifest_out.write(json.dumps({
             'uniqueCode': code, 'nickName': r.get('nickName'), 'n_closed': len(closed),
-            'n_open': len(open_rows), 'closed_capped': len(closed) >= HISTORY_CAP,
-            'status': status,
+            'n_open': len(open_rows), 'n_hist': result['n_hist'],
+            'closed_capped': result['n_hist'] >= HISTORY_CAP,
+            'hist_status': result['hist_status'], 'cur_status': result['cur_status'],
+            'status': result['status'],
         }, ensure_ascii=False) + '\n')
         manifest_out.flush()
         n_closed += len(closed)
@@ -179,6 +264,11 @@ def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(root)
     argv = sys.argv[1:]
+    if '--recompute-caps' in argv:
+        n = recompute_cap_flags()
+        print(f'DONE: recomputed n_hist/closed_capped for {n} manifest rows (no network calls)',
+              flush=True)
+        return
     pages = 50
     if '--pages' in argv:
         pages = int(argv[argv.index('--pages') + 1])

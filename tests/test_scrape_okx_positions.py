@@ -28,27 +28,49 @@ def _fake_get(url):
 
 
 def test_fetch_closed_and_open_splits_closed_vs_still_open():
-    closed, open_rows, status = sop.fetch_closed_and_open('DA2B29551CBB2AE7', _fake_get)
-    assert status == 'ok'
+    result = sop.fetch_closed_and_open('DA2B29551CBB2AE7', _fake_get)
+    assert result['status'] == 'ok'
+    assert result['hist_status'] == 'ok'
+    assert result['cur_status'] == 'ok'
     # 3 rows in the fixture: 1 has closeTime=="" (still open), 2 are truly closed
-    assert len(closed) == 2
-    assert all(r['closeTime'] for r in closed)
+    assert len(result['closed']) == 2
+    assert all(r['closeTime'] for r in result['closed'])
     # the still-open history row + the 1 row from public-current-subpositions
-    assert len(open_rows) == 2
+    assert len(result['open_rows']) == 2
+    # n_hist counts the raw history response (closed + still-open-from-history)
+    assert result['n_hist'] == 3
 
 
 def test_fetch_closed_and_open_dedupes_by_subPosId():
     # the still-open history row (subPosId ...336768) is NOT the same lot as the
     # current-subpositions row (subPosId ...802496) in the fixtures, so both survive
-    closed, open_rows, status = sop.fetch_closed_and_open('DA2B29551CBB2AE7', _fake_get)
-    ids = {r['subPosId'] for r in open_rows}
+    result = sop.fetch_closed_and_open('DA2B29551CBB2AE7', _fake_get)
+    ids = {r['subPosId'] for r in result['open_rows']}
     assert ids == {'3687410355490336768', '3691771538397802496'}
 
 
 def test_fetch_closed_and_open_not_found_is_terminal_not_error():
-    closed, open_rows, status = sop.fetch_closed_and_open('DOES-NOT-EXIST', _fake_get)
-    assert status == 'not_found'
-    assert closed == [] and open_rows == []
+    result = sop.fetch_closed_and_open('DOES-NOT-EXIST', _fake_get)
+    assert result['status'] == 'not_found'
+    assert result['hist_status'] == 'not_found'
+    assert result['cur_status'] == 'not_found'
+    assert result['closed'] == [] and result['open_rows'] == []
+    assert result['n_hist'] == 0
+
+
+def test_fetch_closed_and_open_partial_not_found_reports_per_endpoint():
+    def _partial_get(url):
+        if 'public-subpositions-history' in url:
+            return HISTORY
+        if 'public-current-subpositions' in url:
+            return NOT_FOUND
+        raise AssertionError(url)
+    result = sop.fetch_closed_and_open('X', _partial_get)
+    # overall status stays 'ok' (at least one endpoint has data) but per-endpoint
+    # status exposes that public-current-subpositions came back 60004
+    assert result['status'] == 'ok'
+    assert result['hist_status'] == 'ok'
+    assert result['cur_status'] == 'not_found'
 
 
 def test_fetch_closed_and_open_network_error_returns_none():
@@ -77,6 +99,34 @@ def test_history_cap_flagged_in_manifest(tmp_path):
     manifest = [json.loads(l) for l in (tmp_path / 'okx_positions_manifest.jsonl').read_text().splitlines()]
     assert all(m['closed_capped'] for m in manifest)
     assert all(m['n_closed'] == sop.HISTORY_CAP for m in manifest)
+    assert all(m['n_hist'] == sop.HISTORY_CAP for m in manifest)
+
+
+def test_history_cap_flagged_when_only_partly_closed(tmp_path):
+    # the adversarial-audit correction: the cap applies to the RAW history response
+    # (closed + still-open-from-history), not just the closed count. 97 closed +
+    # 3 still-open lots = 100 history rows = capped, even though n_closed < 100.
+    closed_row = HISTORY['data'][1]
+    open_row = HISTORY['data'][0]  # closeTime == ""
+    mixed_history = {'code': '0', 'data': (
+        [{**closed_row, 'subPosId': f'c{i}'} for i in range(97)] +
+        [{**open_row, 'subPosId': f'o{i}'} for i in range(3)]
+    ), 'msg': ''}
+
+    def _get(url):
+        if 'public-lead-traders' in url:
+            return RANK_PAGE1 if 'page=1' in url else RANK_PAGE2_EMPTY
+        if 'public-subpositions-history' in url:
+            return mixed_history
+        if 'public-current-subpositions' in url:
+            return NOT_FOUND
+        raise AssertionError(url)
+
+    sop.run(out_dir=str(tmp_path), pages=5, http_get=_get)
+    manifest = [json.loads(l) for l in (tmp_path / 'okx_positions_manifest.jsonl').read_text().splitlines()]
+    assert all(m['n_closed'] == 97 for m in manifest)
+    assert all(m['n_hist'] == 100 for m in manifest)
+    assert all(m['closed_capped'] for m in manifest)
 
 
 def test_run_writes_closed_open_and_manifest(tmp_path):
@@ -126,6 +176,36 @@ def test_run_retries_after_error_without_marking_done(tmp_path):
     assert counts['processed'] == 0
     counts = sop.run(out_dir=str(tmp_path), pages=5, http_get=_fake_get)
     assert counts['processed'] == 2
+
+
+def test_recompute_cap_flags_derives_n_hist_from_existing_jsonl(tmp_path):
+    # A: 97 closed rows + 3 still-open-from-history rows (identifiable by the
+    #    closeTime key, even though it's "") -> n_hist=100 -> now capped, even
+    #    though the OLD manifest (written before the audit fix) said False.
+    # B: 10 closed rows, 0 history-sourced open rows -> n_hist=10 -> not capped.
+    (tmp_path / 'okx_positions.jsonl').write_text('\n'.join(
+        json.dumps({'uniqueCode': 'A', 'subPosId': f'c{i}'}) for i in range(97)) + '\n' +
+        '\n'.join(json.dumps({'uniqueCode': 'B', 'subPosId': f'c{i}'}) for i in range(10)))
+    (tmp_path / 'okx_open_positions.jsonl').write_text('\n'.join([
+        json.dumps({'uniqueCode': 'A', 'subPosId': f'o{i}', 'closeTime': ''}) for i in range(3)
+    ] + [
+        json.dumps({'uniqueCode': 'A', 'subPosId': 'cur1'}),   # current-subpositions: no closeTime key
+    ]))
+    (tmp_path / 'okx_positions_manifest.jsonl').write_text('\n'.join([
+        json.dumps({'uniqueCode': 'A', 'nickName': 'a', 'n_closed': 97, 'n_open': 4,
+                    'closed_capped': False, 'status': 'ok'}),
+        json.dumps({'uniqueCode': 'B', 'nickName': 'b', 'n_closed': 10, 'n_open': 0,
+                    'closed_capped': False, 'status': 'ok'}),
+    ]))
+
+    n = sop.recompute_cap_flags(data_dir=str(tmp_path))
+    assert n == 2
+    manifest = {r['uniqueCode']: r for r in
+                (json.loads(l) for l in (tmp_path / 'okx_positions_manifest.jsonl').read_text().splitlines())}
+    assert manifest['A']['n_hist'] == 100
+    assert manifest['A']['closed_capped'] is True
+    assert manifest['B']['n_hist'] == 10
+    assert manifest['B']['closed_capped'] is False
 
 
 def test_run_optional_stats_reuses_scrape_okx_resumability(tmp_path):
