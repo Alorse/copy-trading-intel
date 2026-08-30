@@ -8,6 +8,102 @@ August pump scores zero by construction: only beating those who did the same cou
 
 `closing_pnl` is NET of fees (verified: −7.85 bps of residual over 96,994 complete closes).
 
+## Adversarial-audit corrections applied 2026-08-29
+
+The OKX side of this project (`analysis/okx_top5.py`, `TOP5_OKX.md`) went through an
+adversarial audit that found `compute_alpha`'s benchmark median was self-inclusive — each
+trader's own rows counted toward the "market" they were being compared against. That
+correction (leave-self-out: benchmark each trader against the cell median **excluding**
+their own rows) has now been ported to `analysis/top5_final.py`, along with three other
+corrections the OKX audit produced. **The headline result: none of it moves the Binance
+picks.** Unlike OKX's 142-trader universe, Binance's 594 portfolios make most benchmark
+cells thick enough that no trader's own volume can distort the median they're judged
+against — the correction that mattered on OKX is close to a no-op here, and the evidence
+below is a direct verification of that, not an assumption.
+
+- **Leave-self-out alpha (`compute_alpha`, ported verbatim from `okx_top5.py`).** Same
+  semantics: a cell yields a leave-self-out alpha for a trader only if at least one
+  *other* trader's row remains in it after excluding the trader's own; a qualifying cell
+  (≥20 rows, Binance's `MIN_CELL`) that is entirely one trader's own trades gets `alpha=None`
+  for that trader (dropped, not zeroed), counted per-trader. Both the old (self-inclusive)
+  and new (leave-self-out) alpha/t are computed and reported below.
+  **Result: `n_alpha_dropped_self_dominated=0` for every trader in the current picks, and
+  the largest single alpha shift across all of them is +0.09 percentage points** (秋高看山势:
+  +1.08%→+1.17%). Re-running the entire ranking with self-inclusive alpha substituted back
+  in — holding every other change (filter order, new filters, below) fixed — produces the
+  **exact same 6 survivors** and the **exact same rejection-count breakdown**, verified by
+  direct comparison, not inference. Leave-self-out alpha changes nothing about who passes.
+- **New hard filter: multi-pair only (H1).** SKILL.md has stated "never judge a trader on a
+  single pair" as a project rule since the original audit (H1: single-pair estimator
+  reliability ≈0.13), and `okx_top5.py` enforces it as a hard filter — but `top5_final.py`
+  never did. It now does. All 6 of `top5_final.py`'s current survivors already trade
+  ≥23 distinct pairs each, so this filter is enforced-but-currently-inert here; it rejects
+  4 single-pair traders elsewhere in the universe that a naive ranking would have let through.
+- **New hard screen: hidden drawdown, built from `data/binance_portfolios.json`'s daily
+  `chartItems`.** Binance has no weekly `pnlRatios[]` like OKX, but each portfolio's ranking
+  listing carries a **daily cumulative-ROI curve** — reconstructing a running peak-to-trough
+  drawdown from it (`drawdown_screen()`) reproduces Binance's own disclosed `mdd` field
+  almost exactly (median absolute difference ~0 across the 324 traders with ≥60 positions;
+  a handful of outliers up to 39 percentage points exist, likely reflecting a different
+  retention window on Binance's side, but none touch any current pick). What the
+  reconstruction adds over the bare `mdd` number is the drawdown's **timestamp**, which is
+  what lets the screen tell a covered drawdown from a hidden one — the Binance-native
+  analogue of OKX's "01014588 lesson." **Result: 0 of the 6 current survivors are flagged**
+  (all `dd_covered=True`); in a full-universe pass with every other filter relaxed, exactly
+  **1 of 593** traders (`bnb永赚大师`, 32 positions — already excluded by the sample-size
+  filter) gets caught by this screen alone, confirming it fires on real cases without being
+  a decisive factor here.
+- **Headline-vs-computed PnL cross-check, now reported for every survivor** (previously
+  absent from this script entirely): ranking `pnl` (Binance's own lifetime total) vs. the
+  sum of `closing_pnl` over the visible closed-position window. Ratios range from 0.56× to
+  1.41× — see the table below. The 0.56× case (梭哈到世界尽头) is not new information: it is
+  the same startTime/pagination-window story already documented in this file's Trap-7
+  correction below, seen from a third angle.
+- One methodological note, not a correction: this port also reorders the filter chain to
+  match `okx_top5.py`'s (concentration and net-negative-PnL are now checked before `t`,
+  where the original checked `t` first). This changes which filter gets *attributed* as the
+  first blocker for a given rejected trader — it does **not** change who survives, verified
+  above by re-running with the original self-inclusive alpha and confirming an identical
+  rejection-count breakdown either way.
+
+**Old vs new, the current picks (mean alpha/t, both self-inclusive and leave-self-out;
+`top5_final.py`'s own reproducible numbers — not the same as the "med alpha" column in the
+consensus table above, which blends in Fable/Kimi/GLM's own separately-computed medians):**
+
+| trader | n | pairs | α_old% | t_old | α_new% | t_new | αH2% (new) | max cell-share | dd covered | ranking pnl vs computed |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Cooma | 127 | 31 | +1.80% | 5.01 | +1.81% | 5.02 | +2.09% | 9.1% | ✅ | $8,355 vs $8,827 (1.06×) |
+| 梭哈到世界尽头 | 527 | 157 | +4.21% | 6.11 | +4.28% | 6.19 | +2.67% | 33.3% | ✅ | $13,667 vs $7,652 (**0.56×**) |
+| 秋高看山势 | 270 | 39 | +1.08% | 3.14 | +1.17% | 3.38 | +1.71% | 33.3% | ✅ | $796 vs $861 (1.08×) |
+| 牛熊摆渡人 | 90 | 48 | +10.67% | 4.15 | +10.72% | 4.17 | +11.11% | 10.7% | ✅ | $5,768 vs $8,125 (1.41×) |
+| 重生之我在币圈捡垃圾- | 298 | 23 | +0.60% | 3.36 | +0.60% | 3.33 | +0.96% | 29.2% | ✅ | $35,082 vs $32,571 (0.93×) |
+
+Note the alpha figures above (mean, leave-self-out) are **not** the "med alpha" figures in
+the consensus table below — those come from a blend of Fable/Kimi/GLM's own methods, most
+of which report a median, not a mean; the two tables measure genuinely different things and
+were never meant to match. **秋高看山势 was never a `top5_final.py` survivor before or after
+this correction** — it fails `top5_final.py`'s own median-margin filter (median position
+margin $41 < $50) both under the old and the new methodology, exactly as flagged in its
+"Why each one" entry below ("which is why my own filter excluded them"); it is in the Top 5
+purely on Fable's and Kimi's votes.
+
+**`top5_final.py`'s own reproducible ranking (all hard filters, corrected methodology)
+currently survives 6 traders, not 5** — identical under old and new alpha:
+Cooma, 梭哈到世界尽头, 重生之我在币圈捡垃圾-, 牛熊摆渡人 (all 4 already in the consensus Top 5
+above), plus **磨刀霍霍向一洋** (n=242, 106 pairs, α=+4.39%, t=2.71, **max cell-share 66.7%
+— over the 40% flag threshold**, ranking $21,243 vs computed $19,432) and **江南等烟雨**
+(n=241, 39 pairs, α=+0.57%, t=3.00, ranking $12,752 vs computed $11,715). Neither is new to
+this project — both already passed the pre-audit `top5_final.py` run before this correction
+— they simply never made the hand-curated consensus table, which draws from 4 independent
+methods and intentionally is not identical to any one script's own output (see this
+section's opening paragraph and the "None appeared on 3 of the 4 lists" line below).
+
+**Bottom line: the Binance picks are robust to the correction.** Unlike OKX, where
+leave-self-out materially changed alpha, t, and the survivor set for several traders,
+Binance's much larger, thicker-celled universe means the self-inclusive benchmark was
+already a good approximation of the leave-self-out one. Nothing in the Top 5 below needed
+to change.
+
 ## The consensus
 
 | # | trader | votes | n | med alpha | t | payoff | lev | ruin | top3 | mdd | notional |

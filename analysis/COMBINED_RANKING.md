@@ -6,8 +6,11 @@ combined order below weighs: audited alpha + t, window length (the single bigges
 differentiator post-audit), risk profile (leverage tail, ruin, concentration), and
 copyability (real notional/copers/AUM).
 
-⚠️ Binance numbers are self-inclusive-cell alpha (pre-dating the OKX correction); OKX
-numbers are leave-self-out. Treat cross-exchange alpha comparison as indicative, not exact.
+The table's Binance alpha/t figures were computed before the leave-self-out correction
+existed, but a 2026-08-29 re-audit (TOP5.md) confirmed the shift is negligible (<0.1
+percentage point on every current pick) — both exchanges' numbers below are effectively
+leave-self-out now. Cross-exchange comparison is still indicative rather than exact: the
+two universes differ in size (594 vs 261 traders), cell thickness, and time window.
 
 ## The table
 
@@ -49,8 +52,12 @@ numbers are leave-self-out. Treat cross-exchange alpha comparison as indicative,
 - Single regime cycle everywhere (May crash → Jul-Aug pump). Nobody here has been seen
   in a prolonged bear market.
 - Winner's curse: expect ~half the alpha out of sample (Fable's rule).
-- Binance alphas pre-date the leave-self-out correction; a full re-audit of the Binance
-  side with the corrected methodology is future work.
+- Binance alphas were re-audited with the leave-self-out correction on 2026-08-29 (see
+  TOP5.md's "Adversarial-audit corrections applied 2026-08-29"): the shift is negligible
+  (largest change +0.09 percentage points, `n_alpha_dropped_self_dominated=0` throughout)
+  and the survivor set is unchanged, so the table below is not updated — Binance's much
+  larger, thicker-celled universe made the self-inclusive benchmark a good approximation
+  of the leave-self-out one all along, unlike OKX's smaller pool.
 - Weights above are my combined suggestion (sums to 100% across 10 traders); the
   per-exchange docs' own suggestions (Binance 30/25/20/15/10, OKX 45/30/15/7/3) remain
   the reference for within-exchange allocation.
