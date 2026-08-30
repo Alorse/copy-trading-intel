@@ -1,0 +1,30 @@
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {
+    "totalCount": 7462,
+    "metricColumns": ["ROI", "Drawdown", "totalAllFollowProfit", "WinRate", "PLRatio", "Sharpe"],
+    "leaderDetails": [
+      {
+        "leaderUserId": "1001",
+        "leaderMark": "GOLD",
+        "nickName": "bybit-trader-one",
+        "leaderLevel": 3,
+        "currentFollowerCount": 120,
+        "maxFollowerCount": 200,
+        "followerYieldE8": "553800000",
+        "metricValues": ["+5.54%", "-12.30%", "+8,432.10", "62.5%", "1.8", "1.2"]
+      },
+      {
+        "leaderUserId": "1002",
+        "leaderMark": "",
+        "nickName": "bybit-trader-two",
+        "leaderLevel": 1,
+        "currentFollowerCount": 5,
+        "maxFollowerCount": 10,
+        "followerYieldE8": "-100000000",
+        "metricValues": ["-1.00%", "-30.00%", "-500.00", "-", "0.4", "N/A"]
+      }
+    ]
+  }
+}
