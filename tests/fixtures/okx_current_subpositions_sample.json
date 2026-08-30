@@ -1,0 +1,23 @@
+{
+  "code": "0",
+  "data": [
+    {
+      "ccy": "USDT",
+      "instId": "BTC-USDT-SWAP",
+      "instType": "SWAP",
+      "lever": "50",
+      "margin": "0.1198176",
+      "markPx": "78080.2",
+      "mgnMode": "cross",
+      "openAvgPx": "59908.8",
+      "openTime": "1782525765569",
+      "posSide": "net",
+      "subPos": "0.01",
+      "subPosId": "3691771538397802496",
+      "uniqueCode": "DA2B29551CBB2AE7",
+      "upl": "1.81714",
+      "uplRatio": "15.16588547926181"
+    }
+  ],
+  "msg": ""
+}

@@ -1,0 +1,60 @@
+{
+  "code": "0",
+  "data": [
+    {
+      "ccy": "USDT",
+      "closeAvgPx": "59709.6236749116607776",
+      "closeTime": "",
+      "instId": "BTC-USDT-SWAP",
+      "instType": "SWAP",
+      "lever": "5E+1",
+      "margin": "5855.9401042",
+      "mgnMode": "cross",
+      "openAvgPx": "58559.401042",
+      "openTime": "1782395792192",
+      "pnl": "-317.8392146110846269",
+      "pnlRatio": "-3.1964886520517229",
+      "posSide": "long",
+      "subPos": "500",
+      "subPosId": "3687410355490336768",
+      "uniqueCode": "DA2B29551CBB2AE7"
+    },
+    {
+      "ccy": "USDT",
+      "closeAvgPx": "60659.3",
+      "closeTime": "1781663236998",
+      "instId": "BTC-USDT-SWAP",
+      "instType": "SWAP",
+      "lever": "5E+1",
+      "margin": "584.401042",
+      "mgnMode": "cross",
+      "openAvgPx": "59758.5",
+      "openTime": "1780797529669",
+      "pnl": "0.4495326572726933",
+      "pnlRatio": "0.0770",
+      "posSide": "long",
+      "subPos": "45",
+      "subPosId": "3687410355490336001",
+      "uniqueCode": "DA2B29551CBB2AE7"
+    },
+    {
+      "ccy": "USDT",
+      "closeAvgPx": "58200.0",
+      "closeTime": "1780900000000",
+      "instId": "BTC-USDT-SWAP",
+      "instType": "SWAP",
+      "lever": "5E+1",
+      "margin": "600.0",
+      "mgnMode": "cross",
+      "openAvgPx": "58750.0",
+      "openTime": "1780746317344",
+      "pnl": "-24.75",
+      "pnlRatio": "-0.0413",
+      "posSide": "short",
+      "subPos": "50",
+      "subPosId": "3687410355490336002",
+      "uniqueCode": "DA2B29551CBB2AE7"
+    }
+  ],
+  "msg": ""
+}
