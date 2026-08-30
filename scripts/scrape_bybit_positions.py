@@ -83,8 +83,12 @@ INFO_URL = BASE + '/private/v1/pub-leader/info'
 YIELD_URL = BASE + '/public/v2/leader/yield-trend'
 
 PAGE_SIZE = 50
-FETCH_SLEEP_S = 3.5        # pacing between fetches within one trader
-TRADER_SLEEP_S = 0.5       # pacing between traders
+FETCH_SLEEP_S = 1.5        # pacing between fetches within one trader (tuned down
+                           # 2026-08-30: the detached-promise/poll fetch pattern
+                           # already serializes requests and absorbs slow ones —
+                           # measured live at 3.5s this averaged ~55-60s/trader,
+                           # ~5h for 295 traders, blowing the ~90min budget)
+TRADER_SLEEP_S = 0.3       # pacing between traders
 MAX_CONSECUTIVE_ERRORS = 30
 
 
