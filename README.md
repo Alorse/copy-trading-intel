@@ -86,7 +86,7 @@ with its own access quirk:
 |---|---|---|---|
 | OKX | `scripts/scrape_okx.py` + `scripts/scrape_okx_positions.py` | `data/okx_traders.jsonl`, `data/okx_trader_stats.jsonl`, `data/okx_positions.jsonl`, `data/okx_open_positions.jsonl` | clean public JSON, but **do not** pass `sortType` (any value → error 51000); `public-stats`' `lastDays` only accepts `{1, 2, 3}`; position history caps silently at 100 rows/trader; a minority of ranked traders 404 with `"Trader doesn't exist"` on the position endpoints specifically |
 | Bybit | `scripts/scrape_bybit.py` | `data/bybit_traders.jsonl` | Akamai TLS-fingerprints the listing endpoint; needs `curl_cffi` (`impersonate='chrome'`), and even that 403s intermittently from some hosts |
-| Bitget | `scripts/scrape_bitget.py` | `data/bitget_orders.jsonl` (best effort) | no public leaderboard endpoint exists anymore; only per-trader order history behind **web session tokens that expire**, refreshed by hand |
+| Bitget | `scripts/scrape_bitget.py` | `data/bitget_orders.jsonl` (best effort) | **superseded 2026-08-30** by `scripts/scrape_bitget_positions.py` (see "Bitget position history" below) — the leaderboard turned out to exist after all, and none of these endpoints need session tokens from `curl_cffi`; this script is kept only as a record of the 2026-08-29 dead end |
 
 Run each one directly (all resumable — safe to re-run):
 
@@ -144,6 +144,53 @@ full universe (see `docs/okx_endpoint_facts.md` for the evidence):
 
 `analysis/okx_top5.py` mirrors `top5_final.py`'s methodology (alpha vs the symbol×month×side
 median, concentration guard, Trampa 1 filter) — see `analysis/TOP5_OKX.md` for the results.
+
+### Bitget position history (phase 1.5)
+
+`scripts/scrape_bitget_positions.py` fetches the full Bitget copy-trading leaderboard
+(measured 2026-08-30 at **1,488 traders**, live `maxShowSizes` — `data.totals` on that
+endpoint lies, it echoes the page size) and, for the top N by follower count (default
+400), each trader's closed positions, open positions, and 90-day drawdown/native-MDD
+series:
+
+```bash
+python3 scripts/scrape_bitget_positions.py --traders 400   # ~1-2h at polite pacing;
+                                                             # background it, it's resumable
+python3 analysis/bitget_flatten.py                          # -> analysis/bitget_positions.csv
+python3 analysis/bitget_top5.py                              # -> ranked candidate table
+```
+
+Unlike Bybit or Bitget's own now-superseded v1 web endpoints (session tokens that
+expire), **every** endpoint here (leaderboard, closed history, open positions, trader
+detail, `cycleData`) answers plain `curl_cffi` (`impersonate='chrome'`) with no auth,
+no cookies, no tokens — see `scripts/scrape_bitget_positions.py`'s docstring and the
+checklist appendix for the full quirk list. Writes `data/bitget_traders.jsonl` (full
+leaderboard), `data/bitget_positions.jsonl` (closed, one row per order/fill),
+`data/bitget_open_positions.jsonl` (open, no verified unrealized-PnL field — same
+blind spot as Bybit), `data/bitget_cycle.jsonl` (90-day ROI/PnL curves + native MDD),
+and `data/bitget_manifest.jsonl` (resumability ledger with a headline cross-check
+snapshot folded in per trader).
+
+The single biggest data-quality finding: reconstructing a de-leveraged return from
+`(close_avg_price/open_avg_price - 1)` disagrees in **sign** with the trader's own
+`netProfit` on **10.1%** of a 455-row live sample — the same failure mode found on
+Bybit (there ~16%), because `historyList` is one row per order/fill and a scaled
+position's simultaneous multi-fill close doesn't split PnL proportional to each
+fill's own price delta. `analysis/bitget_top5.py` uses `returnRate / openLevel`
+instead (verified self-consistent against `netProfit / margin` to a median 0.8
+percentage point deviation, p90 6.0pp).
+
+**Post-audit correction (adversarial review, Fable + GLM):** the original drawdown
+screen took `min()` of the raw cumulative `roiRows` curve instead of measuring an
+actual peak-to-trough drawdown — 199/290 ranking-eligible traders have a genuine
+>20pp drawdown the old screen missed. Fixed to three explicit hard filters (90d
+peak-to-trough, 90d native MDD, lifetime `detail_mdd` on an uncovered-window basis);
+four traders whose scrape got stuck on repeated timeouts and were hand-fetched with
+a raw, un-normalized row shape are repaired by `scripts/bitget_repair_raw_rows.py`;
+`scripts/scrape_bitget_positions.py`'s transport retry now survives a mid-page
+timeout without discarding already-fetched pages. **Result: zero survivors** — see
+`analysis/TOP5_BITGET.md` for the full ranking, the repair story, and the
+drawdown-screen correction in detail.
 
 ## The traps in this data
 
