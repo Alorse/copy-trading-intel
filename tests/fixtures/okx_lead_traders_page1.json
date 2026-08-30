@@ -1,0 +1,40 @@
+{
+  "code": "0",
+  "data": [
+    {
+      "dataVer": "1788053000000",
+      "totalPage": 27,
+      "ranks": [
+        {
+          "uniqueCode": "DA2B29551CBB2AE7",
+          "nickName": "Pretty-Longmeixi-760",
+          "pnl": "241021.5859626554118764",
+          "pnlRatio": "0.7338",
+          "aum": "813187.3224027424461744",
+          "leadDays": "96",
+          "copyTraderNum": "565",
+          "accCopyTraderNum": "2936",
+          "winRatio": "0.6988",
+          "ccy": "USDT",
+          "copyState": "0",
+          "maxCopyTraderNum": "600"
+        },
+        {
+          "uniqueCode": "AB11223344556677",
+          "nickName": "second-trader",
+          "pnl": "1000.5",
+          "pnlRatio": "0.12",
+          "aum": "5000.0",
+          "leadDays": "30",
+          "copyTraderNum": "10",
+          "accCopyTraderNum": "40",
+          "winRatio": "0.55",
+          "ccy": "USDT",
+          "copyState": "0",
+          "maxCopyTraderNum": "100"
+        }
+      ]
+    }
+  ],
+  "msg": ""
+}

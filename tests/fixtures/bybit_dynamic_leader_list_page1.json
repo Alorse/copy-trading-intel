@@ -1,0 +1,229 @@
+{
+ "retCode": 0,
+ "retMsg": "success",
+ "result": {
+  "metricColumns": [
+   {
+    "colName": "ROI",
+    "sortKey": "LEADER_SORT_FIELD_SORT_ROI",
+    "hasColor": true,
+    "hasPeriod": true
+   },
+   {
+    "colName": "Drawdown",
+    "sortKey": "LEADER_SORT_FIELD_SORT_DRAW_DOWN",
+    "hasColor": false,
+    "hasPeriod": true
+   },
+   {
+    "colName": "totalAllFollowProfit",
+    "sortKey": "LEADER_SORT_FIELD_SORT_FOLLOWERS_YIELD",
+    "hasColor": false,
+    "hasPeriod": true
+   },
+   {
+    "colName": "WinRate",
+    "sortKey": "LEADER_SORT_FIELD_SORT_WIN_RATE",
+    "hasColor": false,
+    "hasPeriod": true
+   },
+   {
+    "colName": "profileProfitLossRatio",
+    "sortKey": "LEADER_SORT_FIELD_SORT_YIELD_LOSS_RATIO",
+    "hasColor": false,
+    "hasPeriod": true
+   },
+   {
+    "colName": "sharpeRatio",
+    "sortKey": "LEADER_SORT_FIELD_SORT_SHARPE_RATIO",
+    "hasColor": true,
+    "hasPeriod": true
+   }
+  ],
+  "leaderDetails": [
+   {
+    "leaderUserId": "51430502",
+    "leaderMark": "zB0S6rEIH0eDfqLF59TO6Q==",
+    "profilePhoto": "https://s1.bycsi.com/fop/copytrade/6328ede1-759f-44e5-9c15-5eaf75a3794e.jpg",
+    "nickName": "bluntz",
+    "yesterdayMaxFollowersNum": "653",
+    "leaderParentUserId": "46059101",
+    "referralCode": "JLLRZL",
+    "leaderLevel": "COPY_TRADE_LEADER_LEVEL_GOLD_TRADER",
+    "followerYieldE8": "19803248889447",
+    "countryCode": "",
+    "lastLeaderLevel": "COPY_TRADE_LEADER_LEVEL_GOLD_TRADER",
+    "leaderLevelChangeTimeE3": "1787978105945",
+    "userTag": [
+     {
+      "title": "Top Profit",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "75388340",
+      "tagType": "USER_TAG_TYPE_POSITIVE",
+      "tagId": "4",
+      "titleLangKey": "traderTagTopProfit",
+      "hovelDescLangKey": ""
+     },
+     {
+      "title": "Win Streak",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "75388336",
+      "tagType": "USER_TAG_TYPE_POSITIVE",
+      "tagId": "8",
+      "titleLangKey": "traderTagWinStreak",
+      "hovelDescLangKey": ""
+     },
+     {
+      "title": "High Frequency",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "75388335",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "9",
+      "titleLangKey": "traderTagHighFrequency",
+      "hovelDescLangKey": ""
+     }
+    ],
+    "metricValues": [
+     "+5.54%",
+     "+13.01%",
+     "+198,032.49",
+     "+100.00%",
+     "999.99 : 0",
+     "+0.25"
+    ],
+    "opStatus": 0,
+    "currentFollowerCount": "650",
+    "maxFollowerCount": "3000",
+    "linkCreateType": 0,
+    "thirdPartyApplicationInfo": [],
+    "wsotRanking": "0",
+    "gameInfo": [],
+    "isFav": false
+   },
+   {
+    "leaderUserId": "567594578",
+    "leaderMark": "CaXlJWDRhdEamYTsZvEWUQ==",
+    "profilePhoto": "https://s1.bycsi.com/fop/copytrade/b1c1e1b4-5894-4d45-9815-ff088e64b0f6.jpg",
+    "nickName": "CRYPTO  K I N G",
+    "yesterdayMaxFollowersNum": "3",
+    "leaderParentUserId": "567355604",
+    "referralCode": "JXWJMKE",
+    "leaderLevel": "COPY_TRADE_LEADER_LEVEL_CADET_TRADER",
+    "followerYieldE8": "8257426753327",
+    "countryCode": "NG",
+    "lastLeaderLevel": "COPY_TRADE_LEADER_LEVEL_BRONZE_TRADER",
+    "leaderLevelChangeTimeE3": "1787979946778",
+    "userTag": [
+     {
+      "title": "High Frequency",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "76892181",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "9",
+      "titleLangKey": "traderTagHighFrequency",
+      "hovelDescLangKey": ""
+     },
+     {
+      "title": "High Leverage",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "76200365",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "11",
+      "titleLangKey": "traderTagHighLeverage",
+      "hovelDescLangKey": ""
+     }
+    ],
+    "metricValues": [
+     "-100.00%",
+     "0.00%",
+     "+82,574.27",
+     "+36.11%",
+     "5.70 : 1",
+     "--"
+    ],
+    "opStatus": 0,
+    "currentFollowerCount": "2",
+    "maxFollowerCount": "100",
+    "linkCreateType": 0,
+    "thirdPartyApplicationInfo": [],
+    "wsotRanking": "0",
+    "gameInfo": [],
+    "isFav": false
+   },
+   {
+    "leaderUserId": "518834858",
+    "leaderMark": "ip9dN5AI69an9s5g55kR8Q==",
+    "profilePhoto": "https://s1.bycsi.com/fop/copytrade/8d0ddb02-dad2-454d-a89b-49ccbc23e6d9.jpg",
+    "nickName": "Pifagortrade",
+    "yesterdayMaxFollowersNum": "165",
+    "leaderParentUserId": "845587",
+    "referralCode": "02165",
+    "leaderLevel": "COPY_TRADE_LEADER_LEVEL_GOLD_TRADER",
+    "followerYieldE8": "2274584832150",
+    "countryCode": "",
+    "lastLeaderLevel": "COPY_TRADE_LEADER_LEVEL_CADET_TRADER",
+    "leaderLevelChangeTimeE3": "1787979787500",
+    "userTag": [
+     {
+      "title": "Low Frequency",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "74472186",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "10",
+      "titleLangKey": "traderTagLowFrequency",
+      "hovelDescLangKey": ""
+     },
+     {
+      "title": "Trend Trader",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "72179422",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "14",
+      "titleLangKey": "traderTagTrendTrader",
+      "hovelDescLangKey": ""
+     },
+     {
+      "title": "Veteran",
+      "hovelDesc": "",
+      "hovelTargetUserTag": [],
+      "id": "64272228",
+      "tagType": "USER_TAG_TYPE_NEUTRAL",
+      "tagId": "15",
+      "titleLangKey": "traderTagVeteran",
+      "hovelDescLangKey": ""
+     }
+    ],
+    "metricValues": [
+     "+7.11%",
+     "+2.75%",
+     "+22,745.85",
+     "+8.33%",
+     "947.68 : 0",
+     "+0.79"
+    ],
+    "opStatus": 4,
+    "currentFollowerCount": "164",
+    "maxFollowerCount": "3000",
+    "linkCreateType": 0,
+    "thirdPartyApplicationInfo": [],
+    "wsotRanking": "0",
+    "gameInfo": [],
+    "isFav": false
+   }
+  ],
+  "currentPageNo": "1",
+  "totalPageCount": "374",
+  "totalCount": "7462",
+  "sortField": "LEADER_SORT_FIELD_SORT_FOLLOWERS_YIELD",
+  "sortType": "SORT_TYPE_DESC"
+ },
+ "retExtInfo": {},
+ "time": 1788054240786
+}

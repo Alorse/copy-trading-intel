@@ -6,6 +6,8 @@ data/*.jsonl
 data/binance_portfolios.json
 data/all_traders.json
 data/copytrade.sqlite
+data/unified_traders.csv
+data/bitget_session.json
 
 # --- analysis derivatives ---
 analysis/ohlc/
@@ -17,3 +19,4 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+data/bybit_prefetch/
