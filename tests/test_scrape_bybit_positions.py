@@ -130,6 +130,15 @@ def test_row_from_open_position_maps_synthetic_row():
     assert row['side'] == 'long'
     assert row['leverage'] == 25.0
     assert row['margin'] == 2600.0
+    assert row['upl'] is None  # no known pnl key present
+
+
+def test_row_from_open_position_extracts_upl_when_a_candidate_key_is_present():
+    entry = {'symbol': 'BTCUSDT', 'side': 'Sell', 'leverageE2': '1000',
+              'entryPrice': '65000', 'size': '0.1', 'orderCostE8': '65000000000',
+              'unrealisedPnlE8': '-150000000'}
+    row = sbp.row_from_open_position(entry, 'm', 'u', 'n')
+    assert row['upl'] == -1.5
 
 
 def test_open_positions_fixture_shape_has_protection_field():

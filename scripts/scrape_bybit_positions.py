@@ -139,7 +139,21 @@ def _f(raw, default=0.0):
         return default
 
 
+# SKILL.md documents position/list's fields as entryPrice/sizeX/side/leverageE2/
+# stopLossPrice/takeProfitPrice/orderCostE8 — no unrealized-pnl field. The live
+# capture used for tests/fixtures/bybit_open_positions.json happened to have zero
+# open positions, so this list is a defensive guess at possible key names rather
+# than a verified one; `upl` is left None (not 0.0) when none of them are present
+# so callers can tell "no data" from "zero pnl".
+_UPL_KEY_CANDIDATES = ('unrealisedPnlE8', 'uPnlE8', 'positionPnlE8', 'unRealisedPnlE8')
+
+
 def row_from_open_position(entry, leader_mark, leader_user_id, nick):
+    upl = None
+    for key in _UPL_KEY_CANDIDATES:
+        if entry.get(key) is not None:
+            upl = e(entry.get(key), 8)
+            break
     return {
         'leaderMark': leader_mark, 'leaderUserId': leader_user_id, 'nickName': nick,
         'symbol': entry.get('symbol'),
@@ -151,6 +165,7 @@ def row_from_open_position(entry, leader_mark, leader_user_id, nick):
         'margin': e(entry.get('orderCostE8'), 8),
         'stop_loss': _f(entry.get('stopLossPrice'), None),
         'take_profit': _f(entry.get('takeProfitPrice'), None),
+        'upl': upl,
     }
 
 
