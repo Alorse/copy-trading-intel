@@ -17,8 +17,19 @@ scraped, why the result is zero, and which traders came closest.
 - **140 of 295 (47%) have `openTradeInfoProtection=1`** — Bybit's history-hiding flag
   (the analogue of Phemex's `showPosition=false` and Bitget's protection). Their
   position history is simply not visible. Counted, skipped terminally.
-- **155 traders** yielded **10,209 closed + 508 open positions**, closes spanning
-  **2026-05-30 → 2026-08-30** (~3 months). Zero scrape errors.
+- **155 traders** yielded **11,409 closed + 532 open positions**, closes spanning
+  **2026-05-30 → 2026-08-30** (~3 months, population-level union). Zero scrape errors.
+  ⚠️ **Per-trader history is capped at ~100 closed rows by the API** (88 of 155 traders
+  sit at exactly 100; e.g. 2Moon shows 669 lifetime transactions vs 100 visible rows) —
+  "3-month window" is a population union; per trader it is effectively "their last 100
+  trades". More history will NOT accumulate on re-scrape while the cap holds.
+  ⚠️ **`orderNetProfitE8` is POSITION-level**, shared across every order row of a
+  scaled position, and the disclosed entry/close prices do NOT reconcile per-row with
+  pnl (~16% sign flips; both adversarial reviewers measured this). The ranking basis
+  is therefore `roi/leverage` (self-consistent, verified to 0.02% against
+  pnl/margin), not raw prices.
+  Data fingerprint: 11,409 closed / 532 open rows, 155 ok / 140 protected manifest
+  entries (verify against `wc -l data/bybit_positions*.jsonl`).
 - Selection bias, stated plainly: the 295 scraped are the list's front page, and the
   155 with visible history are a self-selected subset (traders confident enough to
   show their trades). The other ~7,167 listed leaders were not scraped this run.
@@ -44,20 +55,25 @@ scraped, why the result is zero, and which traders came closest.
 
 ## The eight who came closest (independently traced, filter by filter)
 
-These are the top traders by alpha t-statistic (self-inclusive upper bound; recomputed
-independently from the raw JSONL by the orchestrator). Each dies on a different,
-legitimate filter — which is itself evidence the filter set is doing distinct work:
+These are the top traders by alpha t-statistic on the CURRENT data (basis: roi/leverage;
+regenerated post-audit — the pre-audit table's t-values were stale). Each dies on a
+different, legitimate filter — which is itself evidence the filter set is doing
+distinct work:
 
-| trader | t | alpha | killed by |
-|---|---|---|---|
-| safemoneymaker | 8.20 | +3.93% | leverage p90 = 50x |
-| LEVELEIGHT | 5.64 | +1.39% | leverage p90 = 55x |
-| 随风逐浪 | 5.38 | +4.66% | median margin $31 (<$50, not copyable) |
-| ProfitPirate | 3.27 | +7.23% | median margin $23 |
-| ForceOne | 3.25 | +2.08% | concentration 94% (one trade = nearly all PnL) |
-| sportsman-1 | 3.23 | +2.23% | **drawdown screen: yield-trend min −54%, uncovered by window** |
-| HK666 | 3.20 | +7.82% | concentration 114% (best trade exceeds total PnL) |
-| GoldenLiner | 3.02 | +2.60% | median margin $3 |
+| trader | t (self-incl.) | killed by |
+|---|---|---|
+| safemoneymaker | 8.70 | leverage p90 = 50x |
+| 'Slow and steady Banzai!' | 6.53 | payoff 0.42 (left tail) |
+| LEVELEIGHT | 5.80 | leverage p90 = 55x |
+| POMOGITE Invest Inc. | 5.30 | payoff 0.47 |
+| Bullet | 5.16 | leverage p90 100x |
+| 随风逐浪 | 5.38* | median margin $31 (<$50, not copyable) |
+| BLAC_ROCK | 4.57 | win rate 93% (Trampa 1) |
+| GoldenLiner | 4.44 | median margin $3 |
+
+*t-values from the reviewers' independent recomputation on current data; killed-by
+attributions verified by both reviewers and the orchestrator. Zero survivors holds on
+BOTH bases (raw-price pr and roi/lev pr — re-verified after the basis change).
 
 `sportsman-1` is the instructive case: it passes every closed-position filter cleanly
 (t=3.23, H2 positive, moderate leverage, real margins, diversified) and is rejected

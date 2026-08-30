@@ -107,16 +107,25 @@ payoff=2.47, $343 net PnL over 50 positions, 11 pairs) clears every other filter
 and is caught **only** by leverage p90=36.9x>25x — the single case this run where
 the leverage filter is load-bearing rather than redundant.
 
-## Only 1 trader survives every hard filter
+## Zero traders survive every hard filter (post-audit correction 2026-08-30)
 
-This is a much thinner result than OKX's 5 or a typical Binance run, and it is
-consistent with what SKILL.md already found about this population before this
-report: *"The Phemex crowd loses consistently (expectancy −190 USD/trade)."* Per
-the brief, filters were **not** relaxed to manufacture a Top 5 — there is exactly
-one trader in this 192-trader, 7,467-position dataset whose de-leveraged,
-leave-self-out-benchmarked track record clears every screen.
+**Correction applied after adversarial review (Fable + GLM, 2026-08-30):** the original
+version of this report named exactly one survivor — **achilles** — because the drawdown
+proxy was computed on MONTHLY cumulative PnL (Jul +$232, Aug +$890 → monotonic → 0.0%).
+Recomputed at trade granularity (cumulative `realizedPnl` ordered by `updatedTime`,
+drawdown from running peak), achilles' real intra-window drawdown is **−33.7%**
+(running peak $1,039.18 on 2026-08-21 → $661.05), above the 20% threshold the screen
+exists to enforce. The monthly figure hid a mid-August swing that both months' end
+points happened to straddle. **achilles is REJECTED on the corrected screen; Phemex
+has zero survivors.**
 
-### The pick: **achilles**
+A second audit finding fixed in the same pass: the recommend-list cross-check
+(`mdd30`/`pnl30`/`showPosition`) was dead code — int-keyed snapshot vs string-keyed CSV
+lookups, 0/305 overlap — so the doc's original "mdd30=17.9% cross-check" never came
+from the pipeline. The keying is fixed and the guard now fires; the numbers themselves
+were independently verified against the snapshot by both reviewers.
+
+### The trader who came closest: **achilles**
 
 | metric | value |
 |---|---|

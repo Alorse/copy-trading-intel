@@ -1,10 +1,14 @@
+import csv
 import json
+from analysis import bybit_flatten
 from analysis import bybit_top5 as t5
 
 
-def _row(uid, sym, month, side, pr, pnl, lev=10.0, nick='n', marg=100.0, started_ms=0):
+def _row(uid, sym, month, side, pr, pnl, lev=10.0, nick='n', marg=100.0, started_ms=0,
+         closed_ms=None):
     return dict(uid=uid, nick=nick, sym=sym, side=side, pr=pr, pnl=pnl,
-                lev=lev, dur=2.0, marg=marg, month=month, started_ms=started_ms)
+                lev=lev, dur=2.0, marg=marg, month=month, started_ms=started_ms,
+                closed_ms=closed_ms if closed_ms is not None else started_ms)
 
 
 def _filler(sym, month, side, n=3, pr=0.0):
@@ -89,7 +93,7 @@ def test_rank_traders_rejects_concentration_over_30pct():
     t5.compute_alpha(rows, min_cell=1)
     candidates, rejections, _ = t5.rank_traders(rows, min_n=15, min_alpha_n=1)
     assert candidates == []
-    assert rejections['concentration>30% (top-1 trade)'] >= 1
+    assert rejections['concentration>30% (top-1 position, order-aggregated)'] >= 1
 
 
 def test_rank_traders_rejects_net_negative_pnl_before_concentration():
@@ -100,7 +104,7 @@ def test_rank_traders_rejects_net_negative_pnl_before_concentration():
     candidates, rejections, _ = t5.rank_traders(rows, min_n=15, min_alpha_n=1)
     assert candidates == []
     assert rejections['net-negative closed PnL'] >= 1
-    assert 'concentration>30% (top-1 trade)' not in rejections
+    assert 'concentration>30% (top-1 position, order-aggregated)' not in rejections
 
 
 def test_rank_traders_accepts_a_clean_multi_pair_trader():
@@ -332,3 +336,109 @@ def test_drawdown_screen_shallow_drawdown_never_rejects():
     candidates, rejections, _ = t5.rank_traders(rows, yield_series=yield_series)
     assert len(candidates) == 1
     assert 'yield-trend drawdown >20%, uncovered by window' not in rejections
+
+
+# ---------------------------------------------------------------------------
+# `pr` basis: roi/leverage, NOT entry/close price (Fable-2/GLM-2).
+# ---------------------------------------------------------------------------
+
+def _csv_row(order_id, leader_mark='M1', nick='n', symbol='BTCUSDT', side='long',
+             leverage=10.0, entry_price=100.0, close_price=101.0, size=1.0, margin=10.0,
+             pnl_usd=5.0, roi=0.5, started_ms=1000, closed_ms=2000, follower_num=0,
+             full_closed=True):
+    return [leader_mark, '1', nick, symbol, side, leverage, entry_price, close_price,
+            size, margin, pnl_usd, roi, 0.0, 0.0, 0.0, started_ms, closed_ms,
+            (closed_ms - started_ms) / 3_600_000, follower_num, full_closed, order_id]
+
+
+def _write_csv(path, rows):
+    with open(path, 'w', newline='') as fh:
+        w = csv.writer(fh)
+        w.writerow(bybit_flatten.COLS)
+        for r in rows:
+            w.writerow(r)
+
+
+def test_load_positions_pr_is_roi_over_leverage_not_price_derived(tmp_path):
+    # Entry/close prices here would imply a *negative* return ((99/100 - 1) for a
+    # long) while roi/leverage says positive -- exactly the kind of sign conflict
+    # the audit found on ~16% of real rows. pr must follow roi/leverage.
+    path = tmp_path / 'bybit_positions.csv'
+    _write_csv(path, [_csv_row('a', side='long', leverage=10.0, entry_price=100.0,
+                                close_price=99.0, roi=0.8, pnl_usd=0.8)])
+    rows = t5.load_positions(str(path))
+    assert len(rows) == 1
+    assert abs(rows[0]['pr'] - 0.08) < 1e-9   # 0.8 / 10, not price-derived
+
+
+def test_load_positions_pr_matches_leverage_scaling(tmp_path):
+    path = tmp_path / 'bybit_positions.csv'
+    _write_csv(path, [_csv_row('a', leverage=25.0, roi=-2.5)])
+    rows = t5.load_positions(str(path))
+    assert abs(rows[0]['pr'] - (-0.1)) < 1e-9   # -2.5 / 25
+
+
+def test_load_positions_carries_closed_ms(tmp_path):
+    path = tmp_path / 'bybit_positions.csv'
+    _write_csv(path, [_csv_row('a', started_ms=1000, closed_ms=5000)])
+    rows = t5.load_positions(str(path))
+    assert rows[0]['closed_ms'] == 5000
+
+
+# ---------------------------------------------------------------------------
+# Position-level pnl aggregation for concentration (GLM-2): a scaled-in/out
+# position split across multiple order rows must not slip past the
+# concentration guard just because each order's individual pnl is small.
+# ---------------------------------------------------------------------------
+
+def test_rank_traders_concentration_uses_position_level_not_order_level_pnl():
+    # Trader SCALED has one dominant BTCUSDT position worth $900, split across 3
+    # order rows (same symbol + closed_ms, real-shape per the fixture in
+    # tests/fixtures/bybit_positions_sample.jsonl) at $300 each -- individually
+    # each row is well under 30% of any plausible total, but combined the single
+    # position is 100% of net PnL. The remaining rows keep wr at 72% and payoff
+    # above 0.5 so no earlier filter fires.
+    rows = [_row('SCALED', 'BTCUSDT', '2026-06', 'long', 0.05, 300.0,
+                  started_ms=1, closed_ms=100) for _ in range(3)]
+    for i in range(10):
+        rows.append(_row('SCALED', 'ETHUSDT', '2026-06', 'long', 0.01, 20.0,
+                          started_ms=i, closed_ms=i))
+    for i in range(5):
+        rows.append(_row('SCALED', 'ETHUSDT', '2026-06', 'long', -0.02, -40.0,
+                          started_ms=50 + i, closed_ms=50 + i))
+    rows += _filler('BTCUSDT', '2026-06', 'long') + _filler('ETHUSDT', '2026-06', 'long')
+    t5.compute_alpha(rows, min_cell=1)
+    candidates, rejections, _ = t5.rank_traders(rows, min_n=15, min_alpha_n=1, t_min=0,
+                                                 levp90_max=100, margin_med_min=0,
+                                                 dur_med_min_h=0)
+    assert candidates == []
+    assert rejections['concentration>30% (top-1 position, order-aggregated)'] >= 1
+
+
+def test_rank_traders_position_level_conc_exceeds_order_level_conc():
+    # Demonstrates this is a genuine behavior change, not just a relabeling: for
+    # the same scaled-position trader, the order-level figure alone would have
+    # passed the 30% gate (each row is a minority of net PnL) while the
+    # position-level figure (the one now enforced) fails it.
+    rows = [_row('SCALED2', 'BTCUSDT', '2026-06', 'long', 0.05, 150.0,
+                  started_ms=1, closed_ms=100) for _ in range(3)]
+    for i in range(10):
+        rows.append(_row('SCALED2', 'ETHUSDT', '2026-06', 'long', 0.01, 20.0,
+                          started_ms=i, closed_ms=i))
+    rows[-1] = _row('SCALED2', 'ETHUSDT', '2026-06', 'long', 0.02, 70.0,
+                     started_ms=99, closed_ms=99)
+    for i in range(5):
+        rows.append(_row('SCALED2', 'ETHUSDT', '2026-06', 'long', -0.02, -30.0,
+                          started_ms=50 + i, closed_ms=50 + i))
+    rows += _filler('BTCUSDT', '2026-06', 'long') + _filler('ETHUSDT', '2026-06', 'long')
+    t5.compute_alpha(rows, min_cell=1)
+    total_pnl = sum(r['pnl'] for r in rows if r['uid'] == 'SCALED2')
+    order_level_best = 150.0
+    position_level_best = 450.0
+    assert order_level_best / total_pnl < 0.30
+    assert position_level_best / total_pnl > 0.30
+    candidates, rejections, _ = t5.rank_traders(rows, min_n=15, min_alpha_n=1, t_min=0,
+                                                 levp90_max=100, margin_med_min=0,
+                                                 dur_med_min_h=0)
+    assert candidates == []
+    assert rejections['concentration>30% (top-1 position, order-aggregated)'] >= 1

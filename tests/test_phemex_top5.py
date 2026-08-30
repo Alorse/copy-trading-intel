@@ -1,11 +1,14 @@
+import csv
 import json
+from analysis import phemex_flatten
 from analysis import phemex_top5 as t5
 
 
-def _row(uid, sym, month, side, pr, pnl, lev=10.0, nick='n', marg=100.0, dur=2.0, opened_ms=0):
+def _row(uid, sym, month, side, pr, pnl, lev=10.0, nick='n', marg=100.0, dur=2.0, opened_ms=0,
+         closed_ms=None):
     return dict(uid=uid, nick=nick, sym=sym, side=side, pr=pr, pnl=pnl, closed_pnl=pnl,
                 exch_fee=0.0, fund_fee=0.0, lev=lev, dur=dur, marg=marg, month=month,
-                opened_ms=opened_ms)
+                opened_ms=opened_ms, closed_ms=closed_ms if closed_ms is not None else opened_ms)
 
 
 def _filler(sym, month, side, n=3, pr=0.0):
@@ -202,9 +205,73 @@ def test_rank_traders_t_boundary_2_5():
 
 
 # ---------------------------------------------------------------------------
-# Phemex-specific: monthly drawdown proxy (coarse, self-referential — see
-# phemex_top5.py's module docstring for why this differs from OKX/Bybit).
+# Phemex-specific: trade-level drawdown proxy (the enforced screen, self-
+# referential — see phemex_top5.py's module docstring for why this differs
+# from OKX/Bybit) and the superseded monthly proxy (kept report-only).
 # ---------------------------------------------------------------------------
+
+def test_trade_drawdown_proxy_undefined_when_never_positive_peak():
+    v = [_row('A', 'BTCUSDT', '2026-06', 'long', -0.01, -10.0, opened_ms=1, closed_ms=1),
+         _row('A', 'BTCUSDT', '2026-06', 'long', -0.01, -5.0, opened_ms=2, closed_ms=2)]
+    ratio, closed_ms, n = t5.trade_drawdown_proxy(v)
+    assert ratio is None
+    assert n == 2
+
+
+def test_trade_drawdown_proxy_catches_mid_window_peak_and_crash():
+    # A real intra-month drawdown that a monthly-bucketed proxy cannot see: all
+    # three trades close in the same calendar month, so `monthly_drawdown_proxy`
+    # only ever sees one net-positive monthly bucket (0% drawdown, no fall
+    # possible from a single point) while the trade-level proxy sees the crash.
+    v = [_row('A', 'BTCUSDT', '2026-08', 'long', 0.05, 1000.0, opened_ms=1, closed_ms=1),
+         _row('A', 'BTCUSDT', '2026-08', 'long', -0.03, -700.0, opened_ms=2, closed_ms=2),
+         _row('A', 'BTCUSDT', '2026-08', 'long', 0.02, 200.0, opened_ms=3, closed_ms=3)]
+    ratio, closed_ms, n = t5.trade_drawdown_proxy(v)
+    assert abs(ratio - (300 - 1000) / 1000) < 1e-9
+    assert closed_ms == 2
+    assert n == 3
+    month_ratio, month, n_months = t5.monthly_drawdown_proxy(v)
+    assert month_ratio is None  # single month -> no drawdown measurable at all
+    assert n_months == 1
+
+
+def test_trade_drawdown_proxy_orders_by_closed_ms_not_insertion_order():
+    v = [_row('A', 'BTCUSDT', '2026-08', 'long', -0.03, -700.0, opened_ms=2, closed_ms=2),
+         _row('A', 'BTCUSDT', '2026-08', 'long', 0.05, 1000.0, opened_ms=1, closed_ms=1)]
+    ratio, closed_ms, n = t5.trade_drawdown_proxy(v)
+    assert abs(ratio - (300 - 1000) / 1000) < 1e-9
+    assert closed_ms == 2
+
+
+def test_rank_traders_rejects_deep_trade_level_drawdown():
+    # Give trader T a >20% peak-to-trough drawdown at trade granularity while
+    # still clearing every other filter: wr/payoff are driven by `pr` (price
+    # return), the drawdown proxy by `pnl` (dollars) -- decoupling them lets a
+    # handful of small-pr, large-dollar losses wipe out most of the peak without
+    # tripping the win-rate or payoff filters.
+    rows = []
+    t_ms = 1_780_000_000_000
+    i = 0
+    # 20 wins build a ~$2,000 peak, 4 losses (small pr=-0.01, so wr/payoff stay
+    # clean) at -$500 each cut deep into it, then 20 more wins recover to a
+    # net-positive total (avoids the net-negative bucket).
+    schedule = [('2026-06', 0.03, 100.0, 20), ('2026-07', -0.01, -500.0, 4),
+                ('2026-08', 0.03, 100.0, 20)]
+    for month, pr, pnl, count in schedule:
+        for j in range(count):
+            i += 1
+            sym = 'BTCUSDT' if j % 2 == 0 else 'ETHUSDT'
+            ms = t_ms + i * 3_600_000
+            rows.append(_row('T', sym, month, 'long', pr, pnl, opened_ms=ms, closed_ms=ms))
+    for sym in ('BTCUSDT', 'ETHUSDT'):
+        for month in ('2026-06', '2026-07', '2026-08'):
+            rows += _filler(sym, month, 'long', n=10)
+    t5.compute_alpha(rows, min_cell=t5.MIN_CELL)
+    candidates, rejections = t5.rank_traders(rows, t_min=0, levp90_max=100,
+                                              margin_med_min=0, dur_med_min_h=0)
+    assert candidates == []
+    assert rejections['trade-level drawdown proxy >20% (self-referential, intra-window)'] >= 1
+
 
 def test_monthly_drawdown_proxy_undefined_with_fewer_than_2_months():
     v = [_row('A', 'BTCUSDT', '2026-06', 'long', 0.01, 10.0)]
@@ -232,33 +299,17 @@ def test_monthly_drawdown_proxy_computes_peak_to_trough_fraction():
     assert n_months == 3
 
 
-def test_rank_traders_rejects_deep_monthly_drawdown_proxy():
-    # Give trader T a >20% peak-to-trough monthly drawdown across 3 months while
-    # still clearing every other filter: wr/payoff are driven by `pr` (price return),
-    # the drawdown proxy by `pnl` (dollars) -- decoupling them lets month 2's few,
-    # small-pr, large-dollar losses wipe out most of month 1's peak without
-    # tripping the win-rate or payoff filters.
-    rows = []
-    t_ms = 1_780_000_000_000
-    i = 0
-    # month 1: 20 wins build a $2,000 peak. month 2: 4 losses (small pr=-0.01, so
-    # wr/payoff stay clean) at -$500 each wipe out the peak to ~$0. month 3: 20 more
-    # wins recover to a net-positive $2,000 total (avoids the net-negative bucket).
-    schedule = [('2026-06', 0.03, 100.0, 20), ('2026-07', -0.01, -500.0, 4),
-                ('2026-08', 0.03, 100.0, 20)]
-    for month, pr, pnl, count in schedule:
-        for j in range(count):
-            i += 1
-            sym = 'BTCUSDT' if j % 2 == 0 else 'ETHUSDT'
-            rows.append(_row('T', sym, month, 'long', pr, pnl, opened_ms=t_ms + i * 3_600_000))
-    for sym in ('BTCUSDT', 'ETHUSDT'):
-        for month in ('2026-06', '2026-07', '2026-08'):
-            rows += _filler(sym, month, 'long', n=10)
-    t5.compute_alpha(rows, min_cell=t5.MIN_CELL)
-    candidates, rejections = t5.rank_traders(rows, t_min=0, levp90_max=100,
-                                              margin_med_min=0, dur_med_min_h=0)
-    assert candidates == []
-    assert rejections['monthly-cum-PnL drawdown proxy >20% (coarse, self-referential)'] >= 1
+def test_monthly_drawdown_proxy_can_hide_what_trade_level_catches():
+    # Regression for the GLM-1 audit finding: a real peak-to-trough drawdown
+    # that falls entirely inside one calendar month is invisible to the monthly
+    # proxy (only one bucket exists -> no fall is measurable) but is exactly
+    # what the trade-level proxy (the enforced screen) is built to catch.
+    v = [_row('A', 'BTCUSDT', '2026-08', 'long', 0.05, 1000.0, opened_ms=1, closed_ms=1),
+         _row('A', 'BTCUSDT', '2026-08', 'long', -0.03, -700.0, opened_ms=2, closed_ms=2)]
+    month_ratio, _, _ = t5.monthly_drawdown_proxy(v)
+    trade_ratio, _, _ = t5.trade_drawdown_proxy(v)
+    assert month_ratio is None
+    assert trade_ratio is not None and trade_ratio < t5.DRAWDOWN_THRESHOLD
 
 
 def test_load_recommend_list_reads_show_position_and_mdd(tmp_path):
@@ -269,10 +320,59 @@ def test_load_recommend_list_reads_show_position_and_mdd(tmp_path):
         {'userId': 2, 'nick': 'b', 'showPosition': False, 'mdd30': '0.1'},
     ]))
     info = t5.load_recommend_list(str(path))
-    assert info[1]['show_position'] is True
-    assert info[1]['mdd30'] == 0.505
-    assert info[2]['show_position'] is False
+    # Keys are `str`, not the JSON's native `int` -- see load_recommend_list's
+    # docstring: rank_traders looks these up with the CSV-derived `str` uid, and a
+    # type mismatch here silently produced 0/305 overlap in production before the fix.
+    assert isinstance(next(iter(info)), str)
+    assert info['1']['show_position'] is True
+    assert info['1']['mdd30'] == 0.505
+    assert info['2']['show_position'] is False
 
 
 def test_load_recommend_list_missing_file_returns_empty_dict(tmp_path):
     assert t5.load_recommend_list(str(tmp_path / 'nope.json')) == {}
+
+
+def test_recommend_list_keying_integration_csv_to_rank_traders(tmp_path):
+    """Regression for the int-vs-string userId bug (Fable-1): build a minimal CSV
+    with one real-shape trader plus filler rows, and a recommend-list snapshot with
+    that trader's userId as a JSON int (as the live endpoint returns it), and check
+    mdd30 actually reaches the trader's output dict through rank_traders — not just
+    that load_recommend_list parses in isolation."""
+    csv_path = tmp_path / 'phemex_positions.csv'
+    with open(csv_path, 'w', newline='') as fh:
+        w = csv.writer(fh)
+        w.writerow(phemex_flatten.COLS)
+        t_ms = 1_780_000_000_000
+        i = 0
+        for month in ('2026-06', '2026-07'):
+            for sym in ('BTCUSDT', 'ETHUSDT'):
+                for j in range(5):
+                    i += 1
+                    pr_win = j < 4
+                    op, cp = (100.0, 103.0) if pr_win else (100.0, 99.0)
+                    pnl = 50.0 if pr_win else -15.0
+                    ms = t_ms + i * 3_600_000
+                    w.writerow(['777', 'realuid', i, sym, 'Buy', 'Long', 22.0, op, cp, 100.0,
+                                pnl, pnl, 0.0, 0.0, 0.0, 1.0, 'USD', ms, ms + 3_600_000, 2.0, 0.0])
+                for k in range(10):
+                    i += 1
+                    ms = t_ms + i * 3_600_000
+                    w.writerow([f'FILLER{k}', 'filler', i, sym, 'Buy', 'Long', 10.0, 100.0, 100.0,
+                                100.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 'USD', ms, ms + 3_600_000,
+                                2.0, 0.0])
+
+    list_path = tmp_path / 'phemex_list.json'
+    list_path.write_text(json.dumps([
+        {'userId': 777, 'nick': 'realuid', 'showPosition': True, 'mdd30': '0.05',
+         'pnl30': '500.0', 'roi30': '0.5', 'wr30': '0.8', 'aum': '10', 'followers': 3},
+    ]))
+
+    rows = t5.load_positions(str(csv_path))
+    bench, dropped, cell_share = t5.compute_alpha(rows)
+    recommend = t5.load_recommend_list(str(list_path))
+    candidates, _ = t5.rank_traders(rows, recommend, t_min=0, levp90_max=100,
+                                     margin_med_min=0, dur_med_min_h=0, dd_threshold=-1.0,
+                                     dropped_self_dominated=dropped, cell_share_max=cell_share)
+    real = next(d for d in candidates if d['uid'] == '777')
+    assert real['mdd30'] == 0.05

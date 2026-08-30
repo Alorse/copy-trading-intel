@@ -31,14 +31,19 @@ actually contains:
   - **No independent, pre-window disclosure series exists for Phemex** (unlike OKX's
     weekly `pnlRatios[]` or Bybit's `totalYieldRateE4` trend, both of which extend
     *before* the visible closed-position window and can catch a drawdown the window
-    itself doesn't cover). In its place, `monthly_drawdown_proxy()` below derives a
-    **coarse, self-referential** proxy: the peak-to-trough drawdown of each trader's
-    own *cumulative net realizedPnl by month*, built from the exact same rows already
-    used for alpha. This can flag a large realized-money swing *within* the visible
-    window (e.g. a big drawdown followed by recovery) but, by construction, can
-    **never** reveal anything hidden *before* the window starts — it is strictly
-    weaker than the OKX/Bybit screens and is reported as such, not represented as
-    equivalent.
+    itself doesn't cover). In its place, `trade_drawdown_proxy()` below derives a
+    **self-referential** proxy: the peak-to-trough drawdown of each trader's own
+    *cumulative net realizedPnl, ordered trade-by-trade* (by `closed_ms`, i.e.
+    Phemex's `updatedTime`), built from the exact same rows already used for alpha.
+    This can flag a real realized-money swing *within* the visible window (e.g. a
+    drawdown followed by recovery) but, by construction, can **never** reveal
+    anything hidden *before* the window starts — it is strictly weaker than the
+    OKX/Bybit screens and is reported as such, not represented as equivalent.
+    An earlier version of this proxy aggregated to *monthly* cumulative PnL before
+    taking the peak-to-trough drop (kept below as `monthly_drawdown_proxy()`, now
+    report-only); an audit found this hid a real drawdown whenever the peak and
+    trough fell in the same calendar month — exactly achilles' case (peak/trough
+    both in 2026-08). Trade granularity is now the enforced screen.
   - **Leverage is derived, not reported.** Phemex's closed-position rows carry no
     `lever` field; `phemex_flatten.py` computes `leverage = openPositionVal / margin`
     per row. Distribution sanity-checked over all 7,467 rows: p50=10x, p90=51x,
@@ -94,10 +99,12 @@ def load_positions(csv_path=CSV_PATH):
             continue
         month = dt.datetime.fromtimestamp(opened / 1000, dt.UTC).strftime('%Y-%m')
         dur_h = float(r['dur_h']) if r['dur_h'] not in ('', None) else 0.0
+        closed = int(r['closed_ms']) if r['closed_ms'] not in ('', None) else opened
         rows.append(dict(uid=r['user_id'], nick=r['nick'], sym=r['symbol'], side=pos_side,
                           pr=pr, pnl=pnl, closed_pnl=float(r['closed_pnl']),
                           exch_fee=float(r['exchange_fee']), fund_fee=float(r['funding_fee']),
-                          lev=lev, dur=dur_h, marg=marg, month=month, opened_ms=opened))
+                          lev=lev, dur=dur_h, marg=marg, month=month, opened_ms=opened,
+                          closed_ms=closed))
     return rows
 
 
@@ -106,7 +113,13 @@ def load_recommend_list(path=LIST_PATH):
     from the recommend-list snapshot (a separately-scraped file from the same date
     range as positions_all.jsonl, not the position rows themselves — this is where
     `showPosition` actually lives; positions_all.jsonl only ever contains traders for
-    whom it was True at scrape time, per SKILL.md)."""
+    whom it was True at scrape time, per SKILL.md).
+
+    Keys are cast to `str` (the recommend-list JSON's `userId` is an int; CSV-derived
+    rows carry `uid` as `str` since `csv.DictReader` never returns anything else) —
+    without this cast this dict and `rank_traders`' lookup never matched on any of
+    the 305 traders in the snapshot (0/305 overlap), silently disabling the
+    `mdd30`-based Trampa-1 cross-check for every trader, every run."""
     info = {}
     if not os.path.exists(path):
         return info
@@ -114,6 +127,7 @@ def load_recommend_list(path=LIST_PATH):
         uid = r.get('userId')
         if uid is None:
             continue
+        uid = str(uid)
 
         def pf(key):
             try:
@@ -126,13 +140,47 @@ def load_recommend_list(path=LIST_PATH):
     return info
 
 
+def trade_drawdown_proxy(v):
+    """Trade-granularity, self-referential drawdown proxy — the enforced screen as
+    of the GLM-1 audit fix. Cumulative net `realizedPnl` (`pnl`) per trade, ordered
+    by close time (`closed_ms`, i.e. Phemex's `updatedTime`), then the largest
+    peak-to-trough drop as a fraction of the running peak. Returns (min_ratio,
+    min_closed_ms, n_trades): `min_ratio` is None when the trader never had a
+    positive cumulative peak to fall from (already net-negative — caught separately
+    by the net-negative filter).
+
+    This replaced `monthly_drawdown_proxy` (kept below, now report-only) after the
+    audit found it hid a real drawdown by aggregating to monthly buckets: achilles'
+    monthly proxy read 0.0% (monotonic month-over-month) while the same rows, read
+    trade-by-trade, show a real intra-window peak-to-trough drop of roughly a third
+    of the account's peak realized PnL (2026-08-19 peak ~$1,039 -> 2026-08-21 trough
+    ~$661) — invisible at monthly granularity because both dates fall in the same
+    calendar month. Still self-referential by construction (see module docstring:
+    no independent pre-window series exists for Phemex here), but no longer coarser
+    than it needs to be."""
+    v_sorted = sorted(v, key=lambda z: z['closed_ms'])
+    cum = 0.0
+    peak = 0.0
+    min_ratio, min_closed_ms = None, None
+    for z in v_sorted:
+        cum += z['pnl']
+        if cum > peak:
+            peak = cum
+        if peak > 0:
+            ratio = (cum - peak) / peak
+            if min_ratio is None or ratio < min_ratio:
+                min_ratio, min_closed_ms = ratio, z['closed_ms']
+    return min_ratio, min_closed_ms, len(v_sorted)
+
+
 def monthly_drawdown_proxy(v):
-    """Coarse, self-referential drawdown proxy (see module docstring): cumulative net
-    realizedPnl by month for one trader's own rows, then the largest peak-to-trough
-    drop as a fraction of the running peak. Returns (min_ratio, min_month, n_months):
-    `min_ratio` is None when the trader never had a positive cumulative peak to fall
-    from (already net-negative — caught separately by the net-negative filter) or
-    trades fewer than 2 distinct months (no drawdown is measurable)."""
+    """Coarse, self-referential drawdown proxy, SUPERSEDED as the enforced screen by
+    `trade_drawdown_proxy` (see its docstring for why: monthly aggregation can hide
+    a real intra-month drawdown entirely). Kept only as a report-only secondary
+    column. Cumulative net realizedPnl by month for one trader's own rows, then the
+    largest peak-to-trough drop as a fraction of the running peak. Returns
+    (min_ratio, min_month, n_months): `min_ratio` is None when the trader never had
+    a positive cumulative peak to fall from, or trades fewer than 2 distinct months."""
     by_month = collections.defaultdict(float)
     for z in v:
         by_month[z['month']] += z['pnl']
@@ -187,7 +235,7 @@ def compute_alpha(rows, min_cell=MIN_CELL):
 def rank_traders(rows, recommend=None, min_n=MIN_N, min_alpha_n=MIN_ALPHA_N,
                   t_min=T_MIN, levp90_max=LEVP90_MAX, margin_med_min=MARGIN_MED_MIN,
                   dur_med_min_h=DUR_MED_MIN_H, dropped_self_dominated=None,
-                  cell_share_max=None):
+                  cell_share_max=None, dd_threshold=DRAWDOWN_THRESHOLD):
     recommend = recommend or {}
     dropped_self_dominated = dropped_self_dominated or {}
     cell_share_max = cell_share_max or {}
@@ -231,12 +279,13 @@ def rank_traders(rows, recommend=None, min_n=MIN_N, min_alpha_n=MIN_ALPHA_N,
         margmed = st.median(z['marg'] for z in v)
         durmed = st.median(z['dur'] for z in v)
 
-        dd_min_ratio, dd_min_month, dd_n_months = monthly_drawdown_proxy(v)
+        dd_min_ratio, dd_min_closed_ms, dd_n_trades = trade_drawdown_proxy(v)
+        month_dd_min_ratio, month_dd_min_month, month_dd_n_months = monthly_drawdown_proxy(v)
         # Self-referential by construction (see module docstring): the proxy is built
         # from the same window used everywhere else, so it can never be "uncovered" the
         # way OKX/Bybit's independent pre-window series can. `dd_covered` is kept only
         # for interface symmetry with okx_top5/bybit_top5's drawdown_screen() output.
-        dd_covered = dd_min_ratio is None or dd_min_ratio >= DRAWDOWN_THRESHOLD
+        dd_covered = dd_min_ratio is None or dd_min_ratio >= dd_threshold
 
         rl = recommend.get(uid, {})
         computed_pnl_check = sum(z['closed_pnl'] - z['exch_fee'] - z['fund_fee'] for z in v)
@@ -249,8 +298,10 @@ def rank_traders(rows, recommend=None, min_n=MIN_N, min_alpha_n=MIN_ALPHA_N,
                  hidden_loss_flag=(wr > 92 or (rl.get('mdd30') is not None and rl['mdd30'] > 0.4)),
                  n_alpha_dropped_self_dominated=dropped_self_dominated.get(uid, 0),
                  max_cell_share=cell_share_max.get(uid, 0.0),
-                 dd_min_ratio=dd_min_ratio, dd_min_month=dd_min_month,
-                 dd_n_months=dd_n_months, dd_covered=dd_covered,
+                 dd_min_ratio=dd_min_ratio, dd_min_closed_ms=dd_min_closed_ms,
+                 dd_n_trades=dd_n_trades, dd_covered=dd_covered,
+                 month_dd_min_ratio=month_dd_min_ratio, month_dd_min_month=month_dd_min_month,
+                 month_dd_n_months=month_dd_n_months,
                  show_position=rl.get('show_position'), mdd30=rl.get('mdd30'),
                  pnl30=rl.get('pnl30'), roi30=rl.get('roi30'), wr30=rl.get('wr30'),
                  computed_pnl=total_pnl, computed_pnl_check=computed_pnl_check,
@@ -287,7 +338,7 @@ def rank_traders(rows, recommend=None, min_n=MIN_N, min_alpha_n=MIN_ALPHA_N,
             rejections['duration<30min (latency)'] += 1
             continue
         if not dd_covered:
-            rejections['monthly-cum-PnL drawdown proxy >20% (coarse, self-referential)'] += 1
+            rejections['trade-level drawdown proxy >20% (self-referential, intra-window)'] += 1
             continue
         candidates.append(d)
     return candidates, rejections
@@ -322,18 +373,19 @@ def main():
     candidates.sort(key=lambda d: -(d['t'] * 0.5 + d['alpha'] * 100 * 0.3 + d['payoff'] * 0.2))
     h = (f"{'nick':<24}{'n':>5}{'syms':>5}{'alpha%':>8}{'t':>6}{'a_old%':>8}{'t_old':>6}"
          f"{'aH2%':>7}{'wr%':>6}{'payoff':>7}{'lev':>5}{'levp90':>7}{'marg$':>8}{'dur_h':>7}"
-         f"{'conc%':>7}{'ddmin%':>8}{'mdd30%':>7}")
+         f"{'conc%':>7}{'ddmin%':>8}{'ddmonth%':>9}{'mdd30%':>7}")
     print(h)
     print('-' * len(h))
     for d in candidates:
         a_old = d['alpha_incl'] * 100 if d['alpha_incl'] is not None else float('nan')
         ddmin = d['dd_min_ratio'] * 100 if d['dd_min_ratio'] is not None else float('nan')
+        ddmonth = d['month_dd_min_ratio'] * 100 if d['month_dd_min_ratio'] is not None else float('nan')
         mdd30 = d['mdd30'] * 100 if d['mdd30'] is not None else float('nan')
         print(f"{d['nick'][:23]:<24}{d['n']:>5}{d['n_syms']:>5}{d['alpha']*100:>8.2f}"
               f"{d['t']:>6.2f}{a_old:>8.2f}{d['t_incl']:>6.2f}{d['alpha_h2']*100:>7.2f}"
               f"{d['wr']:>6.1f}{d['payoff']:>7.2f}{d['lev']:>5.0f}{d['levp90']:>7.0f}"
               f"{d['margmed']:>8.0f}{d['durmed']:>7.2f}{d['conc']:>7.1f}"
-              f"{ddmin:>8.1f}{mdd30:>7.1f}")
+              f"{ddmin:>8.1f}{ddmonth:>9.1f}{mdd30:>7.1f}")
 
     print('\nInternal consistency cross-check (sum(realizedPnl) vs sum(closedPnl-fees)) — '
           'no external headline PnL exists per trader in this dataset, so this checks '
