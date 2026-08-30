@@ -80,6 +80,10 @@ def row_from_leader(entry, metric_columns, page):
     yield_e8 = entry.get('followerYieldE8')
     row['follower_yield'] = (float(yield_e8) / 1e8) if yield_e8 not in (None, '') else None
     for col, val in zip(metric_columns or [], entry.get('metricValues') or []):
+        # metricColumns entries are dicts ({"colName": "ROI", ...}) in the live API;
+        # tolerate plain strings too.
+        if isinstance(col, dict):
+            col = col.get('colName')
         key = METRIC_KEY_MAP.get(col)
         if key:
             row[key] = parse_metric(val)
