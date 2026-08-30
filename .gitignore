@@ -8,6 +8,7 @@ data/all_traders.json
 data/copytrade.sqlite
 data/unified_traders.csv
 data/bitget_session.json
+data/*.log
 
 # --- analysis derivatives ---
 analysis/ohlc/

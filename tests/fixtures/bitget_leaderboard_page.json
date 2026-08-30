@@ -1,0 +1,1446 @@
+{
+  "code": "200",
+  "data": {
+    "containActModel": false,
+    "data": [],
+    "maxShowSizes": 1489,
+    "nextFlag": true,
+    "rows": [
+      {
+        "actModule": null,
+        "bgbCurrentTraceNum": 0,
+        "bgbFollowSwitch": true,
+        "bgbMaxUserCounts": 10,
+        "bv": false,
+        "canTrace": true,
+        "certificationType": 1,
+        "displayName": "9hTraderX",
+        "followCount": 0,
+        "headPic": "https://img.bgstatic.com/otc/images/20241218/1734475316400.png",
+        "insightVo": null,
+        "isExclusiveTrader": false,
+        "isMyTrader": false,
+        "itemVoList": [
+          {
+            "colorColumn": true,
+            "comparedValue": "40.74",
+            "percentColumn": true,
+            "showColumnCode": "profit_rate",
+            "showColumnDesc": "ROI",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "245.96",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_income",
+            "showColumnDesc": "Total PnL",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_profit",
+            "showColumnDesc": "Copier profit",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_trade_amount",
+            "showColumnDesc": "AUM",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "37.02",
+            "percentColumn": true,
+            "showColumnCode": "max_retracement",
+            "showColumnDesc": "MDD",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "64.44",
+            "percentColumn": true,
+            "showColumnCode": "winning_rate",
+            "showColumnDesc": "Win rate",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "61.32",
+            "percentColumn": false,
+            "showColumnCode": "score",
+            "showColumnDesc": "Trader score",
+            "showColumnIllustrate": ""
+          }
+        ],
+        "klineProfit": {
+          "chartDataTime": null,
+          "dataCycle": 30,
+          "klineType": 2,
+          "maxVal": "40.7490",
+          "minVal": "-17.1380",
+          "rows": [
+            {
+              "amount": "0",
+              "dataTime": 1785513600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785600000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785686400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785772800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785859200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785945600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786032000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786118400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786204800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786291200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786377600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786464000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786550400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786636800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786723200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786809600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786896000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786982400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787068800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787155200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787241600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787328000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787414400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787500800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787587200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787673600000,
+              "klineType": 2
+            },
+            {
+              "amount": "-17.1380",
+              "dataTime": 1787760000000,
+              "klineType": 2
+            },
+            {
+              "amount": "27.2510",
+              "dataTime": 1787846400000,
+              "klineType": 2
+            },
+            {
+              "amount": "40.7390",
+              "dataTime": 1787932800000,
+              "klineType": 2
+            },
+            {
+              "amount": "40.7490",
+              "dataTime": 1788019200000,
+              "klineType": 2
+            }
+          ],
+          "showDay": 30,
+          "totalNum": 30,
+          "weekRows": []
+        },
+        "labelVos": [],
+        "maxFollowCount": 100,
+        "newLabels": [
+          {
+            "describe": "Crypto futures trading volume accounts for more than 30% of the elite trader's total trading volume.",
+            "labelId": "21",
+            "name": "Crypto",
+            "sort": 1
+          }
+        ],
+        "openFollowProducts": [
+          "ETHUSDT",
+          "BTCUSDT",
+          "ADAUSDT"
+        ],
+        "openFollowSymbols": [
+          "ETHUSDT_UMCBL",
+          "BTCUSDT_UMCBL",
+          "ADAUSDT_UMCBL"
+        ],
+        "showEquit": false,
+        "statistics": null,
+        "topSymbols": [],
+        "totalEquity": "****",
+        "traderGrade": {
+          "gradeId": 1,
+          "gradeName": "Bronze",
+          "lastGradeId": 0,
+          "lastGradeName": "No level",
+          "upedateGradeTime": 1787793121000
+        },
+        "traderMedalVO": {
+          "receiveTime": "1787522403000",
+          "wearMedals": [
+            {
+              "ashUrl": "https://img.bgstatic.com/multiLang/web/14cedbfe2a5f748474e1a6096823544b.png",
+              "conditionDesc": "Bitget season 1 elite trading challenge - Exclusive badge",
+              "isHide": false,
+              "medalId": 29,
+              "medalName": "Bitget season 1 elite trading challenge champion",
+              "medalNightUrl": "https://img.bgstatic.com/multiLang/web/9eb13ccd6ed6f23851f9e044e0d5479b.png",
+              "medalNoonUrl": "https://img.bgstatic.com/multiLang/web/9eb13ccd6ed6f23851f9e044e0d5479b.png"
+            }
+          ]
+        },
+        "traderNickName": "9hTraderX",
+        "traderUid": "bcb04c7e8abb3d53a192",
+        "type": 1,
+        "userName": "9hTraderX",
+        "viewDataVO": {
+          "profitRate": "40.75",
+          "profitRatio": "0",
+          "totalProfit": "245.97",
+          "tradeFrequency": "3"
+        },
+        "whitelistFlag": false
+      },
+      {
+        "actModule": null,
+        "bgbCurrentTraceNum": 0,
+        "bgbFollowSwitch": true,
+        "bgbMaxUserCounts": 10,
+        "bv": false,
+        "canTrace": true,
+        "certificationType": 1,
+        "displayName": "BTC-Victory",
+        "followCount": 0,
+        "headPic": "https://img.bgstatic.com/otc/images/20240604/1717437369227.png",
+        "insightVo": null,
+        "isExclusiveTrader": false,
+        "isMyTrader": false,
+        "itemVoList": [
+          {
+            "colorColumn": true,
+            "comparedValue": "19.49",
+            "percentColumn": true,
+            "showColumnCode": "profit_rate",
+            "showColumnDesc": "ROI",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "67.98",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_income",
+            "showColumnDesc": "Total PnL",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_profit",
+            "showColumnDesc": "Copier profit",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_trade_amount",
+            "showColumnDesc": "AUM",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "8.4",
+            "percentColumn": true,
+            "showColumnCode": "max_retracement",
+            "showColumnDesc": "MDD",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "100",
+            "percentColumn": true,
+            "showColumnCode": "winning_rate",
+            "showColumnDesc": "Win rate",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "100",
+            "percentColumn": false,
+            "showColumnCode": "score",
+            "showColumnDesc": "Trader score",
+            "showColumnIllustrate": ""
+          }
+        ],
+        "klineProfit": {
+          "chartDataTime": null,
+          "dataCycle": 30,
+          "klineType": 2,
+          "maxVal": "19.4910",
+          "minVal": "-0.7080",
+          "rows": [
+            {
+              "amount": "0.6990",
+              "dataTime": 1785513600000,
+              "klineType": 2
+            },
+            {
+              "amount": "-0.4120",
+              "dataTime": 1785600000000,
+              "klineType": 2
+            },
+            {
+              "amount": "-0.0940",
+              "dataTime": 1785686400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0.9860",
+              "dataTime": 1785772800000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.1870",
+              "dataTime": 1785859200000,
+              "klineType": 2
+            },
+            {
+              "amount": "5.1970",
+              "dataTime": 1785945600000,
+              "klineType": 2
+            },
+            {
+              "amount": "5.4420",
+              "dataTime": 1786032000000,
+              "klineType": 2
+            },
+            {
+              "amount": "5.6940",
+              "dataTime": 1786118400000,
+              "klineType": 2
+            },
+            {
+              "amount": "6.1140",
+              "dataTime": 1786204800000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.1720",
+              "dataTime": 1786291200000,
+              "klineType": 2
+            },
+            {
+              "amount": "-0.7080",
+              "dataTime": 1786377600000,
+              "klineType": 2
+            },
+            {
+              "amount": "2.7400",
+              "dataTime": 1786464000000,
+              "klineType": 2
+            },
+            {
+              "amount": "2.1400",
+              "dataTime": 1786550400000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.5280",
+              "dataTime": 1786636800000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.8330",
+              "dataTime": 1786723200000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.6620",
+              "dataTime": 1786809600000,
+              "klineType": 2
+            },
+            {
+              "amount": "4.3130",
+              "dataTime": 1786896000000,
+              "klineType": 2
+            },
+            {
+              "amount": "4.7280",
+              "dataTime": 1786982400000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787068800000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787155200000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787241600000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787328000000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787414400000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787500800000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787587200000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787673600000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787760000000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787846400000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1787932800000,
+              "klineType": 2
+            },
+            {
+              "amount": "19.4910",
+              "dataTime": 1788019200000,
+              "klineType": 2
+            }
+          ],
+          "showDay": 30,
+          "totalNum": 30,
+          "weekRows": []
+        },
+        "labelVos": [],
+        "maxFollowCount": 100,
+        "newLabels": [
+          {
+            "describe": "Crypto futures trading volume accounts for more than 30% of the elite trader's total trading volume.",
+            "labelId": "21",
+            "name": "Crypto",
+            "sort": 1
+          }
+        ],
+        "openFollowProducts": [
+          "ETHUSDT",
+          "BTCUSDT",
+          "ADAUSDT"
+        ],
+        "openFollowSymbols": [
+          "ETHUSDT_UMCBL",
+          "BTCUSDT_UMCBL",
+          "ADAUSDT_UMCBL"
+        ],
+        "showEquit": false,
+        "statistics": null,
+        "topSymbols": [],
+        "totalEquity": "****",
+        "traderGrade": {
+          "gradeId": 1,
+          "gradeName": "Bronze",
+          "lastGradeId": 1,
+          "lastGradeName": "Bronze",
+          "upedateGradeTime": 1787522406000
+        },
+        "traderMedalVO": {
+          "receiveTime": "1787522403000",
+          "wearMedals": []
+        },
+        "traderNickName": "BTC-Victory",
+        "traderUid": "b1b44b778db53d54a694",
+        "type": 1,
+        "userName": "BTC-Victory",
+        "viewDataVO": {
+          "profitRate": "19.49",
+          "profitRatio": "0",
+          "totalProfit": "67.99",
+          "tradeFrequency": "1"
+        },
+        "whitelistFlag": false
+      },
+      {
+        "actModule": null,
+        "bgbCurrentTraceNum": 0,
+        "bgbFollowSwitch": true,
+        "bgbMaxUserCounts": 10,
+        "bv": false,
+        "canTrace": true,
+        "certificationType": 0,
+        "displayName": "Sun-q",
+        "followCount": 0,
+        "headPic": "https://img.bgstatic.com/otc/images/20240811/1723321535608.jpg",
+        "insightVo": null,
+        "isExclusiveTrader": false,
+        "isMyTrader": false,
+        "itemVoList": [
+          {
+            "colorColumn": true,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "profit_rate",
+            "showColumnDesc": "ROI",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_income",
+            "showColumnDesc": "Total PnL",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_profit",
+            "showColumnDesc": "Copier profit",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_trade_amount",
+            "showColumnDesc": "AUM",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "max_retracement",
+            "showColumnDesc": "MDD",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "winning_rate",
+            "showColumnDesc": "Win rate",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "showColumnCode": "score",
+            "showColumnDesc": "Trader score",
+            "showColumnIllustrate": ""
+          }
+        ],
+        "klineProfit": {
+          "chartDataTime": null,
+          "dataCycle": 30,
+          "klineType": 2,
+          "maxVal": "0",
+          "minVal": "0",
+          "rows": [
+            {
+              "amount": "0",
+              "dataTime": 1785513600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785600000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785686400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785772800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785859200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785945600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786032000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786118400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786204800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786291200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786377600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786464000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786550400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786636800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786723200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786809600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786896000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786982400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787068800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787155200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787241600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787328000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787414400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787500800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787587200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787673600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787760000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787846400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787932800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1788019200000,
+              "klineType": 2
+            }
+          ],
+          "showDay": 30,
+          "totalNum": 30,
+          "weekRows": []
+        },
+        "labelVos": [],
+        "maxFollowCount": 100,
+        "newLabels": [
+          {
+            "describe": "Crypto futures trading volume accounts for more than 30% of the elite trader's total trading volume.",
+            "labelId": "21",
+            "name": "Crypto",
+            "sort": 1
+          }
+        ],
+        "openFollowProducts": [
+          "ETHUSDT",
+          "BTCUSDT",
+          "ADAUSDT"
+        ],
+        "openFollowSymbols": [
+          "ETHUSDT_UMCBL",
+          "BTCUSDT_UMCBL",
+          "ADAUSDT_UMCBL"
+        ],
+        "showEquit": false,
+        "statistics": null,
+        "topSymbols": [],
+        "totalEquity": "****",
+        "traderGrade": {
+          "gradeId": 0,
+          "gradeName": "No level",
+          "lastGradeId": 0,
+          "lastGradeName": "No level",
+          "upedateGradeTime": 1776942721000
+        },
+        "traderMedalVO": {
+          "receiveTime": "1787522403000",
+          "wearMedals": [
+            {
+              "ashUrl": "https://img.bitgetimg.com/image/emailTemplate/medal_gray_hardcore.png",
+              "conditionDesc": "Total trading volume exceeds 100,000 USDT",
+              "isHide": false,
+              "medalId": 14,
+              "medalName": "The Hardcore Trader",
+              "medalNightUrl": "https://img.bitgetimg.com/image/emailTemplate/medal_hardcore.png",
+              "medalNoonUrl": "https://img.bitgetimg.com/image/emailTemplate/medal_hardcore.png"
+            }
+          ]
+        },
+        "traderNickName": "Sun-q",
+        "traderUid": "b9b44c7087b43c50ac93",
+        "type": 1,
+        "userName": "Sun-q",
+        "viewDataVO": {
+          "profitRate": "0.00",
+          "profitRatio": "0",
+          "totalProfit": "0.00",
+          "tradeFrequency": "0"
+        },
+        "whitelistFlag": false
+      },
+      {
+        "actModule": null,
+        "bgbCurrentTraceNum": 0,
+        "bgbFollowSwitch": true,
+        "bgbMaxUserCounts": 10,
+        "bv": false,
+        "canTrace": true,
+        "certificationType": 0,
+        "displayName": "universe-w",
+        "followCount": 0,
+        "headPic": "https://img.bgstatic.com/otc/images/20241212/1734004314050.jpeg",
+        "insightVo": null,
+        "isExclusiveTrader": false,
+        "isMyTrader": false,
+        "itemVoList": [
+          {
+            "colorColumn": true,
+            "comparedValue": "50.89",
+            "percentColumn": true,
+            "showColumnCode": "profit_rate",
+            "showColumnDesc": "ROI",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "129.59",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_income",
+            "showColumnDesc": "Total PnL",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_profit",
+            "showColumnDesc": "Copier profit",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_trade_amount",
+            "showColumnDesc": "AUM",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "22.58",
+            "percentColumn": true,
+            "showColumnCode": "max_retracement",
+            "showColumnDesc": "MDD",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "100",
+            "percentColumn": true,
+            "showColumnCode": "winning_rate",
+            "showColumnDesc": "Win rate",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "100",
+            "percentColumn": false,
+            "showColumnCode": "score",
+            "showColumnDesc": "Trader score",
+            "showColumnIllustrate": ""
+          }
+        ],
+        "klineProfit": {
+          "chartDataTime": null,
+          "dataCycle": 30,
+          "klineType": 2,
+          "maxVal": "55.8440",
+          "minVal": "-1.1700",
+          "rows": [
+            {
+              "amount": "1.1560",
+              "dataTime": 1785513600000,
+              "klineType": 2
+            },
+            {
+              "amount": "-0.6810",
+              "dataTime": 1785600000000,
+              "klineType": 2
+            },
+            {
+              "amount": "-0.1550",
+              "dataTime": 1785686400000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.6310",
+              "dataTime": 1785772800000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.9630",
+              "dataTime": 1785859200000,
+              "klineType": 2
+            },
+            {
+              "amount": "8.5920",
+              "dataTime": 1785945600000,
+              "klineType": 2
+            },
+            {
+              "amount": "8.9980",
+              "dataTime": 1786032000000,
+              "klineType": 2
+            },
+            {
+              "amount": "9.4130",
+              "dataTime": 1786118400000,
+              "klineType": 2
+            },
+            {
+              "amount": "10.1070",
+              "dataTime": 1786204800000,
+              "klineType": 2
+            },
+            {
+              "amount": "1.9380",
+              "dataTime": 1786291200000,
+              "klineType": 2
+            },
+            {
+              "amount": "-1.1700",
+              "dataTime": 1786377600000,
+              "klineType": 2
+            },
+            {
+              "amount": "4.5300",
+              "dataTime": 1786464000000,
+              "klineType": 2
+            },
+            {
+              "amount": "3.5380",
+              "dataTime": 1786550400000,
+              "klineType": 2
+            },
+            {
+              "amount": "2.5260",
+              "dataTime": 1786636800000,
+              "klineType": 2
+            },
+            {
+              "amount": "3.0310",
+              "dataTime": 1786723200000,
+              "klineType": 2
+            },
+            {
+              "amount": "2.7470",
+              "dataTime": 1786809600000,
+              "klineType": 2
+            },
+            {
+              "amount": "7.1310",
+              "dataTime": 1786896000000,
+              "klineType": 2
+            },
+            {
+              "amount": "7.8160",
+              "dataTime": 1786982400000,
+              "klineType": 2
+            },
+            {
+              "amount": "33.2500",
+              "dataTime": 1787068800000,
+              "klineType": 2
+            },
+            {
+              "amount": "33.2500",
+              "dataTime": 1787155200000,
+              "klineType": 2
+            },
+            {
+              "amount": "33.2500",
+              "dataTime": 1787241600000,
+              "klineType": 2
+            },
+            {
+              "amount": "40.8510",
+              "dataTime": 1787328000000,
+              "klineType": 2
+            },
+            {
+              "amount": "43.5880",
+              "dataTime": 1787414400000,
+              "klineType": 2
+            },
+            {
+              "amount": "51.7180",
+              "dataTime": 1787500800000,
+              "klineType": 2
+            },
+            {
+              "amount": "47.9950",
+              "dataTime": 1787587200000,
+              "klineType": 2
+            },
+            {
+              "amount": "44.5670",
+              "dataTime": 1787673600000,
+              "klineType": 2
+            },
+            {
+              "amount": "55.8440",
+              "dataTime": 1787760000000,
+              "klineType": 2
+            },
+            {
+              "amount": "51.1420",
+              "dataTime": 1787846400000,
+              "klineType": 2
+            },
+            {
+              "amount": "51.1420",
+              "dataTime": 1787932800000,
+              "klineType": 2
+            },
+            {
+              "amount": "50.8940",
+              "dataTime": 1788019200000,
+              "klineType": 2
+            }
+          ],
+          "showDay": 30,
+          "totalNum": 30,
+          "weekRows": []
+        },
+        "labelVos": [],
+        "maxFollowCount": 100,
+        "newLabels": [
+          {
+            "describe": "Crypto futures trading volume accounts for more than 30% of the elite trader's total trading volume.",
+            "labelId": "21",
+            "name": "Crypto",
+            "sort": 1
+          }
+        ],
+        "openFollowProducts": [
+          "ETHUSDT",
+          "BTCUSDT",
+          "ADAUSDT"
+        ],
+        "openFollowSymbols": [
+          "ETHUSDT_UMCBL",
+          "BTCUSDT_UMCBL",
+          "ADAUSDT_UMCBL"
+        ],
+        "showEquit": false,
+        "statistics": null,
+        "topSymbols": [],
+        "totalEquity": "****",
+        "traderGrade": {
+          "gradeId": 1,
+          "gradeName": "Bronze",
+          "lastGradeId": 1,
+          "lastGradeName": "Bronze",
+          "upedateGradeTime": 1787522401000
+        },
+        "traderMedalVO": {
+          "receiveTime": "1787522403000",
+          "wearMedals": []
+        },
+        "traderNickName": "universe-w",
+        "traderUid": "b9bc4c728cb63950a19c",
+        "type": 1,
+        "userName": "universe-w",
+        "viewDataVO": {
+          "profitRate": "50.89",
+          "profitRatio": "0",
+          "totalProfit": "129.60",
+          "tradeFrequency": "1"
+        },
+        "whitelistFlag": false
+      },
+      {
+        "actModule": null,
+        "bgbCurrentTraceNum": 0,
+        "bgbFollowSwitch": true,
+        "bgbMaxUserCounts": 10,
+        "bv": false,
+        "canTrace": true,
+        "certificationType": 0,
+        "displayName": "Dawn-w",
+        "followCount": 0,
+        "headPic": "https://img.bgstatic.com/otc/images/20241212/1734004099442.jpeg",
+        "insightVo": null,
+        "isExclusiveTrader": false,
+        "isMyTrader": false,
+        "itemVoList": [
+          {
+            "colorColumn": true,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "profit_rate",
+            "showColumnDesc": "ROI",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_income",
+            "showColumnDesc": "Total PnL",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_profit",
+            "showColumnDesc": "Copier profit",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "quoteCoinSymbol": "$",
+            "showColumnCode": "total_follow_trade_amount",
+            "showColumnDesc": "AUM",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "max_retracement",
+            "showColumnDesc": "MDD",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": true,
+            "showColumnCode": "winning_rate",
+            "showColumnDesc": "Win rate",
+            "showColumnIllustrate": ""
+          },
+          {
+            "colorColumn": false,
+            "comparedValue": "0",
+            "percentColumn": false,
+            "showColumnCode": "score",
+            "showColumnDesc": "Trader score",
+            "showColumnIllustrate": ""
+          }
+        ],
+        "klineProfit": {
+          "chartDataTime": null,
+          "dataCycle": 30,
+          "klineType": 2,
+          "maxVal": "0",
+          "minVal": "0",
+          "rows": [
+            {
+              "amount": "0",
+              "dataTime": 1785513600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785600000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785686400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785772800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785859200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1785945600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786032000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786118400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786204800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786291200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786377600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786464000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786550400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786636800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786723200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786809600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786896000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1786982400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787068800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787155200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787241600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787328000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787414400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787500800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787587200000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787673600000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787760000000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787846400000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1787932800000,
+              "klineType": 2
+            },
+            {
+              "amount": "0",
+              "dataTime": 1788019200000,
+              "klineType": 2
+            }
+          ],
+          "showDay": 30,
+          "totalNum": 30,
+          "weekRows": []
+        },
+        "labelVos": [],
+        "maxFollowCount": 100,
+        "newLabels": [],
+        "openFollowProducts": [
+          "ETHUSDT",
+          "BTCUSDT",
+          "ADAUSDT"
+        ],
+        "openFollowSymbols": [
+          "ETHUSDT_UMCBL",
+          "BTCUSDT_UMCBL",
+          "ADAUSDT_UMCBL"
+        ],
+        "showEquit": false,
+        "statistics": null,
+        "topSymbols": [],
+        "totalEquity": "****",
+        "traderGrade": {
+          "gradeId": 0,
+          "gradeName": "No level",
+          "lastGradeId": 0,
+          "lastGradeName": "No level",
+          "upedateGradeTime": 1769127122000
+        },
+        "traderMedalVO": {
+          "receiveTime": "1787522403000",
+          "wearMedals": []
+        },
+        "traderNickName": "Dawn-w",
+        "traderUid": "beb746778ab43f52a797",
+        "type": 1,
+        "userName": "Dawn-w",
+        "viewDataVO": {
+          "profitRate": "0.00",
+          "profitRatio": "0",
+          "totalProfit": "0.00",
+          "tradeFrequency": "0"
+        },
+        "whitelistFlag": false
+      }
+    ],
+    "totals": 5
+  },
+  "params": []
+}

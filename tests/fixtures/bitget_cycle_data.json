@@ -1,0 +1,1721 @@
+{
+  "code": "00000",
+  "data": {
+    "cycleFollowNetProfitKlineDTOs": [
+      {
+        "amount": "398.27",
+        "endDate": "1780848000000",
+        "startDate": "1780329600000"
+      },
+      {
+        "amount": "4158.73",
+        "endDate": "1781452800000",
+        "startDate": "1780934400000"
+      },
+      {
+        "amount": "-751.28",
+        "endDate": "1782057600000",
+        "startDate": "1781539200000"
+      },
+      {
+        "amount": "-838.50",
+        "endDate": "1782662400000",
+        "startDate": "1782144000000"
+      },
+      {
+        "amount": "-2941.08",
+        "endDate": "1783267200000",
+        "startDate": "1782748800000"
+      },
+      {
+        "amount": "-3338.79",
+        "endDate": "1783872000000",
+        "startDate": "1783353600000"
+      },
+      {
+        "amount": "-3784.48",
+        "endDate": "1784476800000",
+        "startDate": "1783958400000"
+      },
+      {
+        "amount": "1383.42",
+        "endDate": "1785081600000",
+        "startDate": "1784563200000"
+      },
+      {
+        "amount": "-7724.25",
+        "endDate": "1785686400000",
+        "startDate": "1785168000000"
+      },
+      {
+        "amount": "-4710.16",
+        "endDate": "1786291200000",
+        "startDate": "1785772800000"
+      },
+      {
+        "amount": "-3848.76",
+        "endDate": "1786896000000",
+        "startDate": "1786377600000"
+      },
+      {
+        "amount": "13216.35",
+        "endDate": "1787500800000",
+        "startDate": "1786982400000"
+      },
+      {
+        "amount": "0",
+        "endDate": "1788019200000",
+        "startDate": "1787587200000"
+      }
+    ],
+    "cycleNetProfitKlineDTOs": [
+      {
+        "amount": "1.93",
+        "endDate": "1780848000000",
+        "startDate": "1780329600000"
+      },
+      {
+        "amount": "22.69",
+        "endDate": "1781452800000",
+        "startDate": "1780934400000"
+      },
+      {
+        "amount": "-12.86",
+        "endDate": "1782057600000",
+        "startDate": "1781539200000"
+      },
+      {
+        "amount": "-3.19",
+        "endDate": "1782662400000",
+        "startDate": "1782144000000"
+      },
+      {
+        "amount": "-10.62",
+        "endDate": "1783267200000",
+        "startDate": "1782748800000"
+      },
+      {
+        "amount": "-11.76",
+        "endDate": "1783872000000",
+        "startDate": "1783353600000"
+      },
+      {
+        "amount": "-12.38",
+        "endDate": "1784476800000",
+        "startDate": "1783958400000"
+      },
+      {
+        "amount": "9.72",
+        "endDate": "1785081600000",
+        "startDate": "1784563200000"
+      },
+      {
+        "amount": "-60.42",
+        "endDate": "1785686400000",
+        "startDate": "1785168000000"
+      },
+      {
+        "amount": "-34.43",
+        "endDate": "1786291200000",
+        "startDate": "1785772800000"
+      },
+      {
+        "amount": "-20.24",
+        "endDate": "1786896000000",
+        "startDate": "1786377600000"
+      },
+      {
+        "amount": "127.67",
+        "endDate": "1787500800000",
+        "startDate": "1786982400000"
+      },
+      {
+        "amount": "0",
+        "endDate": "1788019200000",
+        "startDate": "1787587200000"
+      }
+    ],
+    "followNetProfitKlineDTO": {
+      "chartDataTime": null,
+      "dataCycle": 0,
+      "klineType": 0,
+      "rows": [
+        {
+          "amount": "-1037.06",
+          "dataTime": 1780329600000
+        },
+        {
+          "amount": "1228.28",
+          "dataTime": 1780416000000
+        },
+        {
+          "amount": "207.05",
+          "dataTime": 1780502400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780588800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780675200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780761600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780848000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780934400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781020800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781107200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781193600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781280000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781366400000
+        },
+        {
+          "amount": "4158.73",
+          "dataTime": 1781452800000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1781539200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781625600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781712000000
+        },
+        {
+          "amount": "-718.04",
+          "dataTime": 1781798400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1781884800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781971200000
+        },
+        {
+          "amount": "-33.24",
+          "dataTime": 1782057600000
+        },
+        {
+          "amount": "-1786.49",
+          "dataTime": 1782144000000
+        },
+        {
+          "amount": "1518.80",
+          "dataTime": 1782230400000
+        },
+        {
+          "amount": "-1464.45",
+          "dataTime": 1782316800000
+        },
+        {
+          "amount": "893.64",
+          "dataTime": 1782403200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782489600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782576000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782662400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782748800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782835200000
+        },
+        {
+          "amount": "-618.14",
+          "dataTime": 1782921600000
+        },
+        {
+          "amount": "1940.17",
+          "dataTime": 1783008000000
+        },
+        {
+          "amount": "115.13",
+          "dataTime": 1783094400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1783180800000
+        },
+        {
+          "amount": "-4378.24",
+          "dataTime": 1783267200000
+        },
+        {
+          "amount": "-725.89",
+          "dataTime": 1783353600000
+        },
+        {
+          "amount": "-736.14",
+          "dataTime": 1783440000000
+        },
+        {
+          "amount": "-1082.45",
+          "dataTime": 1783526400000
+        },
+        {
+          "amount": "-388.12",
+          "dataTime": 1783612800000
+        },
+        {
+          "amount": "110.74",
+          "dataTime": 1783699200000
+        },
+        {
+          "amount": "27.22",
+          "dataTime": 1783785600000
+        },
+        {
+          "amount": "-544.15",
+          "dataTime": 1783872000000
+        },
+        {
+          "amount": "-86.69",
+          "dataTime": 1783958400000
+        },
+        {
+          "amount": "1402.41",
+          "dataTime": 1784044800000
+        },
+        {
+          "amount": "-1833.61",
+          "dataTime": 1784131200000
+        },
+        {
+          "amount": "-758.25",
+          "dataTime": 1784217600000
+        },
+        {
+          "amount": "-2566.55",
+          "dataTime": 1784304000000
+        },
+        {
+          "amount": "58.21",
+          "dataTime": 1784390400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784476800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784563200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784649600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784736000000
+        },
+        {
+          "amount": "1184.72",
+          "dataTime": 1784822400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1784908800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784995200000
+        },
+        {
+          "amount": "198.70",
+          "dataTime": 1785081600000
+        },
+        {
+          "amount": "435.47",
+          "dataTime": 1785168000000
+        },
+        {
+          "amount": "-2865.32",
+          "dataTime": 1785254400000
+        },
+        {
+          "amount": "-509.45",
+          "dataTime": 1785340800000
+        },
+        {
+          "amount": "-3049.57",
+          "dataTime": 1785427200000
+        },
+        {
+          "amount": "-1906.87",
+          "dataTime": 1785513600000
+        },
+        {
+          "amount": "207.51",
+          "dataTime": 1785600000000
+        },
+        {
+          "amount": "-36.02",
+          "dataTime": 1785686400000
+        },
+        {
+          "amount": "-2173.29",
+          "dataTime": 1785772800000
+        },
+        {
+          "amount": "0.01",
+          "dataTime": 1785859200000
+        },
+        {
+          "amount": "-953.42",
+          "dataTime": 1785945600000
+        },
+        {
+          "amount": "-2.61",
+          "dataTime": 1786032000000
+        },
+        {
+          "amount": "-993.77",
+          "dataTime": 1786118400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786204800000
+        },
+        {
+          "amount": "-587.08",
+          "dataTime": 1786291200000
+        },
+        {
+          "amount": "-744.69",
+          "dataTime": 1786377600000
+        },
+        {
+          "amount": "-1614.68",
+          "dataTime": 1786464000000
+        },
+        {
+          "amount": "-1583.71",
+          "dataTime": 1786550400000
+        },
+        {
+          "amount": "207.45",
+          "dataTime": 1786636800000
+        },
+        {
+          "amount": "-0.81",
+          "dataTime": 1786723200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786809600000
+        },
+        {
+          "amount": "-112.32",
+          "dataTime": 1786896000000
+        },
+        {
+          "amount": "67.50",
+          "dataTime": 1786982400000
+        },
+        {
+          "amount": "6131.42",
+          "dataTime": 1787068800000
+        },
+        {
+          "amount": "7017.43",
+          "dataTime": 1787155200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1787241600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787328000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787414400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787500800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787587200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787673600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787760000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787846400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787932800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1788019200000
+        }
+      ],
+      "weekRows": []
+    },
+    "netProfitKlineDTO": {
+      "chartDataTime": null,
+      "dataCycle": 0,
+      "klineType": 0,
+      "rows": [
+        {
+          "amount": "-2.24",
+          "dataTime": 1780329600000
+        },
+        {
+          "amount": "4.17",
+          "dataTime": 1780416000000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1780502400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780588800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780675200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780761600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780848000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1780934400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781020800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781107200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781193600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781280000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781366400000
+        },
+        {
+          "amount": "22.69",
+          "dataTime": 1781452800000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1781539200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781625600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781712000000
+        },
+        {
+          "amount": "-12.86",
+          "dataTime": 1781798400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1781884800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1781971200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1782057600000
+        },
+        {
+          "amount": "-6.08",
+          "dataTime": 1782144000000
+        },
+        {
+          "amount": "8.61",
+          "dataTime": 1782230400000
+        },
+        {
+          "amount": "-5.72",
+          "dataTime": 1782316800000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1782403200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782489600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782576000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782662400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782748800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1782835200000
+        },
+        {
+          "amount": "-1.63",
+          "dataTime": 1782921600000
+        },
+        {
+          "amount": "7.34",
+          "dataTime": 1783008000000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1783094400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1783180800000
+        },
+        {
+          "amount": "-16.33",
+          "dataTime": 1783267200000
+        },
+        {
+          "amount": "-2.47",
+          "dataTime": 1783353600000
+        },
+        {
+          "amount": "-2.77",
+          "dataTime": 1783440000000
+        },
+        {
+          "amount": "-3.66",
+          "dataTime": 1783526400000
+        },
+        {
+          "amount": "-1.48",
+          "dataTime": 1783612800000
+        },
+        {
+          "amount": "0.73",
+          "dataTime": 1783699200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1783785600000
+        },
+        {
+          "amount": "-2.11",
+          "dataTime": 1783872000000
+        },
+        {
+          "amount": "0.65",
+          "dataTime": 1783958400000
+        },
+        {
+          "amount": "7.25",
+          "dataTime": 1784044800000
+        },
+        {
+          "amount": "-7.84",
+          "dataTime": 1784131200000
+        },
+        {
+          "amount": "-3.04",
+          "dataTime": 1784217600000
+        },
+        {
+          "amount": "-9.40",
+          "dataTime": 1784304000000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1784390400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784476800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784563200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784649600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784736000000
+        },
+        {
+          "amount": "7.31",
+          "dataTime": 1784822400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1784908800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1784995200000
+        },
+        {
+          "amount": "2.41",
+          "dataTime": 1785081600000
+        },
+        {
+          "amount": "8.72",
+          "dataTime": 1785168000000
+        },
+        {
+          "amount": "-22.90",
+          "dataTime": 1785254400000
+        },
+        {
+          "amount": "-6.05",
+          "dataTime": 1785340800000
+        },
+        {
+          "amount": "-24.43",
+          "dataTime": 1785427200000
+        },
+        {
+          "amount": "-16.16",
+          "dataTime": 1785513600000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1785600000000
+        },
+        {
+          "amount": "0.40",
+          "dataTime": 1785686400000
+        },
+        {
+          "amount": "-18.10",
+          "dataTime": 1785772800000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1785859200000
+        },
+        {
+          "amount": "-6.56",
+          "dataTime": 1785945600000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786032000000
+        },
+        {
+          "amount": "-6.25",
+          "dataTime": 1786118400000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786204800000
+        },
+        {
+          "amount": "-3.52",
+          "dataTime": 1786291200000
+        },
+        {
+          "amount": "-2.29",
+          "dataTime": 1786377600000
+        },
+        {
+          "amount": "-11.38",
+          "dataTime": 1786464000000
+        },
+        {
+          "amount": "-10.39",
+          "dataTime": 1786550400000
+        },
+        {
+          "amount": "4.30",
+          "dataTime": 1786636800000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786723200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1786809600000
+        },
+        {
+          "amount": "-0.48",
+          "dataTime": 1786896000000
+        },
+        {
+          "amount": "1.70",
+          "dataTime": 1786982400000
+        },
+        {
+          "amount": "55.88",
+          "dataTime": 1787068800000
+        },
+        {
+          "amount": "70.09",
+          "dataTime": 1787155200000
+        },
+        {
+          "amount": "0.00",
+          "dataTime": 1787241600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787328000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787414400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787500800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787587200000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787673600000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787760000000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787846400000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1787932800000
+        },
+        {
+          "amount": "0",
+          "dataTime": 1788019200000
+        }
+      ],
+      "weekRows": []
+    },
+    "pageScoreDTO": {
+      "avgProfitFactor": "0.64",
+      "avgWinLossRate": "0.57",
+      "avgWinRate": "50.00",
+      "followUserDetail": {
+        "averageLoss": "5.57",
+        "averageWin": "7.16",
+        "loss": 6277,
+        "profitFactor": "1.15",
+        "profitRate": "1.28",
+        "totalLoss": "-34979.16",
+        "totalProfit": "40295.97",
+        "win": 5631,
+        "winRate": "47.29"
+      },
+      "profitFactorDenominator": "5.00",
+      "profitRateDenominator": "5.00",
+      "showRankingDetail": {
+        "isShowRanking": true,
+        "ranking": 1282,
+        "score": "4.09",
+        "scoreRate": 1,
+        "totalScore": 100,
+        "totalTraderCount": 150000
+      },
+      "traderUserDetail": {
+        "averageLoss": "3.28",
+        "averageWin": "4.27",
+        "loss": 68,
+        "profitFactor": "1.15",
+        "profitRate": "1.30",
+        "totalLoss": "-222.99",
+        "totalProfit": "256.13",
+        "win": 60,
+        "winRate": "46.87"
+      },
+      "winRateDenominator": "100.00"
+    },
+    "pnlRows": {
+      "chartDataTime": null,
+      "dataCycle": 0,
+      "klineType": 0,
+      "rows": [
+        {
+          "amount": "-2.24",
+          "dataTime": 1780329600000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780416000000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780502400000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780588800000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780675200000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780761600000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780848000000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1780934400000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1781020800000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1781107200000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1781193600000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1781280000000
+        },
+        {
+          "amount": "1.93",
+          "dataTime": 1781366400000
+        },
+        {
+          "amount": "24.62",
+          "dataTime": 1781452800000
+        },
+        {
+          "amount": "24.62",
+          "dataTime": 1781539200000
+        },
+        {
+          "amount": "24.62",
+          "dataTime": 1781625600000
+        },
+        {
+          "amount": "24.62",
+          "dataTime": 1781712000000
+        },
+        {
+          "amount": "11.76",
+          "dataTime": 1781798400000
+        },
+        {
+          "amount": "11.76",
+          "dataTime": 1781884800000
+        },
+        {
+          "amount": "11.76",
+          "dataTime": 1781971200000
+        },
+        {
+          "amount": "11.76",
+          "dataTime": 1782057600000
+        },
+        {
+          "amount": "5.68",
+          "dataTime": 1782144000000
+        },
+        {
+          "amount": "14.29",
+          "dataTime": 1782230400000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782316800000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782403200000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782489600000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782576000000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782662400000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782748800000
+        },
+        {
+          "amount": "8.57",
+          "dataTime": 1782835200000
+        },
+        {
+          "amount": "6.94",
+          "dataTime": 1782921600000
+        },
+        {
+          "amount": "14.28",
+          "dataTime": 1783008000000
+        },
+        {
+          "amount": "14.28",
+          "dataTime": 1783094400000
+        },
+        {
+          "amount": "14.28",
+          "dataTime": 1783180800000
+        },
+        {
+          "amount": "-2.05",
+          "dataTime": 1783267200000
+        },
+        {
+          "amount": "-4.52",
+          "dataTime": 1783353600000
+        },
+        {
+          "amount": "-7.29",
+          "dataTime": 1783440000000
+        },
+        {
+          "amount": "-10.95",
+          "dataTime": 1783526400000
+        },
+        {
+          "amount": "-12.43",
+          "dataTime": 1783612800000
+        },
+        {
+          "amount": "-11.70",
+          "dataTime": 1783699200000
+        },
+        {
+          "amount": "-11.70",
+          "dataTime": 1783785600000
+        },
+        {
+          "amount": "-13.81",
+          "dataTime": 1783872000000
+        },
+        {
+          "amount": "-13.16",
+          "dataTime": 1783958400000
+        },
+        {
+          "amount": "-5.91",
+          "dataTime": 1784044800000
+        },
+        {
+          "amount": "-13.75",
+          "dataTime": 1784131200000
+        },
+        {
+          "amount": "-16.79",
+          "dataTime": 1784217600000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784304000000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784390400000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784476800000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784563200000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784649600000
+        },
+        {
+          "amount": "-26.19",
+          "dataTime": 1784736000000
+        },
+        {
+          "amount": "-18.87",
+          "dataTime": 1784822400000
+        },
+        {
+          "amount": "-18.87",
+          "dataTime": 1784908800000
+        },
+        {
+          "amount": "-18.87",
+          "dataTime": 1784995200000
+        },
+        {
+          "amount": "-16.46",
+          "dataTime": 1785081600000
+        },
+        {
+          "amount": "-7.74",
+          "dataTime": 1785168000000
+        },
+        {
+          "amount": "-30.64",
+          "dataTime": 1785254400000
+        },
+        {
+          "amount": "-36.69",
+          "dataTime": 1785340800000
+        },
+        {
+          "amount": "-61.11",
+          "dataTime": 1785427200000
+        },
+        {
+          "amount": "-77.27",
+          "dataTime": 1785513600000
+        },
+        {
+          "amount": "-77.27",
+          "dataTime": 1785600000000
+        },
+        {
+          "amount": "-76.86",
+          "dataTime": 1785686400000
+        },
+        {
+          "amount": "-94.97",
+          "dataTime": 1785772800000
+        },
+        {
+          "amount": "-94.97",
+          "dataTime": 1785859200000
+        },
+        {
+          "amount": "-101.53",
+          "dataTime": 1785945600000
+        },
+        {
+          "amount": "-101.53",
+          "dataTime": 1786032000000
+        },
+        {
+          "amount": "-107.78",
+          "dataTime": 1786118400000
+        },
+        {
+          "amount": "-107.78",
+          "dataTime": 1786204800000
+        },
+        {
+          "amount": "-111.30",
+          "dataTime": 1786291200000
+        },
+        {
+          "amount": "-113.59",
+          "dataTime": 1786377600000
+        },
+        {
+          "amount": "-124.97",
+          "dataTime": 1786464000000
+        },
+        {
+          "amount": "-135.36",
+          "dataTime": 1786550400000
+        },
+        {
+          "amount": "-131.06",
+          "dataTime": 1786636800000
+        },
+        {
+          "amount": "-131.06",
+          "dataTime": 1786723200000
+        },
+        {
+          "amount": "-131.06",
+          "dataTime": 1786809600000
+        },
+        {
+          "amount": "-131.54",
+          "dataTime": 1786896000000
+        },
+        {
+          "amount": "-129.83",
+          "dataTime": 1786982400000
+        },
+        {
+          "amount": "-73.96",
+          "dataTime": 1787068800000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787155200000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787241600000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787328000000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787414400000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787500800000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787587200000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787673600000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787760000000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787846400000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1787932800000
+        },
+        {
+          "amount": "-3.87",
+          "dataTime": 1788019200000
+        }
+      ],
+      "weekRows": []
+    },
+    "positionTimeDTO": {
+      "averageHoldingTime": 62768,
+      "longestHoldingTime": 255598,
+      "rows": [
+        {
+          "endTime": "20198",
+          "startTime": "0",
+          "totalPnl": "126.31",
+          "trades": 26
+        },
+        {
+          "endTime": "54000",
+          "startTime": "25102",
+          "totalPnl": "-24.47",
+          "trades": 26
+        },
+        {
+          "endTime": "73337",
+          "startTime": "55564",
+          "totalPnl": "-9.44",
+          "trades": 26
+        },
+        {
+          "endTime": "78003",
+          "startTime": "73617",
+          "totalPnl": "-68.92",
+          "trades": 25
+        },
+        {
+          "endTime": "0",
+          "startTime": "78005",
+          "totalPnl": "-27.33",
+          "trades": 25
+        }
+      ]
+    },
+    "roiRows": {
+      "chartDataTime": null,
+      "dataCycle": 0,
+      "klineType": 0,
+      "rows": [
+        {
+          "amount": "-0.04",
+          "dataTime": 1780329600000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780416000000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780502400000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780588800000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780675200000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780761600000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780848000000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1780934400000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1781020800000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1781107200000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1781193600000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1781280000000
+        },
+        {
+          "amount": "1.29",
+          "dataTime": 1781366400000
+        },
+        {
+          "amount": "13.01",
+          "dataTime": 1781452800000
+        },
+        {
+          "amount": "13.01",
+          "dataTime": 1781539200000
+        },
+        {
+          "amount": "13.01",
+          "dataTime": 1781625600000
+        },
+        {
+          "amount": "13.01",
+          "dataTime": 1781712000000
+        },
+        {
+          "amount": "12.06",
+          "dataTime": 1781798400000
+        },
+        {
+          "amount": "12.06",
+          "dataTime": 1781884800000
+        },
+        {
+          "amount": "12.06",
+          "dataTime": 1781971200000
+        },
+        {
+          "amount": "11.13",
+          "dataTime": 1782057600000
+        },
+        {
+          "amount": "19.00",
+          "dataTime": 1782144000000
+        },
+        {
+          "amount": "15.90",
+          "dataTime": 1782230400000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782316800000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782403200000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782489600000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782576000000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782662400000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782748800000
+        },
+        {
+          "amount": "11.21",
+          "dataTime": 1782835200000
+        },
+        {
+          "amount": "10.15",
+          "dataTime": 1782921600000
+        },
+        {
+          "amount": "14.03",
+          "dataTime": 1783008000000
+        },
+        {
+          "amount": "14.03",
+          "dataTime": 1783094400000
+        },
+        {
+          "amount": "14.03",
+          "dataTime": 1783180800000
+        },
+        {
+          "amount": "9.27",
+          "dataTime": 1783267200000
+        },
+        {
+          "amount": "7.26",
+          "dataTime": 1783353600000
+        },
+        {
+          "amount": "7.23",
+          "dataTime": 1783440000000
+        },
+        {
+          "amount": "4.40",
+          "dataTime": 1783526400000
+        },
+        {
+          "amount": "4.29",
+          "dataTime": 1783612800000
+        },
+        {
+          "amount": "4.60",
+          "dataTime": 1783699200000
+        },
+        {
+          "amount": "4.63",
+          "dataTime": 1783785600000
+        },
+        {
+          "amount": "3.81",
+          "dataTime": 1783872000000
+        },
+        {
+          "amount": "6.61",
+          "dataTime": 1783958400000
+        },
+        {
+          "amount": "7.28",
+          "dataTime": 1784044800000
+        },
+        {
+          "amount": "3.89",
+          "dataTime": 1784131200000
+        },
+        {
+          "amount": "1.62",
+          "dataTime": 1784217600000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784304000000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784390400000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784476800000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784563200000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784649600000
+        },
+        {
+          "amount": "-0.79",
+          "dataTime": 1784736000000
+        },
+        {
+          "amount": "1.89",
+          "dataTime": 1784822400000
+        },
+        {
+          "amount": "1.89",
+          "dataTime": 1784908800000
+        },
+        {
+          "amount": "1.89",
+          "dataTime": 1784995200000
+        },
+        {
+          "amount": "-1.42",
+          "dataTime": 1785081600000
+        },
+        {
+          "amount": "-0.61",
+          "dataTime": 1785168000000
+        },
+        {
+          "amount": "-1.60",
+          "dataTime": 1785254400000
+        },
+        {
+          "amount": "-4.17",
+          "dataTime": 1785340800000
+        },
+        {
+          "amount": "-9.50",
+          "dataTime": 1785427200000
+        },
+        {
+          "amount": "-14.10",
+          "dataTime": 1785513600000
+        },
+        {
+          "amount": "-14.16",
+          "dataTime": 1785600000000
+        },
+        {
+          "amount": "-17.55",
+          "dataTime": 1785686400000
+        },
+        {
+          "amount": "-18.77",
+          "dataTime": 1785772800000
+        },
+        {
+          "amount": "-18.77",
+          "dataTime": 1785859200000
+        },
+        {
+          "amount": "-20.55",
+          "dataTime": 1785945600000
+        },
+        {
+          "amount": "-21.54",
+          "dataTime": 1786032000000
+        },
+        {
+          "amount": "-22.25",
+          "dataTime": 1786118400000
+        },
+        {
+          "amount": "-22.25",
+          "dataTime": 1786204800000
+        },
+        {
+          "amount": "-20.66",
+          "dataTime": 1786291200000
+        },
+        {
+          "amount": "-23.12",
+          "dataTime": 1786377600000
+        },
+        {
+          "amount": "-28.41",
+          "dataTime": 1786464000000
+        },
+        {
+          "amount": "-30.64",
+          "dataTime": 1786550400000
+        },
+        {
+          "amount": "-29.22",
+          "dataTime": 1786636800000
+        },
+        {
+          "amount": "-29.26",
+          "dataTime": 1786723200000
+        },
+        {
+          "amount": "-29.27",
+          "dataTime": 1786809600000
+        },
+        {
+          "amount": "-28.71",
+          "dataTime": 1786896000000
+        },
+        {
+          "amount": "-28.46",
+          "dataTime": 1786982400000
+        },
+        {
+          "amount": "9.44",
+          "dataTime": 1787068800000
+        },
+        {
+          "amount": "9.49",
+          "dataTime": 1787155200000
+        },
+        {
+          "amount": "9.49",
+          "dataTime": 1787241600000
+        },
+        {
+          "amount": "9.49",
+          "dataTime": 1787328000000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787414400000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787500800000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787587200000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787673600000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787760000000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787846400000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1787932800000
+        },
+        {
+          "amount": "-3.43",
+          "dataTime": 1788019200000
+        }
+      ],
+      "weekRows": []
+    },
+    "statisticsDTO": {
+      "aum": "51472.02",
+      "distributeRatio": "20",
+      "largestLoss": "-18.96",
+      "largestProfit": "58.32",
+      "longShortRatio": {
+        "longOrder": "57",
+        "shortOrder": "71"
+      },
+      "lossTrades": 68,
+      "maxRetracement": "45.91",
+      "profit": "-3.87",
+      "profitRate": "-3.43",
+      "profitTrades": 60,
+      "totalFollowProfit": "-8780.49",
+      "totalFollowers": 106,
+      "totalTrades": 128,
+      "tradeFrequency": "2",
+      "winningRate": "46.87"
+    },
+    "symbolDistributeDetail": {
+      "totalAmount": 128,
+      "webSymbolDistributeVOs": [
+        {
+          "amount": "97",
+          "displayName": "BTCUSDT"
+        },
+        {
+          "amount": "31",
+          "displayName": "ETHUSDT"
+        }
+      ]
+    }
+  },
+  "msg": "success",
+  "requestTime": "1788095434993",
+  "success": true
+}
