@@ -29,14 +29,14 @@ and one whose "profit" is 96.9% a single trade at 145x.
 
 | exchange | traders scraped | survivors | report |
 |---|---|---|---|
-| Binance | ~600 | **5** | `analysis/TOP5.md` |
-| OKX | 261 | 5 (2 recommended) | `analysis/TOP5_OKX.md` |
-| Phemex | 192 | 0 | `analysis/TOP5_PHEMEX.md` |
-| Bybit | 295 | 0 | `analysis/TOP5_BYBIT.md` |
-| Bitget | 400 | 0 | `analysis/TOP5_BITGET.md` |
-| KuCoin | 165 | 0 | `analysis/TOP5_KUCOIN.md` |
+| Binance | ~600 | **5** | [TOP5.md](analysis/TOP5.md) |
+| OKX | 261 | 5 (2 recommended) | [TOP5_OKX.md](analysis/TOP5_OKX.md) |
+| Phemex | 192 | 0 | [TOP5_PHEMEX.md](analysis/TOP5_PHEMEX.md) |
+| Bybit | 295 | 0 | [TOP5_BYBIT.md](analysis/TOP5_BYBIT.md) |
+| Bitget | 400 | 0 | [TOP5_BITGET.md](analysis/TOP5_BITGET.md) |
+| KuCoin | 165 | 0 | [TOP5_KUCOIN.md](analysis/TOP5_KUCOIN.md) |
 
-Cross-exchange ranking: `analysis/COMBINED_RANKING.md`.
+Cross-exchange ranking: [COMBINED_RANKING.md](analysis/COMBINED_RANKING.md).
 
 Every pipeline went through adversarial review (two independent AI auditors with a
 refute mandate) before its numbers were trusted — and the reviews found real bugs
@@ -52,7 +52,7 @@ dead code, "survivors" whose entire edge lived outside the visible data window.
 5. **Hidden drawdowns** — the pristine window you can see often hides the crash you can't
 6. **Uncopyable sizing** — a real edge expressed in $12 positions is not a real edge for you
 
-Full checklist for auditing a new exchange: `docs/exchange-integration-checklist.md`.
+Full checklist for auditing a new exchange: [docs/exchange-integration-checklist.md](docs/exchange-integration-checklist.md).
 
 ## Run it
 
@@ -72,7 +72,7 @@ versioned; scrapes are cheap and resumable.
 - `analysis/` — flatten + ranking per exchange, the TOP5 reports, combined ranking
 - `scripts/` — one scraper per exchange + the repair/utility scripts
 - `pipeline/` — the permanent Binance/Phemex pipeline (scrape → SQLite → roster)
-- `docs/exchange-integration-checklist.md` — every lesson we paid for
+- [docs/exchange-integration-checklist.md](docs/exchange-integration-checklist.md) — every lesson we paid for
 - `SKILL.md` — the living endpoint reference
 
 MIT — see [LICENSE](LICENSE).
