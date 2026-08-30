@@ -1,0 +1,10 @@
+{
+  "code": "30066",
+  "flag": true,
+  "group": "trigger",
+  "msg": "This elite trader has enabled open position protection.",
+  "params": [
+    null
+  ],
+  "requestTime": 1788095433728
+}
