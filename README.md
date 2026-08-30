@@ -192,6 +192,51 @@ timeout without discarding already-fetched pages. **Result: zero survivors** —
 `analysis/TOP5_BITGET.md` for the full ranking, the repair story, and the
 drawdown-screen correction in detail.
 
+### KuCoin position history (phase 1.6, the 6th exchange)
+
+`scripts/scrape_kucoin_positions.py` fetches the full KuCoin copy-trading
+leaderboard (measured 2026-08-30 at **165 traders** — the smallest, cleanest
+universe of the six exchanges: `totalNum`/`totalPage` are honest, no
+protection flags, no truncation) plus every trader's closed positions, open
+positions and a `leadShow/summary` headline snapshot:
+
+```bash
+python3 scripts/scrape_kucoin_positions.py     # all 165 traders, ~3 min, resumable
+python3 analysis/kucoin_flatten.py             # -> analysis/kucoin_positions.csv
+python3 analysis/kucoin_top5.py                # -> ranked candidate table
+```
+
+Every endpoint answers plain `curl_cffi` (`impersonate='chrome'`) with no auth.
+⚠️ The leaderboard's pagination parameter is **`currentPage`**, not the
+`pageNum` SKILL.md originally documented — `pageNum` is a silent no-op that
+always re-returns page 1. Writes `data/kucoin_traders.jsonl` (full leaderboard,
+including four inline PnL series per trader), `data/kucoin_positions.jsonl`
+(closed, one row per position — dedup key `(leadConfigId, symbol, startTime,
+endTime)`, since KuCoin's history rows carry no native per-row id),
+`data/kucoin_open_positions.jsonl` (open, **with a verified real unrealized-PnL
+field** — the first exchange in this project where the open-position upl guard
+isn't a no-op), and `data/kucoin_manifest.jsonl` (resumability ledger with the
+`leadShow/summary` snapshot folded in).
+
+The leaderboard's own field names mislead: `totalPnlDate` (30 points) is
+actually the **30-day** cumulative-$ series (its last point matches
+`thirtyDayPnl`, not `totalPnl`) — renamed `pnl_series_30d` on read to avoid
+propagating the bug. The drawdown screen uses `pnl_series_90d`
+(`ninetyDayPnlDate`, the longest disclosed series) normalized by
+`leadPrincipal`, since no 90-day RATIO series is disclosed and
+`leadShow/pnl/history`'s daily ratio field blows up to a nonsense 6.7×10¹⁴-fold
+"equity curve" under naive compounding — deliberately not used.
+
+`pnl` is NET of fees (verified over the full 14,414-row universe: median −11.93
+bps of notional, 94.7% negative). A real bug was found and fixed mid-pipeline:
+`leadConfigId` is an int in every JSONL source but round-trips through the CSV
+as a string, which silently broke every cross-check dict lookup
+(`load_traders`/`load_open_upl`/`load_manifest`) until `analysis/kucoin_top5.py`
+was fixed to cast it back — see `analysis/TOP5_KUCOIN.md` for the full story
+and the regression tests that now guard it. **Result: zero survivors** — the
+closest miss (`BullishOx`, t=2.52, alpha H2=+25.3%) fails purely on
+copyability (median margin $12 vs. the $50 floor), not on skill.
+
 ## The traps in this data
 
 Six documented ways to fool yourself, each with real cases in `SKILL.md`:
