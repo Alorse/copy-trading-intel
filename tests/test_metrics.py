@@ -56,3 +56,65 @@ def test_invalid_rows_get_null_pr_and_dont_count(con):
     assert r["price_return"] is None
     m = con.execute("SELECT n FROM trader_metrics WHERE trader_id='T'").fetchone()
     assert m["n"] == 5                               # the invalid one does NOT count in n
+
+
+# ---------------------------------------------------------------------------
+# Leave-self-out alpha (ported from analysis/okx_top5.py's compute_alpha,
+# 2026-08-29): the cell median must exclude the trader's own rows.
+# ---------------------------------------------------------------------------
+
+def _seed_self_dominated_cell(con):
+    # 9-row cell (BTCUSDT, 2025-04, Long): 6 rows from A at pr=+5%, 3 from B at
+    # pr=+1%. Self-inclusive median is dragged toward A's own return (mostly
+    # A's own volume); leave-self-out benchmarks A only against B.
+    base = 1743500000000
+    for i in range(6):
+        _pos(con, "A", "BTCUSDT", "Long", base + i, 100, 105, 50.0)
+    for i in range(3):
+        _pos(con, "B", "BTCUSDT", "Long", base + 100 + i, 100, 101, 10.0)
+    con.commit()
+
+
+def test_alpha_leave_self_out_shifts_in_self_dominated_cell(con):
+    _seed_self_dominated_cell(con)
+    metrics.compute(con, D, EX, min_cell=8)
+    a = con.execute("SELECT * FROM trader_metrics WHERE trader_id='A'").fetchone()
+    b = con.execute("SELECT * FROM trader_metrics WHERE trader_id='B'").fetchone()
+    assert abs(a["alpha"] - 0.04) < 1e-9    # 0.05 - median(B's 0.01) = +0.04, not ~0
+    assert abs(a["max_cell_share"] - 6 / 9) < 1e-9
+    assert abs(b["max_cell_share"] - 3 / 9) < 1e-9
+    assert a["n_alpha_dropped_self_dominated"] == 0
+    rows = con.execute("SELECT alpha FROM positions WHERE trader_id='A'").fetchall()
+    assert all(abs(r["alpha"] - 0.04) < 1e-9 for r in rows)
+
+
+def _seed_solo_cell(con):
+    # 8-row cell (ETHUSDT, 2025-04, Short), all from trader A: pr=+5% each
+    # (cost 100 -> close 95, short). No "other" trader exists in this cell.
+    base = 1743500000000
+    for i in range(8):
+        _pos(con, "A", "ETHUSDT", "Short", base + i, 100, 95, 10.0)
+    con.commit()
+
+
+def test_alpha_drops_self_dominated_solo_cell(con):
+    _seed_solo_cell(con)
+    metrics.compute(con, D, EX, min_cell=8)
+    rows = con.execute("SELECT price_return, alpha FROM positions "
+                       "WHERE trader_id='A'").fetchall()
+    assert all(r["price_return"] is not None for r in rows)   # price_return still defined
+    assert all(r["alpha"] is None for r in rows)               # leave-self-out: unusable
+    m = con.execute("SELECT * FROM trader_metrics WHERE trader_id='A'").fetchone()
+    assert m["n"] == 8 and m["n_alpha"] == 0
+    assert m["alpha"] is None
+    assert m["n_alpha_dropped_self_dominated"] == 8
+    assert m["max_cell_share"] == 1.0
+
+
+def test_thin_benchmark_flag_fires_above_40pct_cell_share(con):
+    from pipeline import detect
+    _seed_self_dominated_cell(con)   # A owns 6/9 = 67% of its only cell
+    metrics.compute(con, D, EX, min_cell=8)
+    flags = detect.run(con, D, EX)
+    assert "thin_benchmark" in flags["A"]
+    assert "thin_benchmark" not in flags["B"]   # B owns only 3/9 = 33%, under the 40% flag

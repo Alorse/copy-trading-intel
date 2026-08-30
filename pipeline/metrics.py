@@ -1,5 +1,9 @@
 """Per-trader metrics engine. Mirrors top5_final.py on top of SQLite.
-alpha = de-leveraged price_return - median of its cell (symbol, month, side)."""
+alpha = de-leveraged price_return - median of its cell (symbol, month, side),
+computed EXCLUDING the trader's own rows from that cell (leave-self-out,
+ported from analysis/okx_top5.py's compute_alpha 2026-08-29: a cell with no
+other trader's rows at all is dropped for that trader, not treated as zero
+alpha)."""
 import json, statistics as st, collections, datetime as dt
 
 
@@ -28,15 +32,31 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                   'pr': pr, 'pnl': r['closing_pnl'] or 0, 'lev': r['leverage'] or 0,
                   'marg': r['margin'] or 0, 'dur': r['dur_h'] or 0,
                   'month': _month(r['opened_ms']) if r['opened_ms'] else None})
-    cell = collections.defaultdict(list)
+    cell = collections.defaultdict(list)   # key -> [(tid, pr), ...]
     for x in R:
         if x['pr'] is not None:
-            cell[(x['sym'], x['month'], x['side'])].append(x['pr'])
-    bench = {k: st.median(v) for k, v in cell.items() if len(v) >= min_cell}
+            cell[(x['sym'], x['month'], x['side'])].append((x['tid'], x['pr']))
+    bench = {k: st.median(pr for _, pr in v) for k, v in cell.items() if len(v) >= min_cell}
+
+    dropped_self_dominated = collections.Counter()
+    cell_share_max = collections.defaultdict(float)
     upd = []
     for x in R:
-        b = bench.get((x['sym'], x['month'], x['side']))
-        x['alpha'] = (x['pr'] - b) if (x['pr'] is not None and b is not None) else None
+        key = (x['sym'], x['month'], x['side'])
+        b = bench.get(key)
+        if x['pr'] is None or b is None:
+            x['alpha'] = None
+            upd.append((x['pr'], x['alpha'], x['rowid']))
+            continue
+        others = [pr for tid, pr in cell[key] if tid != x['tid']]
+        share = (len(cell[key]) - len(others)) / len(cell[key])
+        if share > cell_share_max[x['tid']]:
+            cell_share_max[x['tid']] = share
+        if others:
+            x['alpha'] = x['pr'] - st.median(others)
+        else:
+            x['alpha'] = None
+            dropped_self_dominated[x['tid']] += 1
         upd.append((x['pr'], x['alpha'], x['rowid']))
     con.executemany("UPDATE positions SET price_return=?, alpha=? WHERE rowid=?", upd)
 
@@ -84,11 +104,13 @@ def compute(con, snapshot_date, exchange='binance', min_cell=20):
                     st.median(z['marg'] for z in v) if v else None,
                     st.median(z['dur'] for z in v) if v else None,
                     len(set(z['month'] for z in v if z['month'])), h1, h2,
-                    json.dumps(monthly)))
+                    json.dumps(monthly), dropped_self_dominated.get(tid, 0),
+                    cell_share_max.get(tid, 0.0)))
     con.executemany(
         "INSERT OR REPLACE INTO trader_metrics (snapshot_date,exchange,trader_id,nick,"
         "n,n_alpha,alpha,t_stat,payoff,wr,conc_top1,ruin,mdd,lev_med,lev_p90,marg_med,"
-        "dur_med,months_active,alpha_h1,alpha_h2,monthly_alpha) "
-        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", out)
+        "dur_med,months_active,alpha_h1,alpha_h2,monthly_alpha,"
+        "n_alpha_dropped_self_dominated,max_cell_share) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", out)
     con.commit()
     return len(out)

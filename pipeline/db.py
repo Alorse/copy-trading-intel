@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS trader_metrics (
   months_active INTEGER, alpha_h1 REAL, alpha_h2 REAL,
   monthly_alpha TEXT, trend_bonus REAL DEFAULT 0,
   score REAL, tier TEXT, weight REAL, flags TEXT DEFAULT '[]',
+  n_alpha_dropped_self_dominated INTEGER DEFAULT 0, max_cell_share REAL DEFAULT 0,
   PRIMARY KEY (snapshot_date, exchange, trader_id));
 """
 
@@ -44,7 +45,9 @@ TABLES = ["snapshots", "trader_snapshot", "positions",
 # Columns added after the first schema shipped. CREATE TABLE IF NOT EXISTS will
 # not add them to a DB that already exists, and the DB is expensive to rebuild
 # (it needs the raw snapshots), so add them in place.
-_ADDED = [("trader_snapshot", "start_time", "INTEGER")]
+_ADDED = [("trader_snapshot", "start_time", "INTEGER"),
+          ("trader_metrics", "n_alpha_dropped_self_dominated", "INTEGER"),
+          ("trader_metrics", "max_cell_share", "REAL")]
 
 
 def _migrate(con):

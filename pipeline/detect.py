@@ -5,7 +5,14 @@ import datetime as dt, json
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
                  "ruin_risk", "not_copyable", "insufficient", "no_alpha"}
 WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high",
-            "fresh_start"}
+            "fresh_start", "thin_benchmark"}
+
+# A leave-self-out alpha computed against a benchmark cell where the trader IS
+# most of the "other traders" evidence rests on a thin sample of genuinely
+# independent trades. Report-only (ported from analysis/okx_top5.py 2026-08-29),
+# not disqualifying: it's a caveat on how much to trust the number, not a defect
+# in the trader.
+MAX_CELL_SHARE_FLAG = 0.40
 
 # A portfolio younger than this has no verifiable pre-history at all: Binance
 # serves nothing opened before startTime, and what it used to serve is gone.
@@ -88,6 +95,8 @@ def run(con, snapshot_date, exchange='binance'):
             pos = sum(1 for v in monthly.values() if v > 0)
             if pos / len(monthly) < 0.5:
                 f.append('regime_onesided')
+        if (m['max_cell_share'] or 0) > MAX_CELL_SHARE_FLAG:
+            f.append('thin_benchmark')
         con.execute("UPDATE trader_metrics SET flags=? WHERE snapshot_date=? "
                     "AND exchange=? AND trader_id=?",
                     (json.dumps(f), snapshot_date, exchange, tid))
