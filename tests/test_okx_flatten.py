@@ -29,14 +29,15 @@ def test_row_from_position_open_position_has_blank_duration():
 
 def test_flatten_writes_csv(tmp_path):
     positions = [
-        {'uniqueCode': 'A', 'nickName': 'n1', 'leadDays': '10', 'instId': 'BTC-USDT-SWAP',
-         'posSide': 'long', 'lever': '10', 'mgnMode': 'cross', 'openAvgPx': '100',
-         'closeAvgPx': '110', 'margin': '50', 'pnl': '5', 'pnlRatio': '0.1', 'subPos': '1',
-         'ccy': 'USDT', 'openTime': '1000', 'closeTime': '4600000'},
-        {'uniqueCode': 'A', 'nickName': 'n1', 'leadDays': '10', 'instId': 'ETH-USDT-SWAP',
-         'posSide': 'short', 'lever': '5', 'mgnMode': 'cross', 'openAvgPx': '2000',
-         'closeAvgPx': '1900', 'margin': '400', 'pnl': '20', 'pnlRatio': '0.05', 'subPos': '2',
-         'ccy': 'USDT', 'openTime': '2000', 'closeTime': '3602000'},
+        {'uniqueCode': 'A', 'subPosId': 'S1', 'nickName': 'n1', 'leadDays': '10',
+         'instId': 'BTC-USDT-SWAP', 'posSide': 'long', 'lever': '10', 'mgnMode': 'cross',
+         'openAvgPx': '100', 'closeAvgPx': '110', 'margin': '50', 'pnl': '5', 'pnlRatio': '0.1',
+         'subPos': '1', 'ccy': 'USDT', 'openTime': '1000', 'closeTime': '4600000'},
+        {'uniqueCode': 'A', 'subPosId': 'S2', 'nickName': 'n1', 'leadDays': '10',
+         'instId': 'ETH-USDT-SWAP', 'posSide': 'short', 'lever': '5', 'mgnMode': 'cross',
+         'openAvgPx': '2000', 'closeAvgPx': '1900', 'margin': '400', 'pnl': '20',
+         'pnlRatio': '0.05', 'subPos': '2', 'ccy': 'USDT', 'openTime': '2000',
+         'closeTime': '3602000'},
     ]
     data_dir = tmp_path / 'data'
     data_dir.mkdir()
@@ -52,6 +53,26 @@ def test_flatten_writes_csv(tmp_path):
     assert len(rows) == 2
     assert rows[0]['symbol'] == 'BTC-USDT-SWAP'
     assert float(rows[0]['notional']) == 500.0   # 50 margin * 10x
+
+
+def test_flatten_dedups_by_unique_code_and_subpos_id(tmp_path):
+    position = {'uniqueCode': 'A', 'subPosId': 'S1', 'nickName': 'n1', 'leadDays': '10',
+                'instId': 'BTC-USDT-SWAP', 'posSide': 'long', 'lever': '10', 'mgnMode': 'cross',
+                'openAvgPx': '100', 'closeAvgPx': '110', 'margin': '50', 'pnl': '5',
+                'pnlRatio': '0.1', 'subPos': '1', 'ccy': 'USDT', 'openTime': '1000',
+                'closeTime': '4600000'}
+    data_dir = tmp_path / 'data'
+    data_dir.mkdir()
+    with open(data_dir / 'okx_positions.jsonl', 'w') as fh:
+        fh.write(json.dumps(position) + '\n')
+        fh.write(json.dumps(position) + '\n')  # duplicate line, e.g. from a resumed run
+
+    out_dir = tmp_path / 'out'
+    out_dir.mkdir()
+    n = fl.flatten(data_dir=str(data_dir), out_dir=str(out_dir))
+    assert n == 1
+    rows = list(csv.DictReader(open(out_dir / 'okx_positions.csv')))
+    assert len(rows) == 1
 
 
 def test_flatten_missing_input_writes_nothing(tmp_path):

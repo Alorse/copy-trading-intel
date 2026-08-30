@@ -46,11 +46,17 @@ def row_from_position(p):
 
 def flatten(data_dir=D, out_dir=OUT):
     """Reads <data_dir>/okx_positions.jsonl, writes <out_dir>/okx_positions.csv.
-    Returns the row count (0, and no file written, if the input is missing)."""
+    Returns the row count (0, and no file written, if the input is missing).
+
+    Dedups on read by (uniqueCode, subPosId): the manifest's resumability model
+    (append-only, driven off a separate ledger file) can't itself guarantee a
+    position is written at most once, so this is a defensive belt-and-suspenders
+    check, not evidence that duplicates are expected in practice."""
     in_path = os.path.join(data_dir, 'okx_positions.jsonl')
     if not os.path.exists(in_path):
         return 0
     n = 0
+    seen = set()
     with open(os.path.join(out_dir, 'okx_positions.csv'), 'w', newline='') as fh:
         w = csv.writer(fh)
         w.writerow(COLS)
@@ -58,7 +64,12 @@ def flatten(data_dir=D, out_dir=OUT):
             line = line.strip()
             if not line:
                 continue
-            w.writerow(row_from_position(json.loads(line)))
+            p = json.loads(line)
+            key = (p.get('uniqueCode'), p.get('subPosId'))
+            if key in seen:
+                continue
+            seen.add(key)
+            w.writerow(row_from_position(p))
             n += 1
     return n
 
