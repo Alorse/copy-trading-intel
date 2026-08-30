@@ -36,3 +36,10 @@ does not import them.
 
 ⚠️ On a new snapshot the numbers will **not** match those in `FINDINGS_v2.md`: those come from the
 2026-08-25 snapshot, which covers a single regime cycle. See the caveats in `SKILL.md`.
+
+## OKX (separate from the audit above)
+
+`okx_flatten.py` and `okx_top5.py` are a parallel, independent pipeline over
+`data/okx_positions.jsonl` (see the root `README.md`'s "OKX position history" section and
+`docs/okx_endpoint_facts.md`). They don't feed `FINDINGS_v2.md`/`RULES.md`/`TOP5.md` and aren't
+audited by the same process — their own writeup is `TOP5_OKX.md`.

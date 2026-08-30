@@ -84,7 +84,7 @@ with its own access quirk:
 
 | exchange | script | output | quirk |
 |---|---|---|---|
-| OKX | `scripts/scrape_okx.py` | `data/okx_traders.jsonl`, `data/okx_trader_stats.jsonl` | clean public JSON, but **do not** pass `sortType` (any value → error 51000); `public-stats`' `lastDays` only accepts `{1, 2, 3}` |
+| OKX | `scripts/scrape_okx.py` + `scripts/scrape_okx_positions.py` | `data/okx_traders.jsonl`, `data/okx_trader_stats.jsonl`, `data/okx_positions.jsonl`, `data/okx_open_positions.jsonl` | clean public JSON, but **do not** pass `sortType` (any value → error 51000); `public-stats`' `lastDays` only accepts `{1, 2, 3}`; position history caps silently at 100 rows/trader; a minority of ranked traders 404 with `"Trader doesn't exist"` on the position endpoints specifically |
 | Bybit | `scripts/scrape_bybit.py` | `data/bybit_traders.jsonl` | Akamai TLS-fingerprints the listing endpoint; needs `curl_cffi` (`impersonate='chrome'`), and even that 403s intermittently from some hosts |
 | Bitget | `scripts/scrape_bitget.py` | `data/bitget_orders.jsonl` (best effort) | no public leaderboard endpoint exists anymore; only per-trader order history behind **web session tokens that expire**, refreshed by hand |
 
@@ -110,6 +110,37 @@ If Bybit's `dynamic-leader-list` 403s from your host under `curl_cffi` (it does 
 VPS at the time of writing), `scrape_bybit.py --input <file>` will replay a JSONL of pre-fetched
 page responses instead — capture them with a browser's same-origin `fetch()` on bybit.com, one
 page's JSON per line. The script does not drive a browser itself.
+
+### OKX position history (phase 1.5)
+
+`scripts/scrape_okx_positions.py` walks the full OKX SWAP lead-trader universe — measured
+2026-08-29 at **261 traders** (27 pages × 10/page) — and fetches each one's position history:
+
+```bash
+python3 scripts/scrape_okx_positions.py --pages 50 --stats  # ~5-6 min for the full universe
+python3 analysis/okx_flatten.py                              # -> analysis/okx_positions.csv
+python3 analysis/okx_top5.py                                 # -> ranked candidate table
+```
+
+Writes `data/okx_positions.jsonl` (one row per **closed** position), `data/okx_open_positions.jsonl`
+(one row per **open** position, with unrealized `upl`), and `data/okx_positions_manifest.jsonl` (a
+resumability ledger — needed because a trader with zero closed positions writes nothing to the
+first file, so "already processed" can't be derived from it alone). Quirks discovered scraping the
+full universe (see `docs/okx_endpoint_facts.md` for the evidence):
+
+- `public-subpositions-history` **caps silently at 100 rows** per trader — no `page`/`limit`/
+  `before`/`after` param changes the result. `okx_positions_manifest.jsonl` flags `closed_capped`.
+- A minority of ranked traders return `{"code":"60004","msg":"Trader doesn't exist"}` on the
+  position endpoints specifically, despite ranking and `public-stats` working fine for the same
+  `uniqueCode`. Treated as terminal (not retried), not a scrape error.
+- Some "history" rows have `closeTime == ""` — a realized-PnL event on a lot that's still open.
+  These are excluded from "closed" and folded into `okx_open_positions.jsonl` instead.
+- **`pnl` is NET of fees** — verified over 558 closed BTC-USDT-SWAP rows by reconstructing gross
+  price PnL from `ctVal`: 96.6% show a positive fee residual, median 6.5 bps of notional (same
+  order of magnitude as Binance's 7.85 bps).
+
+`analysis/okx_top5.py` mirrors `top5_final.py`'s methodology (alpha vs the symbol×month×side
+median, concentration guard, Trampa 1 filter) — see `analysis/TOP5_OKX.md` for the results.
 
 ## The traps in this data
 
