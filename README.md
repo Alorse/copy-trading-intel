@@ -36,7 +36,7 @@ and 96.9% of PnL from a single trade at 145x.**
 | `analysis/TOP5.md` | the 5 consensus traders, with the reasoning and the rejects |
 | `analysis/RULES.md` | candidate rules for BTCUSDT and the 2019-2026 walk-forward result |
 | `analysis/*.py` | the one-offs that reproduce every figure (see `analysis/README.md`) |
-| `scripts/` | the original scrapers + the open-positions probe |
+| `scripts/` | the original Binance/Phemex scrapers, the open-positions probe, and the phase-1 OKX/Bybit/Bitget/unify scripts (see below) |
 | `docs/specs`, `docs/plans` | the pipeline's design and implementation (historical documents) |
 
 ## Requirements
@@ -50,7 +50,7 @@ and 96.9% of PnL from a single trade at 145x.**
 ```bash
 git clone https://github.com/Alorse/copy-trading-intel.git
 cd copy-trading-intel
-pytest                                    # 46 tests; the 4 regression ones are opt-in (see below)
+pytest                                    # 82 tests; the 4 regression ones are opt-in (see below)
 
 python3 pipeline.py scrape  --date $(date +%F)   # ~600 Binance portfolios + Phemex (slow, resumable)
 python3 pipeline.py analyze --date $(date +%F)   # -> analysis/runs/<date>/{TOP_YYYY-MM.md,roster.json,diff.json}
@@ -75,6 +75,41 @@ Consequence: the 4 tests in `tests/test_regression.py` — the ones verifying th
 reproduces the audited 2026-08-25 analysis — **skip** unless you place a snapshot in
 `data/snapshots/2026-08-25/`. That particular snapshot is no longer obtainable: the APIs only
 serve recent history.
+
+## Unified trader pool (phase 1)
+
+A separate, simpler effort from `pipeline/`: **discover and unify traders from more exchanges
+into one pool**, no per-exchange ranking or classification yet. Three new public sources, each
+with its own access quirk:
+
+| exchange | script | output | quirk |
+|---|---|---|---|
+| OKX | `scripts/scrape_okx.py` | `data/okx_traders.jsonl`, `data/okx_trader_stats.jsonl` | clean public JSON, but **do not** pass `sortType` (any value → error 51000); `public-stats`' `lastDays` only accepts `{1, 2, 3}` |
+| Bybit | `scripts/scrape_bybit.py` | `data/bybit_traders.jsonl` | Akamai TLS-fingerprints the listing endpoint; needs `curl_cffi` (`impersonate='chrome'`), and even that 403s intermittently from some hosts |
+| Bitget | `scripts/scrape_bitget.py` | `data/bitget_orders.jsonl` (best effort) | no public leaderboard endpoint exists anymore; only per-trader order history behind **web session tokens that expire**, refreshed by hand |
+
+Run each one directly (all resumable — safe to re-run):
+
+```bash
+python3 scripts/scrape_okx.py --pages 30          # ~10 rows/page, capped at OKX's totalPage
+python3 scripts/scrape_bybit.py --pages 20        # needs curl_cffi (in .venv/); prints a clear
+                                                   # warning and writes 0 rows if Akamai blocks it
+python3 scripts/scrape_bitget.py                  # needs data/bitget_session.json (gitignored,
+                                                   # see the script's docstring); exits 1 with a
+                                                   # clear message if missing or the tokens are stale
+python3 scripts/unify.py                          # -> data/unified_traders.csv
+```
+
+`unify.py` reads every `data/*_traders.jsonl` it recognizes (currently OKX and Bybit — Bitget has
+no leaderboard to rank by, so its output isn't named `*_traders.jsonl` and doesn't feed into the
+unified pool) into one CSV: `exchange, trader_id, nickname, pnl_usd, roi, aum_usd, followers,
+win_rate, extra_json`. Everything an exchange doesn't map to a named column goes into
+`extra_json` verbatim. Bybit rows have no `aum_usd` — the listing endpoint doesn't expose it.
+
+If Bybit's `dynamic-leader-list` 403s from your host under `curl_cffi` (it does from at least one
+VPS at the time of writing), `scrape_bybit.py --input <file>` will replay a JSONL of pre-fetched
+page responses instead — capture them with a browser's same-origin `fetch()` on bybit.com, one
+page's JSON per line. The script does not drive a browser itself.
 
 ## The traps in this data
 
