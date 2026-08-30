@@ -74,7 +74,8 @@ raw score order (that would put Powerful-Bubble-Rims first; see "why not #1" bel
 **1. Mine13** — the most trustworthy of the five. 9 pairs, payoff 1.27 with an 82% win rate
 (wins by hit rate, not by tail size), leverage a flat 10x with **no tail** (p90 also 10x —
 nobody scales into extreme risk), and the smallest open-position drag: `upl` on 3 open
-positions is −$858 against $86,734 of closed PnL (~1%, immaterial). Their own window is
+positions is −$858 on the one losing open position (net across all 3 open: +$1,980) against
+$86,734 of closed PnL (~1%, immaterial). Their own window is
 **not** cap-truncated (56 < 100), so this is the genuine, complete recent record, not a
 truncated tail. Headline ranking `pnl` cross-checks closely: **$88,044 reported vs $86,734
 computed from the visible window** — the two agree to within 1.5%. 160 real copiers, $864k
@@ -117,7 +118,7 @@ alpha +6.11%, payoff 6.80, and a real, cross-checked $275k headline pnl against 
 survivable drawdown on the same leverage; a naive "worst-loss × leverage" ruin estimate comes
 out over −4,000% of margin, meaning their real position sizing must be far more conservative
 than the leverage figure implies, which a copier cannot replicate blindly. Win rate is a coin
-flip (47.5%) — they are right less than half the time and make it up on payoff, the same
+flip (44.4% — 44 of 99) — they are right less than half the time and make it up on payoff, the same
 profile as `SKILL.md`'s "Scalper King"/牛熊摆渡人 pattern: real skill, uncopyable risk profile
 at face value. **Do not copy at their stated leverage.**
 
