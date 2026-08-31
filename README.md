@@ -38,6 +38,28 @@ and one whose "profit" is 96.9% a single trade at 145x.
 
 Cross-exchange ranking: [COMBINED_RANKING.md](analysis/COMBINED_RANKING.md).
 
+## Versus the public rankings
+
+[Arena](https://www.arenafi.org/) aggregates ~30 exchange leaderboards into one score
+over 13,433 traders — the closest thing to this project that exists. Its score is
+`100 × Quality × Confidence`, and half of *Quality* is PnL and ROI; its
+[methodology](https://www.arenafi.org/methodology) normalizes across exchanges but not
+for leverage, symbol, month or side, and says nothing about survivorship, hidden losses
+or truncated history. It answers *who earned the most*. This repo asks *who had skill*.
+On the same traders, using the same exchange IDs, the two disagree hard:
+
+| our rank | trader | our alpha | Arena rank |
+|---|---|---|---|
+| 1 | Mine13 (OKX) | +5.05% | #7 |
+| 2 | Cooma (Binance) | +1.75% | #31 |
+| 6 | 梭哈到世界尽头 (Binance) | +1.60% | #753 |
+| 7 | 牛熊摆渡人 (Binance) | **+6.89%** | **#6,330** |
+
+The last row is the argument in one line: the highest raw alpha we found sits six
+thousand places down an ROI-driven board. Our own report also calls it the most fragile
+of the seven (66 days of history, 75% max drawdown) — which is the point. The two
+rankings are not competing answers to one question; they are answers to two.
+
 Every pipeline went through adversarial review (two independent AI auditors with a
 refute mandate) before its numbers were trusted — and the reviews found real bugs
 every time: a drawdown screen that didn't measure drawdown, a cross-check that was
