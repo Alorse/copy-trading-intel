@@ -1,4 +1,4 @@
-# Combined ranking — all audited pools (updated 2026-08-30)
+# Combined ranking — all audited pools (updated 2026-08-31)
 
 Status per exchange (all pipelines audited, adversarially reviewed, corrected):
 
@@ -8,13 +8,14 @@ Status per exchange (all pipelines audited, adversarially reviewed, corrected):
 | OKX | 261 lead traders | 5 (2 recommended) | analysis/TOP5_OKX.md |
 | Phemex | 192 with history | **0** | analysis/TOP5_PHEMEX.md |
 | Bybit | 155 visible (of 295 scraped) | **0** | analysis/TOP5_BYBIT.md |
-| Bitget | ~1,489 (endpoints verified) | — | pending pipeline |
-| KuCoin | 170 (screening-only data) | — | pending decision |
+| Bitget | 400 scraped of 1,488 (290 ranked) | **0** | analysis/TOP5_BITGET.md |
+| KuCoin | 165 (137 ranked) | **0** | analysis/TOP5_KUCOIN.md |
 
-Net effect: **the investable universe is Binance (5) + OKX (2 real: Mine13, Algotoria)**.
-Phemex and Bybit contribute nothing today — their strongest candidates fail on
-risk-profile grounds (leverage tails, uncopyable sizing, concentration, hidden or
-intra-window drawdowns). That is the methodology working, not a data problem.
+All six exchanges are now audited. Net effect: **the investable universe is
+Binance (5) + OKX (2 real: Mine13, Algotoria)**. Phemex, Bybit, Bitget and KuCoin
+contribute nothing — their strongest candidates fail on risk-profile grounds
+(leverage tails, uncopyable sizing, concentration, hidden or intra-window
+drawdowns). Four of six at zero is the methodology working, not a data problem.
 
 ## The combined ranking (unchanged picks, refreshed context)
 
@@ -46,11 +47,18 @@ intra-window drawdowns). That is the methodology working, not a data problem.
   screen (−54% uncovered) — the 01014588 lesson paying for itself.
 - Bybit quirks now on record (checklist appendix): 100-row/trader API cap,
   position-level E8 pnl, unreliable price fields, browser-only access.
+- **Bitget added: zero survivors** (400 of 1,488 scraped, 290 ranked, 40,516 closed
+  rows). The leaderboard's `data.totals` lies; open positions are protected for 24.8%
+  of traders while their closed history stays fully visible. One trader survived a
+  first pass and was removed by the corrected pipeline.
+- **KuCoin added: zero survivors** (165/165 scraped clean, 137 ranked) — the smallest
+  and cleanest universe of the six, and the first with real unrealized-PnL data, which
+  bought an open-position upl guard the other five could not support.
 
 ## House view
 
 Concentrate on Mine13 + Cooma (35%), keep Algotoria small, treat Binance #4-7 as a
 watchlist rather than allocations, ignore the OKX thin-window entries. Re-run all
-pipelines on fresh scrapes before any new allocation; Bitget (1,489 traders, richest
-per-trade data of any exchange we've mapped — native MDD + daily curves + net fees)
-is the next universe to audit and may well beat Phemex/Bybit's zero.
+pipelines on fresh scrapes before any new allocation. With the six-exchange sweep
+closed, the next gain is depth, not breadth: widen Bitget beyond the top-400 slice
+and re-scrape the four zero-survivor pools before trusting their zeros a second time.
