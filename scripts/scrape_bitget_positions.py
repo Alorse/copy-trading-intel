@@ -3,7 +3,7 @@
 positions and the 90-day drawdown/MDD series (`cycleData`), plus a headline
 cross-check snapshot (`traderDetailPageV2`) folded into the manifest.
 
-⚠️ **Access** (verified live 2026-08-30 by Ramona + GLM, re-verified here): unlike
+⚠️ **Access** (verified live 2026-08-30 by the agent + GLM, re-verified here): unlike
 Bybit (Akamai TLS-fingerprint blocked, browser-only) or Bitget's own OLD v1
 session-token endpoints (`scripts/scrape_bitget.py`, 2026-08-29, now superseded),
 ALL of the endpoints below answer plain `curl_cffi` requests with

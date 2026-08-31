@@ -1,4 +1,4 @@
-# OKX endpoint facts (verified live by Ramona, 2026-08-29 ~20:50)
+# OKX endpoint facts (verified live by the agent, 2026-08-29 ~20:50)
 
 - Ranking universe: SWAP lead traders = **261 total** (last page with data = 27, first empty = 28; 10/page).
 - `public-subpositions-history`: NO pagination params work (tried page, limit, before,
