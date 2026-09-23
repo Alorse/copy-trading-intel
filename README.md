@@ -59,6 +59,10 @@ The last row is the argument in one line: the highest raw alpha we found sits si
 thousand places down an ROI-driven board. Our own report also calls it the most fragile
 of the seven (66 days of history, 75% max drawdown) — which is the point. The two
 rankings are not competing answers to one question; they are answers to two.
+The drawdown flag was right, too: on 2026-09-02 this portfolio closed 14 positions in
+the same second for −15.3k USDT and has not traded since. It is retired from the
+picks (see [the combined ranking](analysis/COMBINED_RANKING.md)). Alpha measures skill
+on the trades you can see; it does not replace the risk screen.
 
 Every pipeline went through adversarial review (two independent AI auditors with a
 refute mandate) before its numbers were trusted — and the reviews found real bugs

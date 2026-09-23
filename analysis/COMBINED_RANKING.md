@@ -1,4 +1,4 @@
-# Combined ranking — all audited pools (updated 2026-08-31)
+# Combined ranking — all audited pools (updated 2026-09-23)
 
 Status per exchange (all pipelines audited, adversarially reviewed, corrected):
 
@@ -27,12 +27,31 @@ drawdowns). Four of six at zero is the methodology working, not a data problem.
 | 4 | **秋高看山势** | Binance | 12% | +1.08%* | 3.14 | improves monthly | ⚠️ $41/trade |
 | 5 | **重生之我在币圈捡垃圾-** | Binance | 12% | +0.60%* | 3.36 | 5 months | ⚠️ mdd 64% |
 | 6 | **梭哈到世界尽头** | Binance | 8% | +1.60%* | 6.11 | decaying, history deleted | ⚠️ structural doubts |
-| 7 | **牛熊摆渡人** | Binance | 8% | +6.89% | 4.15 | 66 days | ⚠️ mdd 75%, ruin −1173% |
+| 7 | ~~牛熊摆渡人~~ | Binance | ~~8%~~ | +6.89% | 4.15 | 66 days | ❌ retired 2026-09-23 (see below) |
 | 8 | BestMax | OKX | 4% | +1.11% | 7.74 | 5 days, capped | transparency only |
 | 9 | Kunpeng Plan | OKX | 3% | +0.66% | 5.03 | 1 day, capped | transparency only |
 | 10 | 對不起我騙了你... | OKX | 3% | +0.68% | 2.93 | 1 day | transparency only |
 
 *Binance alphas pre-date the leave-self-out re-audit (verified robust: shifts ≤0.09pp).
+
+## Retired: 牛熊摆渡人 (2026-09-23)
+
+The fragility flag on row 7 (66 days of history, 75% max drawdown, ruin −1173%) came
+true. Portfolio `5096968193101811713`, verified against the live position history:
+
+- Last opening **2026-08-28 16:33 UTC** — two days before the shadow books were born,
+  so it never produced a single mirrored fill. That was the birth rule working, not a bug.
+- **2026-09-02 21:44:14 UTC: 14 positions closed in the same second for −15,295 USDT**,
+  −14,397 of it a single AKEUSDT short held since July. The 84 visible closes before that
+  day summed to +8,671; net over the whole visible history, −6,624.
+- No opening and no open position since. The portfolio no longer appears in the public
+  leaderboard search, so it cannot be copied either.
+
+This is Trap 1 (the loser nobody closes) arriving from the other side: a high-alpha
+closed-position record paired with a portfolio drawdown that said the risk was still
+open. Its 8% is **not** reassigned here. The ranking dates from a single-regime
+snapshot, so a replacement comes out of a fresh re-run of the pipelines, not from
+promoting the next row.
 
 ## What changed in this update (2026-08-30)
 
@@ -57,7 +76,7 @@ drawdowns). Four of six at zero is the methodology working, not a data problem.
 
 ## House view
 
-Concentrate on Mine13 + Cooma (35%), keep Algotoria small, treat Binance #4-7 as a
+Concentrate on Mine13 + Cooma (35%), keep Algotoria small, treat Binance #4-6 as a
 watchlist rather than allocations, ignore the OKX thin-window entries. Re-run all
 pipelines on fresh scrapes before any new allocation. With the six-exchange sweep
 closed, the next gain is depth, not breadth: widen Bitget beyond the top-400 slice
