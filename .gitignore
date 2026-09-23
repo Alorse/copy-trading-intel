@@ -21,3 +21,6 @@ __pycache__/
 .venv/
 venv/
 data/bybit_prefetch/
+
+# --- archived raw data from previous runs (same rule as the live dumps) ---
+data/archive/

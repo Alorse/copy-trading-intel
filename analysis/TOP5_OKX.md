@@ -1,5 +1,10 @@
 # Top 5 OKX lead traders to copy
 
+> ⚠️ **Superseded 2026-09-23.** On a fresh scrape the same pipeline survives **zero**
+> traders — both recommended picks included. Everything below the re-run section is the
+> 2026-08-29 result, kept as history. See
+> [Re-run on a fresh scrape — 2026-09-23](#re-run-on-a-fresh-scrape--2026-09-23-zero-survivors).
+
 Same methodology as `analysis/TOP5.md` (Binance), same metric:
 
 ```
@@ -70,6 +75,119 @@ applied and the whole pipeline was re-run over the same local data (no re-scrapi
   — the previous version of this doc only quoted the cross-check for the picks where it was
   flattering (Mine13's 1.5% gap). See the picks table below; two of the five current survivors
   have cross-check ratios that should worry you (`Kunpeng Plan` at 0.003×, `BestMax` at 0.20×).
+
+## Re-run on a fresh scrape — 2026-09-23: **zero survivors**
+
+The August result below is kept as history. It was measured on a single snapshot
+(2026-08-29) of a single regime. Re-scraped from scratch on 2026-09-23
+(`scripts/scrape_okx.py` → `scripts/scrape_okx_positions.py` → `analysis/okx_flatten.py`
+→ `analysis/okx_top5.py`, unchanged code, unchanged thresholds), the same pipeline
+survives **nobody**. The August raw data is archived under `data/archive/2026-08-okx/`
+so both runs stay reproducible.
+
+**The fresh universe** (2026-09-23, ranking capped at 50 pages):
+
+| | 2026-08-29 | 2026-09-23 |
+|---|---|---|
+| ranked lead traders | 261 | **287** |
+| `60004` "Trader doesn't exist" on both position endpoints | 79 (30%) | **88 (31%)** |
+| zero closed positions | 40 | **129** |
+| ≥1 closed position (ranked) | 142 | **158** |
+| closed positions | 8,936 | **9,653** |
+| open positions | — | **3,081** |
+| hitting the silent 100-row history cap | 37 of 142 (26%) | **69 of 158 (44%)** |
+| visible window | 2026-05-29 → 08-30 | **2026-06-23 → 09-23** |
+| **survive every hard filter** | 5 (2 recommended) | **0** |
+
+**Rejection breakdown, 2026-09-23** (first blocking filter, of the 158 with ≥1 close):
+
+| filter | rejected |
+|---|---|
+| concentration >30% (top-1 trade) | 31 |
+| sample too small | 31 |
+| t <2.5 | 19 |
+| payoff <0.5 | 18 |
+| single-pair only (H1) | 17 |
+| net-negative closed PnL | 17 |
+| win rate >92% (Trampa 1) | 8 |
+| open unrealized loss >50% of closed PnL | 6 |
+| leverage p90 >25x | 5 |
+| no losers on either side | 4 |
+| alpha H2 ≤0 | 1 |
+| weekly `pnlRatios[]` drawdown >20%, uncovered by window | 1 |
+
+### The two recommended picks, re-measured
+
+| | Mine13 (`F2BCA22ABBB69F57`) | Algotoria (`74F7C7A53CD18275`) |
+|---|---|---|
+| still in the ranking | yes (page 3) | yes (page 11) |
+| visible closed positions | 56 → **43** | 95 → **98** |
+| visible window | 06-02 → 08-25 → **06-24 → 09-19** | 08-06 → 08-27 → **09-04 → 09-21** |
+| α / t (this snapshot) | +5.11% / **2.91** | **+0.08% / 0.23** |
+| α H2 | **−0.16%** | +1.65% |
+| closed PnL in window | $82,098 | **−$82** |
+| open unrealized | **−$6,083** (3 positions) | +$720 (38 positions) |
+| lev med/p90 · margin med · dur med | 10x/10x · $4,464 · 202h | 4x/4x · $7,519 · 32h |
+| **first blocking filter** | **alpha H2 ≤ 0** | **net-negative closed PnL** |
+
+**Algotoria's is the clean verdict.** Its entire visible book rolled over: all 98
+positions are new since the August scrape, all of them September, benchmarked against
+the September universe in the same snapshot. Over those 98 trades its alpha is **+0.08%
+with t=0.23** and its net closed PnL is **−$82**. Whatever produced +3.57% (t=4.23) in
+August is not present in September. (Its headline ranking PnL is $65,155 — the visible
+window is a 17-day slice of a 883-day lead history, so this is a statement about the
+window, not about the account's lifetime.)
+
+**Mine13's is not, and the reason is a limitation of OKX's data, not a fact about the
+trader.** Only **4** of its positions are new since 2026-08-29 (alpha −0.43%, t=−0.79,
+−$1,103) — far too few to call an edge dead. Its `alpha H2 ≤ 0` rejection comes from its
+*August* rows being re-measured downward, and those rows did not change:
+
+| position (same trade, both snapshots) | price return | α in the Aug snapshot | α in the Sep snapshot |
+|---|---|---|---|
+| CL-USDT-SWAP long, 08-04 12:41 | +8.34% | **+6.82%** | **−1.70%** |
+| CL-USDT-SWAP long, 08-09 02:47 | +9.12% | +7.60% | −0.92% |
+| LTC-USDT-SWAP long, 08-02 03:08 | +2.65% | +1.09% | −4.54% |
+
+The trade is identical; the **benchmark cell** moved:
+
+| cell (symbol × month × side) | Aug snapshot: rows / median | Sep snapshot: rows / median |
+|---|---|---|
+| CL-USDT-SWAP · 2026-08 · long | 32 / +2.17% | **21 / +9.12%** |
+| LTC-USDT-SWAP · 2026-08 · long | 11 / +2.65% | **8 / +4.36%** |
+| BTC-USDT-SWAP · 2026-08 · long | 798 / +0.43% | 268 / +0.67% |
+
+⚠️ **New trap, on record: a past month's benchmark is not reproducible from a later
+OKX scrape.** The 100-row history cap is a *rolling* window, so a month recedes out of
+most traders' visible history as time passes. What is left in an old cell is not a random
+subsample — it is the traders who have traded little enough since for those rows to
+survive in their last 100. The August CL-long cell shrank 32 → 21 rows and its median
+*quadrupled*. Alpha measured against such a cell is biased, and **alpha figures from two
+different OKX snapshots must not be compared**. Only within-snapshot comparisons (like
+Algotoria's 98 September trades) are sound. This does not affect Binance, whose history
+is capped by `startTime`, not by a row count.
+
+**Net effect:** OKX contributes **0** traders. Mine13 is not disqualified by evidence that
+it got worse — it is disqualified by having produced almost no evidence at all since
+August (4 trades) while carrying a −$6,083 open drawdown. Algotoria is disqualified by 98
+fresh trades with no measurable edge.
+
+### Closest misses, 2026-09-23
+
+| trader | n | α | t | αH2 | closed PnL | killed by |
+|---|---|---|---|---|---|---|
+| To the Moon Merchant | 100 | +5.52% | **8.30** | +5.62% | $46,986 | weekly `pnlRatios[]` drawdown >20%, uncovered by the window |
+| maomao12345 | 99 | +3.30% | 4.64 | +1.55% | $3,181,951 | leverage p90 >25x |
+| Milies L | 100 | +3.54% | 3.87 | +2.08% | $152,846 | leverage p90 >25x |
+| Kelcrypto | 100 | +4.08% | 5.33 | +5.25% | $3,309 | leverage p90 >25x |
+| Zhybitcoin | 98 | +0.64% | 3.72 | +1.22% | $38,152 | leverage p90 >25x |
+| Physical-Epoch-Fuel | 65 | +2.87% | 2.31 | +6.26% | $174,532 | t <2.5 |
+
+`To the Moon Merchant` is the run's headline near-miss and the "01014588 lesson" earning
+its keep a second time: the best t in the whole universe, stopped by the one screen that
+looks outside the visible window. Four of the six closest misses die on leverage p90 —
+the same tail risk that killed 牛熊摆渡人 on Binance. Every one of these six is capped at
+or near 100 rows, so their windows are recent tails, not track records.
 
 ## The universe, honestly
 
