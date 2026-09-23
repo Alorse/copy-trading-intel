@@ -24,3 +24,10 @@ data/bybit_prefetch/
 
 # --- archived raw data from previous runs (same rule as the live dumps) ---
 data/archive/
+
+# --- secrets: never versioned (API keys belong outside the repo, chmod 600) ---
+.env
+*.env
+.*.env
+*.env.*
+*.swp

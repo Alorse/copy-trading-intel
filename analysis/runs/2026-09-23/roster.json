@@ -1,0 +1,141 @@
+{
+ "generated": "2026-09-23",
+ "snapshot": "2026-09-23",
+ "engine": "v1.0",
+ "unallocated": 0.0,
+ "traders": [
+  {
+   "exchange": "binance",
+   "portfolio_id": "5082101648817857024",
+   "nick": "梭哈到世界尽头",
+   "tier": "B",
+   "weight": 0.1,
+   "score": 3.483,
+   "metrics": {
+    "alpha": 0.03186737492358588,
+    "t": 7.876975161737701,
+    "payoff": 1.3059537464127524,
+    "lev_med": 5.0,
+    "mdd": 12.965532,
+    "n": 331,
+    "n_alpha": 231,
+    "roi": 224.73112119
+   },
+   "warnings": [
+    "alpha_decay",
+    "fresh_start"
+   ],
+   "trend": {
+    "rank_prev": 72,
+    "rank_now": 1,
+    "alpha_delta": 0.00088
+   }
+  },
+  {
+   "exchange": "binance",
+   "portfolio_id": "4113397127009634560",
+   "nick": "汤普猫",
+   "tier": "A",
+   "weight": 0.7,
+   "score": 2.262,
+   "metrics": {
+    "alpha": 0.02896153637767269,
+    "t": 2.578381866590234,
+    "payoff": 1.4081927866873838,
+    "lev_med": 10.0,
+    "mdd": 23.796482,
+    "n": 84,
+    "n_alpha": 72,
+    "roi": 247.0176503
+   },
+   "warnings": [],
+   "trend": {
+    "rank_prev": 191,
+    "rank_now": 2,
+    "alpha_delta": 0.011897
+   }
+  },
+  {
+   "exchange": "binance",
+   "portfolio_id": "4993536743184078592",
+   "nick": "Cooma",
+   "tier": "B",
+   "weight": 0.1,
+   "score": 2.116,
+   "metrics": {
+    "alpha": 0.01746398932325422,
+    "t": 4.666523840854985,
+    "payoff": 0.6072863007108048,
+    "lev_med": 10.0,
+    "mdd": 31.916563,
+    "n": 137,
+    "n_alpha": 110,
+    "roi": 318.78807317
+   },
+   "warnings": [
+    "alpha_decay"
+   ],
+   "trend": {
+    "rank_prev": 94,
+    "rank_now": 3,
+    "alpha_delta": -0.000907
+   }
+  },
+  {
+   "exchange": "binance",
+   "portfolio_id": "5065357423393074433",
+   "nick": "黑袍小分队",
+   "tier": "B",
+   "weight": 0.05,
+   "score": 1.536,
+   "metrics": {
+    "alpha": 0.016469978645707622,
+    "t": 2.6590617891812265,
+    "payoff": 0.979744740652562,
+    "lev_med": 13.0,
+    "mdd": 64.170327,
+    "n": 158,
+    "n_alpha": 99,
+    "roi": 165.69621738
+   },
+   "warnings": [
+    "fresh_start",
+    "mdd_high"
+   ],
+   "trend": {
+    "rank_prev": 214,
+    "rank_now": 4,
+    "alpha_delta": 0.0053
+   }
+  },
+  {
+   "exchange": "binance",
+   "portfolio_id": "5088110611707352576",
+   "nick": "重生之我在币圈捡垃圾-",
+   "tier": "B",
+   "weight": 0.05,
+   "score": 1.343,
+   "metrics": {
+    "alpha": 0.006033107353136959,
+    "t": 3.8461805292334876,
+    "payoff": 1.1023048883094428,
+    "lev_med": 5.0,
+    "mdd": 60.792937,
+    "n": 294,
+    "n_alpha": 292,
+    "roi": 616.93534582
+   },
+   "warnings": [
+    "alpha_decay",
+    "fresh_start",
+    "mdd_high"
+   ],
+   "trend": {
+    "rank_prev": 151,
+    "rank_now": 5,
+    "alpha_delta": -0.000895
+   }
+  }
+ ],
+ "removed": []
+}
