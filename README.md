@@ -29,14 +29,34 @@ and one whose "profit" is 96.9% a single trade at 145x.
 
 | exchange | traders scraped | survivors | report |
 |---|---|---|---|
-| Binance | ~600 | **5** | [TOP5.md](analysis/TOP5.md) |
-| OKX | 261 | 5 (2 recommended) | [TOP5_OKX.md](analysis/TOP5_OKX.md) |
+| Binance | ~600 → **951** (2026-09-23) | **5** | [TOP5.md](analysis/TOP5.md) |
+| OKX | 261 → **287** (2026-09-23) | 5 (2 recommended) → **0** | [TOP5_OKX.md](analysis/TOP5_OKX.md) |
 | Phemex | 192 | 0 | [TOP5_PHEMEX.md](analysis/TOP5_PHEMEX.md) |
 | Bybit | 295 | 0 | [TOP5_BYBIT.md](analysis/TOP5_BYBIT.md) |
 | Bitget | 400 | 0 | [TOP5_BITGET.md](analysis/TOP5_BITGET.md) |
 | KuCoin | 165 | 0 | [TOP5_KUCOIN.md](analysis/TOP5_KUCOIN.md) |
 
 Cross-exchange ranking: [COMBINED_RANKING.md](analysis/COMBINED_RANKING.md).
+
+## The 2026-09-23 re-run: a different regime, a different answer
+
+The table above was measured in one market regime (August). Re-scraped from scratch on
+2026-09-23 — 951 Binance portfolios and 150,165 closed positions, 287 OKX lead traders —
+the same unchanged pipelines say something else:
+
+- **OKX drops from 5 survivors to 0**, both recommended picks included.
+- **Four of six audited leads come off**, and no replacement clears the bar. "No
+  replacement" is the finding, not a failure to search.
+- The most instructive case is a lead whose alpha *held*: +617% headline ROI, alpha
+  +0.60% at t=3.85 — and **1,862 copiers collectively down $322,314**. Binance publishes
+  realized copier PnL per lead, and across the 120 highest-scoring portfolios, **51% of
+  the leads with ≥5 lifetime copiers have lost money for them.** Skill on the lead's own
+  fills and skill you can buy are not the same quantity.
+- A new trap on OKX: its 100-row history cap is a *rolling* window, so a past month's
+  benchmark shrinks and keeps only the traders who have since traded little. **Alpha is
+  not comparable across two OKX snapshots.**
+
+See [COMBINED_RANKING.md](analysis/COMBINED_RANKING.md) for the verdicts and the numbers.
 
 ## Versus the public rankings
 
@@ -77,6 +97,7 @@ dead code, "survivors" whose entire edge lived outside the visible data window.
 4. **History truncation** — every exchange caps or prunes what you can see; some traders' "track record" is their last 50 trades
 5. **Hidden drawdowns** — the pristine window you can see often hides the crash you can't
 6. **Uncopyable sizing** — a real edge expressed in $12 positions is not a real edge for you
+7. **The edge you can't buy** *(new, 2026-09-23)* — alpha is measured on the lead's fills, not yours. Of the 120 highest-scoring Binance portfolios, 51% of those with ≥5 lifetime copiers have net-negative *copier* PnL — including one at +617% ROI whose 1,862 copiers are down $322k
 
 Full checklist for auditing a new exchange: [docs/exchange-integration-checklist.md](docs/exchange-integration-checklist.md).
 
