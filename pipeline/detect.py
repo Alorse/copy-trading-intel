@@ -1,9 +1,10 @@
 """Anti-inflation battery. Each rule emits one flag per trader.
 Reference cases: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
-import datetime as dt, json
+import collections, datetime as dt, json
 
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
-                 "ruin_risk", "not_copyable", "insufficient", "no_alpha"}
+                 "ruin_risk", "not_copyable", "insufficient", "no_alpha",
+                 "went_dark", "mass_close_loss", "no_listing_data"}
 WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high",
             "fresh_start", "thin_benchmark"}
 
@@ -20,14 +21,91 @@ MAX_CELL_SHARE_FLAG = 0.40
 # even the old retention could have exposed the pre-public record.
 FRESH_START_DAYS = 120
 
+# --- the "went dark / died" guard (added 2026-09-23) -------------------------
+# Post-mortem of 牛熊摆渡人 (5096968193101811713): its LAST OPENING was
+# 2026-08-28, on 2026-09-02 it closed 14 positions in the same second for
+# -15,295 USDT, and it never traded again. Every pre-existing rule reads the
+# shape of the closed trades; none of them reads whether the trader is still
+# there. These three do: it stopped opening (`went_dark`), it was liquidated
+# (`mass_close_loss`), or it fell off the leaderboard (`no_listing_data`).
+#
+# The first two clocks are UNIVERSE-RELATIVE (the newest opening in the
+# snapshot), like `inactive`'s: that makes the rule independent of when the
+# snapshot is analysed, and of an exchange-wide halt, which is not a
+# trader-specific signal.
+
+# No position OPENED in this many days. `inactive` already watches closes, but a
+# dying portfolio keeps closing for weeks after it stops opening: on 2026-09-23
+# 牛熊摆渡人 was 26.2 days past its last opening and only 21.0 days past its last
+# close, i.e. 9 days short of tripping `inactive`, which stayed silent on it.
+# 21 is the largest value that still catches it. Cost, measured on the 2026-09-23
+# snapshot (950 traders, 553 still on the leaderboard): fires on 21.3% of all /
+# 18.8% of leaderboard traders, but on 0 of the 7 that survive the other
+# disqualifiers -- every trader it flags was already out on another rule, so its
+# price today is nil and its value is forward-looking.
+WENT_DARK_DAYS = 21
+
+# A same-second close cluster this large whose net loss erases this share of
+# everything the trader ever earned. The count keeps one catastrophic trade in
+# ruin_risk/mdd territory where it belongs; the share keeps the rule scale-free.
+# Fires on 10 of 950 (1.1%), 2 of 553 leaderboard traders (0.4%), and on 0 of the
+# 7 that survive the other disqualifiers.
+MASS_CLOSE_MIN_POSITIONS = 5
+MASS_CLOSE_LOSS_SHARE = 0.50
+
+# The third way a trader leaves: off the leaderboard we scrape. `no_listing_data`
+# says only that -- NOT that the portfolio is closed (verified 2026-09-23: of the
+# 398 such portfolios, 再也不做空了 is still ACTIVE and copyable, while the genuinely
+# retired 牛熊摆渡人 returns code 11012028 from lead-portfolio/detail; distinguishing
+# the two needs that endpoint, which the scrape stage does not yet call).
+# It is disqualifying anyway, because for these traders the listing-only fields
+# (roi, mdd, startTime) are absent, so `mdd_high`, `roi_artifact` and
+# `fresh_start` silently cannot fire -- 再也不做空了 reached tier A and 30% weight on
+# 2026-09-23 with an empty flag list and an unknown drawdown. The historical union
+# exists so de-copy can watch an incumbent decay after it drops out of the
+# ranking (see the design doc), not to recruit new picks out of it.
+
+
+def _mass_closes(con, snapshot_date, exchange):
+    """trader_id -> (n, net_pnl) of its worst same-second close cluster, kept
+    only for the traders the cluster actually disqualifies.
+
+    Grouping is by SECOND, not millisecond: an exchange-side mass close spreads
+    its fills over a few hundred milliseconds.
+    """
+    clusters = collections.defaultdict(lambda: collections.defaultdict(
+        lambda: [0, 0.0]))
+    gross_win = collections.Counter()
+    for tid, cms, pnl in con.execute(
+            "SELECT trader_id, closed_ms, closing_pnl FROM positions "
+            "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange)):
+        pnl = pnl or 0.0
+        if pnl > 0:
+            gross_win[tid] += pnl
+        if cms is None:
+            continue
+        c = clusters[tid][cms // 1000]
+        c[0] += 1
+        c[1] += pnl
+    out = {}
+    for tid, secs in clusters.items():
+        for n, net in secs.values():
+            if (n >= MASS_CLOSE_MIN_POSITIONS and net < 0 and
+                    -net >= MASS_CLOSE_LOSS_SHARE * gross_win[tid]):
+                worst = out.get(tid)
+                if worst is None or net < worst[1]:
+                    out[tid] = (n, net)
+    return out
+
 
 def run(con, snapshot_date, exchange='binance'):
     ms = con.execute("SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
                      (snapshot_date, exchange)).fetchall()
     snap = {r['trader_id']: r for r in con.execute(
-        "SELECT trader_id, roi, start_time FROM trader_snapshot "
+        "SELECT trader_id, roi, start_time, listed FROM trader_snapshot "
         "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
     roi = {k: v['roi'] for k, v in snap.items()}
+    listed = {k: v['listed'] for k, v in snap.items()}
     snap_ms = dt.datetime.fromisoformat(snapshot_date).replace(
         tzinfo=dt.UTC).timestamp() * 1000
     maxclose = con.execute(
@@ -45,6 +123,12 @@ def run(con, snapshot_date, exchange='binance'):
         "SELECT trader_id, SUM(closing_pnl) FROM positions "
         "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
         (snapshot_date, exchange))}
+    last_open = {r[0]: r[1] for r in con.execute(
+        "SELECT trader_id, MAX(opened_ms) FROM positions "
+        "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
+        (snapshot_date, exchange))}
+    maxopen = max((v for v in last_open.values() if v is not None), default=0)
+    mass_close = _mass_closes(con, snapshot_date, exchange)
     out = {}
     for m in ms:
         f = []
@@ -83,6 +167,13 @@ def run(con, snapshot_date, exchange='binance'):
         lc = last_close.get(tid)
         if lc is not None and maxclose and lc < maxclose - 30 * 86400000:
             f.append('inactive')
+        lo = last_open.get(tid)
+        if lo is not None and maxopen and lo < maxopen - WENT_DARK_DAYS * 86400000:
+            f.append('went_dark')
+        if tid in mass_close:
+            f.append('mass_close_loss')
+        if listed.get(tid) == 0:
+            f.append('no_listing_data')
         # the public record starts where the trader chose to start it, and what
         # came before is unverifiable: of 177 portfolios whose pre-startTime
         # history was still visible on 2026-08-25, 86% were net NEGATIVE before

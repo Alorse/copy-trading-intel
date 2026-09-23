@@ -220,3 +220,34 @@ traders: read it alongside the "Portfolio opened" block the report prints.
 - `analysis/TOP5.md` — 5 traders to copy, the consensus of 4 independent analyses, with the rejects.
 - **What is missing**: a real forward test on new data (everything above lives in a single regime
   cycle), a validated exit rule, and observing the candidates through a prolonged bear market.
+
+## Binance: telling a retired portfolio from a merely unranked one (2026-09-23)
+
+`GET /bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/detail?portfolioId=<id>`
+(same `BUA` headers as the other Binance calls) is the only endpoint found that
+distinguishes the two, and it matters: the top-600 listing is a **ranking cut**, not
+the copyable universe. On the 2026-09-23 snapshot, 397 of 950 portfolios with metrics
+were absent from the listing and most of them are alive.
+
+| portfolio | listing | `detail` | reading |
+|---|---|---|---|
+| Cooma `4993536743184078592` | in top-600 | `000000`, `status=ACTIVE` | ranked and copyable |
+| 秋高看山势 `5016123555802443776` | **absent** | `000000`, `status=ACTIVE` | copyable, just below rank 600 |
+| 再也不做空了 `4563197729960674304` | **absent** | `000000`, `status=ACTIVE` | copyable, just below rank 600 |
+| 牛熊摆渡人 `5096968193101811713` | **absent** | **`11012028`, `data=null`** | **genuinely gone** |
+
+⚠️ The position-history endpoint does **not** discriminate: it still served 98 closed
+positions for the retired 牛熊摆渡人. Absence from the listing does not mean retired, and
+presence of history does not mean alive — only `detail` separates them.
+
+Useful fields on `detail` (not present in the listing): `status`, `aumAmount`,
+`marginBalance`, `copierPnl`, `currentCopyCount`/`totalCopyCount`, `lastTradeTime`,
+`closedTime`, `sharpRatio`, `fixedAmountMinCopyUsd` (the platform's minimum copy
+amount — $10 for most leads, but $1,000 for 重生之我在币圈捡垃圾-), `positionShow`
+(`False` on all six audited leads, which is why no open position is visible for any
+of them).
+
+`pipeline/detect.py`'s `no_listing_data` flag is deliberately named after what it can
+prove — the listing row is missing, so `mdd`/`roi`/`startTime` are unknown — and not
+"delisted", which would need this endpoint. Wiring `detail` into the scrape stage is
+the obvious next step; it costs one extra request per portfolio.

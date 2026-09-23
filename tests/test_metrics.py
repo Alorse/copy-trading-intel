@@ -21,7 +21,9 @@ def _seed(con):
     # target trader: 5 trades, pr = +2%,+2%,+2%,+2%,-1% -> same alpha (bench 0)
     for j, (c, pnl) in enumerate([(102, 20)] * 4 + [(99, -10)]):
         _pos(con, "T", "BTCUSDT", "Long", base + 1000 + j, 100, c, pnl)
-    con.execute("INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?,NULL)",
+    con.execute("INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
+                "roi,pnl,aum,win_rate,mdd,start_time,listed) "
+                "VALUES (?,?,?,?,?,?,?,?,?,NULL,1)",
                 (D, EX, "T", "T", 50.0, 50.0, 1000.0, 75.0, 25.0))
     con.commit()
 

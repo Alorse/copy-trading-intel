@@ -49,3 +49,31 @@ def test_ingest_survives_missing_listing(con, snap_dir, tmp_path):
     assert counts["binance"] == 1
     assert con.execute("SELECT start_time FROM trader_snapshot "
                        "WHERE exchange='binance'").fetchone()[0] is None
+
+
+def test_ingest_marks_listing_membership(con, snap_dir):
+    """A portfolio present in <exchange>_list.json is `listed`; one reached only
+    through the historical-union `extra_ids` path is not. Without this the two are
+    indistinguishable in the DB, because the scraper writes the same record shape
+    for both and every listing-only field (roi, mdd, startTime) lands as 0/NULL."""
+    import json
+    raw = snap_dir / "binance_raw.jsonl"
+    rec = json.loads(raw.read_text().splitlines()[0])
+    rec["portfolioId"] = "P_UNLISTED"          # not in binance_list.json
+    with open(raw, "a") as fh:
+        fh.write(json.dumps(rec) + "\n")
+    _load(con, snap_dir)
+    got = {r["trader_id"]: r["listed"] for r in con.execute(
+        "SELECT trader_id, listed FROM trader_snapshot WHERE exchange='binance'")}
+    assert got == {"P1": 1, "P_UNLISTED": 0}
+
+
+def test_ingest_leaves_listing_membership_unknown_without_a_listing(con, snap_dir):
+    # no listing file at all (Phemex, or a snapshot scraped before the field
+    # existed) -> NULL, never a fabricated 0
+    (snap_dir / "binance_list.json").unlink()
+    _load(con, snap_dir)
+    assert con.execute("SELECT listed FROM trader_snapshot "
+                       "WHERE exchange='binance'").fetchone()[0] is None
+    assert con.execute("SELECT listed FROM trader_snapshot "
+                       "WHERE exchange='phemex'").fetchone()[0] is None

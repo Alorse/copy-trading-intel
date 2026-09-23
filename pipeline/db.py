@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS trader_snapshot (
   snapshot_date TEXT NOT NULL, exchange TEXT NOT NULL,
   trader_id TEXT NOT NULL, nick TEXT,
   roi REAL, pnl REAL, aum REAL, win_rate REAL, mdd REAL,
-  start_time INTEGER,
+  start_time INTEGER, listed INTEGER,
   PRIMARY KEY (snapshot_date, exchange, trader_id));
 CREATE TABLE IF NOT EXISTS positions (
   snapshot_date TEXT NOT NULL, exchange TEXT NOT NULL,
@@ -46,6 +46,7 @@ TABLES = ["snapshots", "trader_snapshot", "positions",
 # not add them to a DB that already exists, and the DB is expensive to rebuild
 # (it needs the raw snapshots), so add them in place.
 _ADDED = [("trader_snapshot", "start_time", "INTEGER"),
+          ("trader_snapshot", "listed", "INTEGER"),
           ("trader_metrics", "n_alpha_dropped_self_dominated", "INTEGER"),
           ("trader_metrics", "max_cell_share", "REAL")]
 

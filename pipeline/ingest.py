@@ -17,6 +17,35 @@ def _i(x):
         return None
 
 
+def _listing(snap_dir, exchange):
+    """The <exchange>_list.json rows, or None if there is no listing file."""
+    path = os.path.join(snap_dir, f'{exchange}_list.json')
+    if not os.path.exists(path):
+        return None
+    try:
+        data = json.load(open(path))
+    except (ValueError, OSError):
+        return None
+    return data if isinstance(data, list) else None
+
+
+def _listed_ids(snap_dir, exchange):
+    """The ids the scrape listing returned, or None if it has no listing file.
+
+    None means "not known", not "not listed": Phemex ships no listing, and a
+    snapshot taken before this field existed has none either. A trader absent
+    from a listing that DOES exist was reached only through the historical-union
+    `extra_ids` path, so every listing-only field (roi, mdd, startTime) is
+    missing for them -- which silently disables three detect screens.
+    """
+    data = _listing(snap_dir, exchange)
+    if data is None:
+        return None
+    key = 'leadPortfolioId' if exchange == 'binance' else 'userId'
+    return {str(r[key]) for r in data
+            if isinstance(r, dict) and r.get(key) is not None}
+
+
 def _start_times(snap_dir, exchange):
     """portfolio_id -> startTime (ms) from the scrape listing.
 
@@ -25,12 +54,8 @@ def _start_times(snap_dir, exchange):
     one, against 177 of 485 three days earlier), so it is the hard floor of every
     visible track record -- see "Trap 7" in SKILL.md.
     """
-    path = os.path.join(snap_dir, f'{exchange}_list.json')
-    if not os.path.exists(path):
-        return {}
-    try:
-        data = json.load(open(path))
-    except (ValueError, OSError):
+    data = _listing(snap_dir, exchange)
+    if data is None:
         return {}
     key = 'leadPortfolioId' if exchange == 'binance' else 'userId'
     return {str(r[key]): r['startTime'] for r in data
@@ -49,6 +74,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             counts[ex] = 0
             continue
         starts = _start_times(snap_dir, ex)
+        listed = _listed_ids(snap_dir, ex)
         traders, pos_rows, trader_rows = set(), [], {}
         for r in csv.DictReader(open(path)):
             if ex == 'binance':
@@ -62,7 +88,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['avg_cost']), _f(r['avg_close'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'], _f(r['p_roi']),
                                     _f(r['p_pnl']), _f(r['aum']), _f(r['win_rate']),
-                                    _f(r['mdd']), _i(starts.get(tid)))
+                                    _f(r['mdd']), _i(starts.get(tid)),
+                                    None if listed is None else int(tid in listed))
             else:
                 tid = r['trader_id']
                 marg, oval = _f(r['margin'], 0), _f(r['open_val'], 0)
@@ -76,14 +103,17 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['open_price']), _f(r['close_price'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'],
                                     None, None, None, None, None,
-                                    _i(starts.get(tid)))
+                                    _i(starts.get(tid)),
+                                    None if listed is None else int(tid in listed))
             traders.add(tid)
         con.executemany(
             "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
             "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
             "avg_cost,avg_close) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", pos_rows)
         con.executemany(
-            "INSERT INTO trader_snapshot VALUES (?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
+            "roi,pnl,aum,win_rate,mdd,start_time,listed) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             list(trader_rows.values()))
         con.execute("INSERT INTO snapshots VALUES (?,?,?,?,'')",
                     (snapshot_date, ex, len(traders), len(pos_rows)))
