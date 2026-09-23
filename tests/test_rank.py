@@ -1,3 +1,4 @@
+from conftest import insert_trader_snapshot
 from pipeline import rank
 
 EX, D = "binance", "2026-09-01"
@@ -38,11 +39,7 @@ def test_metrics_block_exposes_roi(con):
     # the roster's own headline ROI: without it the report forces you to look at
     # the excluded traders' ROI and not the picked ones'
     _tm(con, "vet")
-    con.execute("INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-                "roi,pnl,aum,win_rate,mdd,start_time,listed) "
-                "VALUES (?,?,?,?,?,?,?,?,?,NULL,1)",
-                (D, EX, "vet", "vet", 412.5, 0, 0, 0, 20.0))
-    con.commit()
+    insert_trader_snapshot(con, D, EX, "vet", roi=412.5, mdd=20.0)
     m = rank.run(con, D, EX)["traders"][0]["metrics"]
     assert m["roi"] == 412.5
 
@@ -100,3 +97,30 @@ def test_insufficient_only_goes_to_W_not_X(con):
     tiers = {r["trader_id"]: r["tier"] for r in con.execute(
         "SELECT trader_id, tier FROM trader_metrics WHERE snapshot_date=?", (D,))}
     assert tiers["newbie_ins"] == "W" and tiers["fraud"] == "X"
+
+
+def test_unscreenable_traders_go_to_watchlist_not_excluded(con):
+    """W = newcomers and traders we could not screen; X = defects.
+
+    `insufficient` already had this carve-out, written as an exact-set match so
+    it silently stopped carving the moment a second not-a-defect flag existed.
+    `no_listing_data` is that second flag: it says the listing row was missing,
+    not that the trader did anything wrong, and the report publishes tier X
+    beside `loss_hider` and `roi_artifact`.
+    """
+    _tm(con, "clean")                                        # fills the roster
+    _tm(con, "newcomer", flags='["insufficient"]')
+    _tm(con, "unscreenable", flags='["no_listing_data"]')
+    _tm(con, "both", flags='["insufficient", "no_listing_data"]')
+    _tm(con, "fraud", flags='["loss_hider"]')
+    _tm(con, "mixed", flags='["no_listing_data", "loss_hider"]')
+    rank.run(con, D, EX)
+    tiers = {r["trader_id"]: r["tier"] for r in con.execute(
+        "SELECT trader_id, tier FROM trader_metrics WHERE snapshot_date=?", (D,))}
+    assert tiers["newcomer"] == "W"
+    assert tiers["unscreenable"] == "W"
+    assert tiers["both"] == "W"
+    assert tiers["fraud"] == "X"
+    assert tiers["mixed"] == "X"          # a real defect still outranks the caveat
+    # and neither reaches the roster either way
+    assert {t["nick"] for t in rank.run(con, D, EX)["traders"]} == {"clean"}

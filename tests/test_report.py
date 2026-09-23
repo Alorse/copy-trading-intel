@@ -1,3 +1,4 @@
+from conftest import insert_trader_snapshot
 import json
 
 from pipeline import report
@@ -7,10 +8,8 @@ def test_report_contains_sections(con, tmp_path):
     con.execute(
         "INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,n,tier,flags)"
         " VALUES ('2026-09-01','binance','v','vicky',100,'X','[\"roi_artifact\"]')")
-    con.execute("INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-                "roi,pnl,aum,win_rate,mdd,start_time,listed) "
-                "VALUES ('2026-09-01','binance','v','vicky',5435.9,0,0,0,0,NULL,1)")
-    con.commit()
+    insert_trader_snapshot(con, "2026-09-01", "binance", "v", nick="vicky",
+                           roi=5435.9)
     roster = {"generated": "2026-09-01", "snapshot": "2026-09-01", "engine": "v1.0",
               "traders": [{"exchange": "binance", "portfolio_id": "1", "nick": "suoha",
                            "tier": "A", "weight": 0.5, "score": 4.1,

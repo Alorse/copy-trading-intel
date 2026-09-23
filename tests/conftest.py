@@ -3,6 +3,25 @@ import pytest
 from pipeline import db as dbmod
 
 
+def insert_trader_snapshot(con, date, exchange, tid, nick=None, roi=50.0, pnl=0.0,
+                           aum=0.0, win_rate=0.0, mdd=0.0, start_time=None,
+                           listed=1):
+    """One row of trader_snapshot, by column name.
+
+    Spelled out here rather than in each test file so that adding a column is a
+    one-line change: `listed` cost four identical edits across test files that
+    do not care about it. tests/test_db.py deliberately does NOT use this -- it
+    hand-writes a pre-migration 9-column table as its fixture.
+    """
+    con.execute(
+        "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
+        "roi,pnl,aum,win_rate,mdd,start_time,listed) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        (date, exchange, tid, tid if nick is None else nick, roi, pnl, aum,
+         win_rate, mdd, start_time, listed))
+    con.commit()
+
+
 @pytest.fixture
 def con(tmp_path):
     c = dbmod.connect(tmp_path / "t.sqlite")

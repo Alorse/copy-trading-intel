@@ -1,34 +1,36 @@
 import json
+from conftest import insert_trader_snapshot
 from pipeline import detect
 
 D, EX = "2026-09-01", "binance"
+DAY = 86400000
+T0 = 1789000000000          # an arbitrary "now" for the universe clock
 
 
-def _tm(con, tid, **kw):
+def _pos(con, tid, opened_ms, closed_ms, pnl, snapshot=D):
+    con.execute(
+        "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
+        "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
+        "avg_cost,avg_close) VALUES (?,?,?,?, 'BTCUSDT','Long',?,?,1,1,1,1,?,0,1,1)",
+        (snapshot, EX, tid, tid, opened_ms, closed_ms, pnl))
+    con.commit()
+
+
+def _tm(con, tid, start_time=None, listed=1, **kw):
     # mdd on a PERCENTAGE scale (like Binance's real data)
     base = dict(n=100, n_alpha=80, alpha=0.01, t_stat=3.0, payoff=1.2, wr=70.0,
                 conc_top1=20.0, ruin=-100.0, mdd=20.0, lev_med=5, lev_p90=10,
                 marg_med=500.0, dur_med=4.0, months_active=4, alpha_h1=0.01,
                 alpha_h2=0.012, monthly_alpha='{"2025-04":0.01,"2025-05":0.012}')
-    snap_only = ("start_time", "listed")   # trader_snapshot columns, not metrics
-    base.update({k: v for k, v in kw.items() if k not in snap_only})
+    base.update(kw)
     cols = ",".join(base)
     con.execute(
         f"INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,nick,{cols}) "
         f"VALUES (?,?,?,?,{','.join('?'*len(base))})",
         (D, EX, tid, tid, *base.values()))
-    con.execute("INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-                "roi,pnl,aum,win_rate,mdd,start_time,listed) "
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                (D, EX, tid, tid, 50.0, 0, 0, 0, base["mdd"],
-                 kw.get("start_time"), kw.get("listed", 1)))
-    # a recent position so `inactive` is not triggered
-    con.execute(
-        "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
-        "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
-        "avg_cost,avg_close) VALUES (?,?,?,?, 'BTCUSDT','Long',1,1000,1,1,1,1,0,0,1,1)",
-        (D, EX, tid, tid))
-    con.commit()
+    insert_trader_snapshot(con, D, EX, tid, mdd=base["mdd"],
+                           start_time=start_time, listed=listed)
+    _pos(con, tid, 1, 1000, 0)   # a recent position so `inactive` is not triggered
 
 
 def test_clean_trader_no_flags(con):
@@ -128,19 +130,6 @@ def test_fresh_start_silent_without_start_time(con):
 # Post-mortem of 牛熊摆渡人 (portfolio 5096968193101811713): last opening
 # 2026-08-28, then on 2026-09-02 14 positions closed in the same second for
 # -15,295 USDT, and nothing since. Both halves of that shape get a flag.
-
-DAY = 86400000
-T0 = 1789000000000          # an arbitrary "now" for the universe clock
-
-
-def _pos(con, tid, opened_ms, closed_ms, pnl, snapshot=D):
-    con.execute(
-        "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
-        "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
-        "avg_cost,avg_close) VALUES (?,?,?,?, 'BTCUSDT','Long',?,?,1,1,1,1,?,0,1,1)",
-        (snapshot, EX, tid, tid, opened_ms, closed_ms, pnl))
-    con.commit()
-
 
 def test_went_dark_flags_a_trader_who_stopped_opening(con):
     _tm(con, "active")

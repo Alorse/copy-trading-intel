@@ -103,8 +103,8 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     for c in cands:
         if c['tid'] in in_roster:
             tier = c['tier']
-        elif c['flags'] & BAD == {'insufficient'}:
-            tier = 'W'                        # newcomer, not fraud (spec)
+        elif c['flags'] & BAD <= det.NOT_A_DEFECT:
+            tier = 'W'                        # newcomer or unscreenable, not fraud
         elif c['disq']:
             tier = 'X'
         else:

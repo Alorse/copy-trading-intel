@@ -7,6 +7,11 @@ DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact"
                  "went_dark", "mass_close_loss", "no_listing_data"}
 WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high",
             "fresh_start", "thin_benchmark"}
+# Disqualifying, but absence of evidence rather than evidence of a defect: these
+# keep a trader out of the roster without calling them a fraud. `rank` sends a
+# trader marked only by these to tier W, not X, so the report does not list them
+# beside `loss_hider` and `roi_artifact`.
+NOT_A_DEFECT = {"insufficient", "no_listing_data"}
 
 # A leave-self-out alpha computed against a benchmark cell where the trader IS
 # most of the "other traders" evidence rests on a thin sample of genuinely
@@ -29,10 +34,14 @@ FRESH_START_DAYS = 120
 # there. These three do: it stopped opening (`went_dark`), it was liquidated
 # (`mass_close_loss`), or it fell off the leaderboard (`no_listing_data`).
 #
-# The first two clocks are UNIVERSE-RELATIVE (the newest opening in the
-# snapshot), like `inactive`'s: that makes the rule independent of when the
-# snapshot is analysed, and of an exchange-wide halt, which is not a
-# trader-specific signal.
+# The rule this module follows for clocks: an ABSOLUTE clock (`snap_ms`, from
+# snapshot_date) for age-of-evidence questions like `fresh_start`, and a
+# UNIVERSE-RELATIVE clock (the newest opening/close in the snapshot) for
+# liveness-versus-peers questions like `inactive` and `went_dark`. The reason is
+# not determinism -- `snap_ms` comes from snapshot_date, so both are already
+# reproducible on an old snapshot -- it is that `positions` carries scrape lag,
+# so the newest timestamp in the snapshot is the true "as of" instant for
+# position data, and that an exchange-wide halt is not a trader-specific signal.
 
 # No position OPENED in this many days. `inactive` already watches closes, but a
 # dying portfolio keeps closing for weeks after it stops opening: on 2026-09-23
@@ -64,38 +73,29 @@ MASS_CLOSE_LOSS_SHARE = 0.50
 # 2026-09-23 with an empty flag list and an unknown drawdown. The historical union
 # exists so de-copy can watch an incumbent decay after it drops out of the
 # ranking (see the design doc), not to recruit new picks out of it.
+# NOTE: `listed == 0` is a PROXY for "the listing-only fields are missing". The
+# day `scrape` starts calling lead-portfolio/detail, the two diverge and this
+# trigger needs revisiting; the honest fix underneath is for flatten.py to stop
+# defaulting the absent trader-level fields (roi, pnl, aum, winRate, mdd) to
+# 0.0, so "never measured" reaches SQL as NULL instead of a fabricated zero.
 
 
-def _mass_closes(con, snapshot_date, exchange):
-    """trader_id -> (n, net_pnl) of its worst same-second close cluster, kept
-    only for the traders the cluster actually disqualifies.
+def _mass_closes(con, snapshot_date, exchange, gross_win):
+    """The traders with a disqualifying same-second close cluster.
 
     Grouping is by SECOND, not millisecond: an exchange-side mass close spreads
-    its fills over a few hundred milliseconds.
+    its fills over a few hundred milliseconds. The grouping and both count/sign
+    predicates run in SQL, so only the handful of candidate clusters crosses
+    into Python instead of every closed position in the snapshot.
     """
-    clusters = collections.defaultdict(lambda: collections.defaultdict(
-        lambda: [0, 0.0]))
-    gross_win = collections.Counter()
-    for tid, cms, pnl in con.execute(
-            "SELECT trader_id, closed_ms, closing_pnl FROM positions "
-            "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange)):
-        pnl = pnl or 0.0
-        if pnl > 0:
-            gross_win[tid] += pnl
-        if cms is None:
-            continue
-        c = clusters[tid][cms // 1000]
-        c[0] += 1
-        c[1] += pnl
-    out = {}
-    for tid, secs in clusters.items():
-        for n, net in secs.values():
-            if (n >= MASS_CLOSE_MIN_POSITIONS and net < 0 and
-                    -net >= MASS_CLOSE_LOSS_SHARE * gross_win[tid]):
-                worst = out.get(tid)
-                if worst is None or net < worst[1]:
-                    out[tid] = (n, net)
-    return out
+    rows = con.execute(
+        "SELECT trader_id, COUNT(*), SUM(closing_pnl) FROM positions "
+        "WHERE snapshot_date=? AND exchange=? AND closed_ms IS NOT NULL "
+        "GROUP BY trader_id, closed_ms/1000 "
+        "HAVING COUNT(*) >= ? AND SUM(closing_pnl) < 0",
+        (snapshot_date, exchange, MASS_CLOSE_MIN_POSITIONS))
+    return {tid for tid, _n, net in rows
+            if -net >= MASS_CLOSE_LOSS_SHARE * (gross_win.get(tid) or 0.0)}
 
 
 def run(con, snapshot_date, exchange='binance'):
@@ -108,27 +108,23 @@ def run(con, snapshot_date, exchange='binance'):
     listed = {k: v['listed'] for k, v in snap.items()}
     snap_ms = dt.datetime.fromisoformat(snapshot_date).replace(
         tzinfo=dt.UTC).timestamp() * 1000
-    maxclose = con.execute(
-        "SELECT MAX(closed_ms) FROM positions WHERE snapshot_date=? AND exchange=?",
-        (snapshot_date, exchange)).fetchone()[0] or 0
-    last_close = {r['trader_id']: r[1] for r in con.execute(
-        "SELECT trader_id, MAX(closed_ms) FROM positions "
+    # one pass over `positions` for every per-trader aggregate the rules need
+    agg = {r[0]: r for r in con.execute(
+        "SELECT trader_id, MAX(closed_ms), MAX(opened_ms), SUM(closing_pnl), "
+        "SUM(CASE WHEN closing_pnl>0 THEN closing_pnl ELSE 0 END) FROM positions "
         "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
         (snapshot_date, exchange))}
+    last_close = {k: v[1] for k, v in agg.items()}
+    last_open = {k: v[2] for k, v in agg.items()}
+    realized = {k: v[3] for k, v in agg.items()}
+    maxclose = max((v for v in last_close.values() if v is not None), default=0)
+    maxopen = max((v for v in last_open.values() if v is not None), default=0)
     unreal = {r['trader_id']: r[1] for r in con.execute(
         "SELECT trader_id, SUM(unrealized_pnl) FROM open_positions "
         "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
         (snapshot_date, exchange))}
-    realized = {r['trader_id']: r[1] for r in con.execute(
-        "SELECT trader_id, SUM(closing_pnl) FROM positions "
-        "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
-        (snapshot_date, exchange))}
-    last_open = {r[0]: r[1] for r in con.execute(
-        "SELECT trader_id, MAX(opened_ms) FROM positions "
-        "WHERE snapshot_date=? AND exchange=? GROUP BY trader_id",
-        (snapshot_date, exchange))}
-    maxopen = max((v for v in last_open.values() if v is not None), default=0)
-    mass_close = _mass_closes(con, snapshot_date, exchange)
+    mass_close = _mass_closes(con, snapshot_date, exchange,
+                              {k: v[4] for k, v in agg.items()})
     out = {}
     for m in ms:
         f = []

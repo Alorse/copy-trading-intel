@@ -29,37 +29,32 @@ def _listing(snap_dir, exchange):
     return data if isinstance(data, list) else None
 
 
-def _listed_ids(snap_dir, exchange):
-    """The ids the scrape listing returned, or None if it has no listing file.
+def _listing_index(snap_dir, exchange):
+    """(start_times, listed_ids) from <exchange>_list.json, in ONE read.
 
-    None means "not known", not "not listed": Phemex ships no listing, and a
-    snapshot taken before this field existed has none either. A trader absent
-    from a listing that DOES exist was reached only through the historical-union
-    `extra_ids` path, so every listing-only field (roi, mdd, startTime) is
-    missing for them -- which silently disables three detect screens.
+    `start_times` is portfolio_id -> startTime (ms). startTime is when the lead
+    portfolio opened. Binance only serves positions opened at or after it
+    (verified 2026-08-28: 0 of 590 portfolios had an older one, against 177 of
+    485 three days earlier), so it is the hard floor of every visible track
+    record -- see "Trap 7" in SKILL.md.
+
+    `listed_ids` is every id the listing returned, or None when there is no
+    listing file: None means "not known", not "not listed" -- Phemex ships no
+    listing, and a snapshot taken before this field existed has none either. A
+    trader absent from a listing that DOES exist was reached only through the
+    historical-union `extra_ids` path, so every listing-only field (roi, mdd,
+    startTime) is missing for them -- which silently disables three detect
+    screens. The two are not interchangeable: a listed row carrying no
+    startTime is in `listed_ids` but not in `start_times`.
     """
     data = _listing(snap_dir, exchange)
     if data is None:
-        return None
+        return {}, None
     key = 'leadPortfolioId' if exchange == 'binance' else 'userId'
-    return {str(r[key]) for r in data
+    rows = {str(r[key]): r for r in data
             if isinstance(r, dict) and r.get(key) is not None}
-
-
-def _start_times(snap_dir, exchange):
-    """portfolio_id -> startTime (ms) from the scrape listing.
-
-    startTime is when the lead portfolio opened. Binance only serves positions
-    opened at or after it (verified 2026-08-28: 0 of 590 portfolios had an older
-    one, against 177 of 485 three days earlier), so it is the hard floor of every
-    visible track record -- see "Trap 7" in SKILL.md.
-    """
-    data = _listing(snap_dir, exchange)
-    if data is None:
-        return {}
-    key = 'leadPortfolioId' if exchange == 'binance' else 'userId'
-    return {str(r[key]): r['startTime'] for r in data
-            if isinstance(r, dict) and r.get(key) is not None and r.get('startTime')}
+    return ({k: r['startTime'] for k, r in rows.items() if r.get('startTime')},
+            set(rows))
 
 
 def ingest_snapshot(con, snap_dir, snapshot_date):
@@ -73,8 +68,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
         if not os.path.exists(path):
             counts[ex] = 0
             continue
-        starts = _start_times(snap_dir, ex)
-        listed = _listed_ids(snap_dir, ex)
+        starts, listed = _listing_index(snap_dir, ex)
         traders, pos_rows, trader_rows = set(), [], {}
         for r in csv.DictReader(open(path)):
             if ex == 'binance':
@@ -88,8 +82,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['avg_cost']), _f(r['avg_close'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'], _f(r['p_roi']),
                                     _f(r['p_pnl']), _f(r['aum']), _f(r['win_rate']),
-                                    _f(r['mdd']), _i(starts.get(tid)),
-                                    None if listed is None else int(tid in listed))
+                                    _f(r['mdd']), _i(starts.get(tid)))
             else:
                 tid = r['trader_id']
                 marg, oval = _f(r['margin'], 0), _f(r['open_val'], 0)
@@ -103,8 +96,7 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
                                  _f(r['open_price']), _f(r['close_price'])))
                 trader_rows[tid] = (snapshot_date, ex, tid, r['nick'],
                                     None, None, None, None, None,
-                                    _i(starts.get(tid)),
-                                    None if listed is None else int(tid in listed))
+                                    _i(starts.get(tid)))
             traders.add(tid)
         con.executemany(
             "INSERT INTO positions (snapshot_date,exchange,trader_id,nick,symbol,side,"
@@ -114,7 +106,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
             "roi,pnl,aum,win_rate,mdd,start_time,listed) "
             "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            list(trader_rows.values()))
+            [(*row, None if listed is None else int(tid in listed))
+             for tid, row in trader_rows.items()])
         con.execute("INSERT INTO snapshots VALUES (?,?,?,?,'')",
                     (snapshot_date, ex, len(traders), len(pos_rows)))
         con.commit()

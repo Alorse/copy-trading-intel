@@ -1,6 +1,8 @@
 """Generates the human-readable TOP_YYYY-MM.md report."""
 import datetime as dt, json, os
 
+from pipeline import ingest
+
 CAVEATS = """## Standing caveats
 - **Single regime window**: the data covers few months and one cycle only; \
 consistency within the cycle, not universal stability.
@@ -24,17 +26,16 @@ See DISCLAIMER.md.
 
 
 def _scraped(snap_dir, exchange):
-    """How many portfolios the scrape listing returned, or None if absent."""
+    """How many portfolios the scrape listing returned, or None if absent.
+
+    Shares `ingest._listing` so that "where the listing lives and how it may be
+    malformed" is stated once: otherwise this count and the `listed` column
+    could disagree about whether a snapshot has a listing at all.
+    """
     if not snap_dir:
         return None
-    path = os.path.join(str(snap_dir), f"{exchange}_list.json")
-    if not os.path.exists(path):
-        return None
-    try:
-        data = json.load(open(path))
-    except (ValueError, OSError):
-        return None
-    return len(data) if isinstance(data, list) else None
+    data = ingest._listing(str(snap_dir), exchange)
+    return len(data) if data is not None else None
 
 
 def _reconciliation(con, snapshot_date, exchange, snap_dir):
