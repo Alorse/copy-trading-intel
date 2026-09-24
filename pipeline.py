@@ -92,13 +92,15 @@ def _known_ids(con, snap_dir):
 def _detail_ids(con, date, prev_roster):
     """The portfolios worth spending a `lead-portfolio/detail` request on.
 
-    Everything that survives the disqualifiers (a trader already out on
-    `ruin_risk` does not become copyable because its copiers made money), plus
-    the incumbents of the previous roster, which have to stay measurable after
-    they stop qualifying so that `removed` can say why. Selecting on `flags`
-    means `detect` must have run for the date.
+    Everything that survives every disqualifier OTHER than the copier gate
+    itself, plus the incumbents of the previous roster. A trader already out on
+    `ruin_risk` does not become copyable because its copiers made money, so it
+    is not worth a request; `copiers_losing` is the exception, because skipping
+    the traders it removed would let their copier record lapse back to NULL and
+    the gate would switch itself off. Selecting on `flags` means `detect` must
+    have run for the date.
     """
-    other = detect.DISQUALIFYING
+    other = detect.DISQUALIFYING - {detect.COPIERS_LOSING}
     ids = [r['trader_id'] for r in con.execute(
         "SELECT trader_id, flags, score FROM trader_metrics "
         "WHERE snapshot_date=? AND exchange='binance' "

@@ -225,3 +225,90 @@ def test_no_listing_data_silent_when_membership_is_unknown(con):
 def test_new_guards_are_disqualifying(con):
     assert {"went_dark", "mass_close_loss",
             "no_listing_data"} <= detect.DISQUALIFYING
+
+
+# --- the copier gate (2026-09-23) -------------------------------------------
+# 汤普猫 (4113397127009634560) reached tier A and 70% of the 2026-09-23 roster
+# with a clean flag list while its 47 lifetime copiers were down $6,117, and
+# 重生之我在币圈捡垃圾- held 5% with +617% ROI while its 1,862 copiers were down
+# $322,314. Realized copier PnL is the only direct measurement of whether an
+# edge survives being copied, and the engine could not see it.
+
+def _copiers(con, tid, copier_pnl, total, lead_pnl=10000.0):
+    """A trader whose lead record earns `lead_pnl` and whose copiers made
+    `copier_pnl` between them."""
+    _tm(con, tid)
+    con.execute("UPDATE trader_snapshot SET copier_pnl=?, copier_count_total=? "
+                "WHERE trader_id=?", (copier_pnl, total, tid))
+    con.execute("UPDATE positions SET closing_pnl=? WHERE trader_id=?",
+                (lead_pnl, tid))
+    con.commit()
+
+
+def test_copiers_losing_flags_the_tangpumao_shape(con):
+    # 47 lifetime copiers, -$6,117 between them (-$130 each) against a lead
+    # record of +$4,793: the copiers lost more than the lead ever made
+    _copiers(con, "tangpu", -6117.11, 47, lead_pnl=4792.96)
+    assert "copiers_losing" in detect.run(con, D, EX)["tangpu"]
+
+
+def test_copiers_losing_flags_the_zhshengsheng_shape(con):
+    # +617% ROI, 1,862 copiers, -$322,314 between them
+    _copiers(con, "zhsheng", -320510.43, 1862, lead_pnl=31264.85)
+    assert "copiers_losing" in detect.run(con, D, EX)["zhsheng"]
+
+
+def test_copiers_losing_silent_when_the_copiers_made_money(con):
+    # 梭哈到世界尽头 (+$19,426 over 112) and Cooma (+$1,876 over 218)
+    _copiers(con, "suoha", 19426.23, 112, lead_pnl=17473.59)
+    _copiers(con, "cooma", 1875.66, 218, lead_pnl=11068.69)
+    flags = detect.run(con, D, EX)
+    assert "copiers_losing" not in flags["suoha"]
+    assert "copiers_losing" not in flags["cooma"]
+
+
+def test_copiers_losing_does_not_condemn_on_a_thin_sample(con):
+    # 再也不做空了: 2 copiers, -$11.79 between them. A handful of minimum-size
+    # copiers quitting is not a measurement.
+    _copiers(con, "thin", -11.79, 2, lead_pnl=1076.91)
+    assert "copiers_losing" not in detect.run(con, D, EX)["thin"]
+
+
+def test_copiers_losing_does_not_condemn_a_small_average_loss(con):
+    # 黑袍小分队: 19 copiers, -$188.54 -> -$9.92 each, 3.8% of the lead's own
+    # +$4,961. Below one platform-minimum copy ($10) per head: fees and timing,
+    # not an edge that inverts. The universe median negative lead is -$11.43
+    # per copier, so condemning this shape would condemn half the leaderboard.
+    _copiers(con, "small", -188.54, 19, lead_pnl=4961.10)
+    assert "copiers_losing" not in detect.run(con, D, EX)["small"]
+
+
+def test_copiers_losing_fires_on_the_lead_share_clause_alone(con):
+    # a shallow per-head loss (-$20) that still erases twice everything the
+    # lead earned, because the copier base is far bigger than the lead
+    _copiers(con, "wide", -20000.0, 1000, lead_pnl=10000.0)
+    assert "copiers_losing" in detect.run(con, D, EX)["wide"]
+
+
+def test_copiers_losing_silent_without_a_copier_record(con):
+    # no `detail` pass for this trader: absence of evidence, and a fabricated
+    # 0.0 would read as "the copiers broke even"
+    _tm(con, "unmeasured")
+    f = detect.run(con, D, EX)["unmeasured"]
+    assert "copiers_losing" not in f
+    row = con.execute("SELECT copier_pnl FROM trader_snapshot "
+                      "WHERE trader_id='unmeasured'").fetchone()
+    assert row[0] is None
+
+
+def test_copiers_losing_silent_when_nobody_ever_copied(con):
+    # 179 of the 951 portfolios in the 2026-09-23 snapshot have 0 lifetime
+    # copiers and copierPnl 0.0: never measured, not measured at zero
+    _copiers(con, "uncopied", 0.0, 0)
+    assert "copiers_losing" not in detect.run(con, D, EX)["uncopied"]
+
+
+def test_copiers_losing_is_disqualifying_and_is_a_defect(con):
+    assert "copiers_losing" in detect.DISQUALIFYING
+    # not in NOT_A_DEFECT: this is a measured outcome, not a gap in the data
+    assert "copiers_losing" not in detect.NOT_A_DEFECT

@@ -103,3 +103,26 @@ def test_detail_all_covers_the_whole_snapshot(tmp_path, snap_dir, monkeypatch):
     assert cli.main(["detail", "--date", "2026-09-01", "--all"],
                     project_root=str(root)) == 0
     assert set(seen[0]) == {"P1", "OTHER"}
+
+
+def test_detail_keeps_measuring_a_trader_the_copier_gate_removed(tmp_path,
+                                                                 snap_dir,
+                                                                 monkeypatch):
+    """`copiers_losing` is the one disqualifier that would switch itself off: skip
+    the trader's next `detail` call and its copier record goes back to NULL, the
+    gate falls silent and the lead returns to the roster."""
+    root = _setup_project(tmp_path, snap_dir)
+    cli.main(["analyze", "--date", "2026-09-01"], project_root=str(root))
+    from pipeline import db as dbmod
+    con = dbmod.connect(root / "data" / "copytrade.sqlite")
+    con.execute("INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,"
+                "nick,n,score,flags) VALUES ('2026-09-01','binance','GATED',"
+                "'gated',100,5.0,'[\"copiers_losing\"]')")
+    con.commit()
+    con.close()
+    seen = []
+    monkeypatch.setattr(cli.scrape_mod, "run_detail",
+                        lambda snap, ids, **kw: seen.append(list(ids)) or len(ids))
+    assert cli.main(["detail", "--date", "2026-09-01"],
+                    project_root=str(root)) == 0
+    assert seen == [["GATED"]]

@@ -5,20 +5,21 @@ from pipeline import db as dbmod
 
 def insert_trader_snapshot(con, date, exchange, tid, nick=None, roi=50.0, pnl=0.0,
                            aum=0.0, win_rate=0.0, mdd=0.0, start_time=None,
-                           listed=1):
+                           listed=1, copier_pnl=None, copier_count_total=None):
     """One row of trader_snapshot, by column name.
 
     Spelled out here rather than in each test file so that adding a column is a
     one-line change: `listed` cost four identical edits across test files that
-    do not care about it. tests/test_db.py deliberately does NOT use this -- it
+    do not care about it. The copier record defaults to NULL: it comes from a
+    separate `detail` pass, so "not measured" is its normal state. tests/test_db.py deliberately does NOT use this -- it
     hand-writes a pre-migration 9-column table as its fixture.
     """
     con.execute(
         "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-        "roi,pnl,aum,win_rate,mdd,start_time,listed) "
-        "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        "roi,pnl,aum,win_rate,mdd,start_time,listed,copier_pnl,"
+        "copier_count_total) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         (date, exchange, tid, tid if nick is None else nick, roi, pnl, aum,
-         win_rate, mdd, start_time, listed))
+         win_rate, mdd, start_time, listed, copier_pnl, copier_count_total))
     con.commit()
 
 

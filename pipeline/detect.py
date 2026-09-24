@@ -2,9 +2,11 @@
 Reference cases: FINDINGS_v2.md / TOP5.md (GGbond, VickyKaushal, etc.)."""
 import collections, datetime as dt, json
 
+COPIERS_LOSING = "copiers_losing"
 DISQUALIFYING = {"loss_hider", "open_loss_divergence", "lottery", "roi_artifact",
                  "ruin_risk", "not_copyable", "insufficient", "no_alpha",
-                 "went_dark", "mass_close_loss", "no_listing_data"}
+                 "went_dark", "mass_close_loss", "no_listing_data",
+                 COPIERS_LOSING}
 WARNINGS = {"alpha_decay", "inactive", "style_drift", "regime_onesided", "mdd_high",
             "fresh_start", "thin_benchmark"}
 # Disqualifying, but absence of evidence rather than evidence of a defect: these
@@ -80,6 +82,64 @@ MASS_CLOSE_LOSS_SHARE = 0.50
 # 0.0, so "never measured" reaches SQL as NULL instead of a fabricated zero.
 
 
+# --- the copier gate (added 2026-09-23) -------------------------------------
+# Every other rule in this module reads the LEAD's trades. This one reads what
+# happened to the people who copied them: `copierPnl` from lead-portfolio/detail
+# (lifetime -- the listing's same-named field is scoped to the request's
+# timeRange and is a different number, see scrape.py). It is the only direct
+# measurement of whether an edge survives latency, sizing and entry slippage.
+#
+# It is a DISQUALIFIER, never a score input. copierPnl is raw PnL and carries
+# every Trap-2 problem this project documents (穩定暴擊: t=0.71 and +$472k;
+# 重生之我在币圈捡垃圾-: t=3.85 and -$322k), so it can veto a lead and must never
+# rank one.
+#
+# The sign alone is not evidence: 346 of the 760 measured portfolios in the
+# 2026-09-23 snapshot (45.5%) have negative lifetime copier PnL, and the median
+# negative one is -$11.43 per copier -- fees and entry timing, not a defect. So
+# the rule asks for a MEASUREMENT (enough copiers) and for the loss to be
+# MATERIAL on one of two independent scales:
+#
+#   * per head -- at least COPIERS_MAX_AVG_LOSS lost per lifetime copier. The
+#     unit is the platform's minimum copy size (fixedAmountMinCopyUsd = $10 for
+#     most leads): $50 is five minimum-size copies wiped out per person, ~4x the
+#     median negative lead, and reached by 12.4% of measured portfolios.
+#   * against the lead -- the copiers' collective loss erases at least half of
+#     everything the lead itself realized. This is the scale-free clause: a lead
+#     whose copiers hold far more capital than it does can drown them while
+#     losing little per head (-$20 each over 1,000 copiers is -$20k).
+#
+# Either clause is sufficient; the copier count is required for both, so a lead
+# with 2 copiers and -$12 (再也不做空了) is not condemned on noise.
+#
+# Calibration on 2026-09-23 (950 ranked / 553 on the leaderboard): fires on 74
+# (7.8%) / 45 (8.1%). Of the 6 portfolios that survive every other disqualifier
+# it removes exactly two -- 汤普猫 (47 copiers, -$6,117, -$130 each, 1.28x the
+# lead's own realized PnL) and 重生之我在币圈捡垃圾- (1,862 copiers, -$322,314,
+# -$172 each, 10.25x) -- and keeps 梭哈到世界尽头 (+$19,426) and Cooma (+$1,876).
+# That outcome is stable over the whole grid tested: N in 3..47, per-head
+# $25..$100, share 0.25..1.0 all remove the same two and keep the same two.
+COPIERS_MIN_COUNT = 10
+COPIERS_MAX_AVG_LOSS = 50.0
+COPIERS_MAX_LEAD_SHARE = 0.50
+
+
+def _copiers_losing(copier_pnl, copier_count, lead_pnl):
+    """Did the people who copied this lead lose real money?
+
+    `copier_pnl`/`copier_count` are NULL for any trader the `detail` pass has
+    not reached, and that must stay silent: absence of evidence is not evidence
+    of a defect, and a fabricated 0.0 would read as "the copiers broke even".
+    """
+    if copier_pnl is None or copier_count is None:
+        return False
+    if copier_pnl >= 0 or copier_count < COPIERS_MIN_COUNT:
+        return False
+    per_head = copier_pnl / copier_count
+    return (per_head <= -COPIERS_MAX_AVG_LOSS or
+            (lead_pnl > 0 and copier_pnl <= -COPIERS_MAX_LEAD_SHARE * lead_pnl))
+
+
 def _mass_closes(con, snapshot_date, exchange, gross_win):
     """The traders with a disqualifying same-second close cluster.
 
@@ -102,7 +162,8 @@ def run(con, snapshot_date, exchange='binance'):
     ms = con.execute("SELECT * FROM trader_metrics WHERE snapshot_date=? AND exchange=?",
                      (snapshot_date, exchange)).fetchall()
     snap = {r['trader_id']: r for r in con.execute(
-        "SELECT trader_id, roi, start_time, listed FROM trader_snapshot "
+        "SELECT trader_id, roi, start_time, listed, copier_pnl, "
+        "copier_count_total FROM trader_snapshot "
         "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
     roi = {k: v['roi'] for k, v in snap.items()}
     listed = {k: v['listed'] for k, v in snap.items()}
@@ -170,6 +231,11 @@ def run(con, snapshot_date, exchange='binance'):
             f.append('mass_close_loss')
         if listed.get(tid) == 0:
             f.append('no_listing_data')
+        sr = snap.get(tid)
+        if sr is not None and _copiers_losing(sr['copier_pnl'],
+                                              sr['copier_count_total'],
+                                              realized.get(tid) or 0.0):
+            f.append(COPIERS_LOSING)
         # the public record starts where the trader chose to start it, and what
         # came before is unverifiable: of 177 portfolios whose pre-startTime
         # history was still visible on 2026-08-25, 86% were net NEGATIVE before
