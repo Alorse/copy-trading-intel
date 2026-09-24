@@ -44,7 +44,7 @@ exactly two:
 | removed | copiers | copier PnL | per head | vs the lead's own PnL |
 |---|---|---|---|---|
 | **汤普猫** | 47 | −$6,117 | −$130.15 | **1.28×** everything it earned |
-| **重生之我在币圈捡垃圾-** | 1,862 | −$322,314 | −$172.13 | **10.25×** |
+| **重生之我在币圈捡垃圾-** | 1,862 | −$320,510 | −$172.13 | **10.25×** |
 
 and keeps 梭哈到世界尽头 (+$19,426 over 112) and Cooma (+$1,876 over 218). That outcome
 is **stable over the whole grid tested** — count 3…47, per head $25…$100, share
@@ -69,9 +69,15 @@ and the rounding top-up that forced the book to 1.0 are gone with it.
 | 3 | **黑袍小分队** | B | 10% | +1.65% · 2.66 | −$189 | 0 / 19 | $4,135 |
 | 4 | **狱萝** | B | 10% | +1.94% · 2.98 | +$41 | 0 / 14 | **$620** |
 | — | ~~汤普猫~~ | X | — | +2.90% · 2.58 | **−$6,117** | 2 / 47 | $2,001 |
-| — | ~~重生之我在币圈捡垃圾-~~ | X | — | +0.60% · 3.85 | **−$322,314** | 214 / 1,862 | $11,640 |
+| — | ~~重生之我在币圈捡垃圾-~~ | X | — | +0.60% · 3.85 | **−$320,510** | 214 / 1,862 | $11,640 |
 
 **60% of the book is unallocated.** The two names the House view wants are #1 and #2.
+
+Every copier figure in this section is the one the pipeline stored, i.e. what the gate
+actually read. `copierPnl` is live and drifts within the day — the audit below quotes
+−$322,314 for 重生之我在币圈捡垃圾- and +$19,440 for suoha from a fetch a few hours
+earlier. Neither figure is wrong; they are not the same instant, and nothing in the
+rule turns on the difference.
 
 ⚠️ **Two survivors the audit above would not have kept are still in, and the evidence
 does not remove them.** Reporting this rather than fitting a threshold to it:
