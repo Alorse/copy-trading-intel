@@ -12,6 +12,105 @@ Status per exchange after the re-run:
 | OKX | 287 ranked, 158 with closed positions | **0** (was 5) | analysis/TOP5_OKX.md |
 | Phemex / Bybit / Bitget / KuCoin | not re-scraped this run | **0** as of 2026-08-30 | their TOP5_*.md |
 
+## Engine update (2026-09-23): the copier gate and the 20% cap
+
+Everything below was written against an engine that could not see two things. Both
+are now in the pipeline, and **the roster it produces is publishable as is** —
+`analysis/runs/2026-09-23/roster.json` needs no hand editing. The standing rule holds:
+the pipeline decides eligibility, humans may only remove.
+
+**1. `copiers_losing` (disqualifying).** Realized lifetime copier PnL, from
+`lead-portfolio/detail`, is now scraped for the ranked candidates and stored per
+trader. ⚠️ The listing row carries a field of the same name and it is **not the same
+number**: it is scoped to the request's `timeRange`, so 汤普猫 reads +$116 / +$147 /
++$242 / +$273 for 7D/30D/90D/180D while `detail` reads **−$6,117** lifetime. A gate
+built on the listing figure would have passed exactly the lead it exists to stop.
+
+The sign alone is not evidence: **346 of the 760 measured portfolios (45.5%)** have
+negative lifetime copier PnL, and the median one is **−$11.43 per copier** — fees and
+entry timing. So the rule asks for a measurement and for a material loss on one of two
+independent scales:
+
+| clause | threshold | why that number |
+|---|---|---|
+| enough copiers | `totalCopyCount >= 10` | below it the aggregate is one person's timing (再也不做空了: 2 copiers, −$11.79) |
+| per head | `copierPnl / totalCopyCount <= -$50` | five platform-minimum copies ($10) wiped out per person; ~4× the median negative lead; reached by 12.4% of measured portfolios |
+| **or** against the lead | `copierPnl <= -0.5 × lead realized PnL` | the scale-free clause: a lead whose copiers hold far more capital than it does can drown them while losing little per head |
+
+Fires on **74 of the 950 ranked (7.8%)** and **45 of the 553 on the leaderboard
+(8.1%)**. Of the six portfolios that survive every other disqualifier it removes
+exactly two:
+
+| removed | copiers | copier PnL | per head | vs the lead's own PnL |
+|---|---|---|---|---|
+| **汤普猫** | 47 | −$6,117 | −$130.15 | **1.28×** everything it earned |
+| **重生之我在币圈捡垃圾-** | 1,862 | −$322,314 | −$172.13 | **10.25×** |
+
+and keeps 梭哈到世界尽头 (+$19,426 over 112) and Cooma (+$1,876 over 218). That outcome
+is **stable over the whole grid tested** — count 3…47, per head $25…$100, share
+0.25…1.0 all remove the same two and keep the same two — so it does not rest on a
+fitted threshold. copierPnl remains a veto only: it is raw PnL, it carries every Trap-2
+problem, and it never enters the score.
+
+**2. A 20% cap per trader.** The A pool is 70% of the book (100% with no B) split by
+score, so one tier-A trader took all of it: 汤普猫 held **70%** on 84 trades, t=2.58 and
+a $2,001 lead account. `MAX_WEIGHT = 0.20` — the most the 2026-08-28 hand ranking ever
+gave one name, the most all five slots can hold at once, and the level at which one
+lead's total loss costs a fifth of the book rather than most of it. The excess stays
+**unallocated**, never moved to another trader; the old "B's leftovers go to A" spill
+and the rounding top-up that forced the book to 1.0 are gone with it.
+
+### The roster this produces
+
+| # | trader | tier | weight | alpha · t | copier PnL | copiers (cur/total) | lead equity |
+|---|---|---|---|---|---|---|---|
+| 1 | **梭哈到世界尽头** (suoha) | B | 10% | +3.19% · 7.88 | **+$19,426** | 13 / 112 | $5,316 |
+| 2 | **Cooma** | B | 10% | +1.75% · 4.67 | **+$1,876** | 53 / 218 | $11,425 |
+| 3 | **黑袍小分队** | B | 10% | +1.65% · 2.66 | −$189 | 0 / 19 | $4,135 |
+| 4 | **狱萝** | B | 10% | +1.94% · 2.98 | +$41 | 0 / 14 | **$620** |
+| — | ~~汤普猫~~ | X | — | +2.90% · 2.58 | **−$6,117** | 2 / 47 | $2,001 |
+| — | ~~重生之我在币圈捡垃圾-~~ | X | — | +0.60% · 3.85 | **−$322,314** | 214 / 1,862 | $11,640 |
+
+**60% of the book is unallocated.** The two names the House view wants are #1 and #2.
+
+⚠️ **Two survivors the audit above would not have kept are still in, and the evidence
+does not remove them.** Reporting this rather than fitting a threshold to it:
+
+- **黑袍小分队** — 19 copiers, −$188.54, i.e. **−$9.92 each** and 3.8% of the lead's own
+  +$4,961. That is below every noise floor the gate can honestly draw; the universe's
+  median *negative* lead loses $11.43 per copier, so condemning this shape condemns half
+  the leaderboard. What the audit actually rejected it on — September alpha negative on a
+  handful of trades, mdd 64.2, last opening 2026-09-08, nobody currently copying it — is
+  a bundle of weak signals, none of them disqualifying on its own, and none of them
+  encoded.
+- **狱萝** — its copiers are **up** $41, so no copier rule touches it. Its defect is the
+  秋高看山势 defect: the lead's entire account is **$620.09**, median position margin $60,
+  and `not_copyable` only reads per-position margin (threshold $50), never account equity.
+  A $1,000 copier would run at 161% of the lead's own book.
+
+**The next rule, proposed and NOT implemented:** a lead-equity floor, now measurable for
+the first time (`marginBalance` from `detail`; the listing's `aum` is no use — it
+includes copier capital, $14,116 vs $5,316 of actual equity for suoha). Costs, measured
+on this snapshot:
+
+| floor | flags (of 950 / of 553 listed) | removes |
+|---|---|---|
+| $500 | 58 / 30 | nobody |
+| **$1,000** | 154 / 88 | 狱萝 |
+| $2,000 | 304 / 199 | 狱萝 |
+| $5,000 | 482 / 349 | 狱萝, 黑袍小分队 — and suoha clears it by $316 |
+
+$1,000 is the defensible one (it is Binance's own maximum platform minimum-copy size,
+and the floor below which a $1,000 copier out-sizes the lead). $5,000 would deliver the
+House view's two-name roster and would also disqualify 63% of the leaderboard on a
+threshold picked to produce that answer. **That is a decision, not a measurement, and it
+is not taken here.**
+
+One more thing `detail` bought for free: **190 of the 950 ranked portfolios (20%) return
+code 11012028 — they no longer exist.** All 190 are already off the listing, so
+`no_listing_data` was catching them and the new signal costs nothing today; it is now
+stored per trader (`trader_snapshot.retired`) rather than inferred.
+
 ## The ranking now
 
 | # | Trader | Exchange | Verdict | Alpha | t | Sept-only alpha / t | copier PnL | Why |
@@ -215,6 +314,13 @@ measurement of whether an edge survives being copied.
 
 ### Proposed, NOT implemented — `copier_pnl_negative`
 
+> **Superseded: shipped on 2026-09-23 as `copiers_losing`.** See "Engine update" at the
+> top of this page for the rule that was actually calibrated and the universe numbers
+> behind it. The section below is the original proposal, kept because its mechanism
+> evidence (the holding-period gradient) still stands and because the rule that shipped
+> is stricter than what it suggested: `totalCopyCount >= 50` would have spared 汤普猫,
+> whose 47 copiers are down $6,117.
+
 Per the brief this is a proposal, not a silent change; the score formula is untouched.
 Measured on the 120 highest-scoring listed Binance portfolios with n≥60:
 
@@ -266,6 +372,12 @@ sits in `analysis/runs/2026-09-23/`.
 The next gain is not another exchange. It is wiring `copierPnl` and `lead-portfolio/detail`
 into the pipeline, and re-scraping the four zero-survivor pools before trusting their
 zeros a second time.
+
+> **Done (2026-09-23, same day):** `copierPnl` and `lead-portfolio/detail` are in the
+> pipeline — see "Engine update" at the top. The engine's own roster now leads with
+> suoha and Cooma and caps every name at 10-20%; it still carries two traders this
+> House view would not fund, for reasons stated there. Re-scraping the four
+> zero-survivor pools remains open.
 
 ## The combined ranking (2026-08-28 snapshot) — SUPERSEDED, kept as history
 

@@ -207,7 +207,13 @@ traders: read it alongside the "Portfolio opened" block the report prints.
   directory. To reproduce what exists: `python3 analysis/flatten.py`.
 - **ALWAYS check concentration** before declaring a pair **or a trader** a winner (the SUI/ONDO
   and DugEFresh lessons). Threshold used: top-1 trade < 30% of net PnL.
-- **Never rank by ROI or by PnL in USD.** See Trap 2.
+- **Never rank by ROI or by PnL in USD.** See Trap 2. This includes `copierPnl`: it is a
+  veto (`copiers_losing`), never a score input — 穩定暴擊 has t=0.71 and +$472k, while
+  重生之我在币圈捡垃圾- has t=3.85 and −$322k.
+- **No single trader above 20% of the book** (`rank.MAX_WEIGHT`; tier B keeps its own
+  10%). What a cap is for is the single event, not the average: 牛熊摆渡人 closed 14
+  positions for −15,295 USDT in one second. The excess stays unallocated — never moved
+  onto the next name, which is how the concentration gets rebuilt.
 - **Never judge a trader on a single pair.** See H1.
 - **Always state whether a figure is net or gross**, and which column was used.
 - Any rule with expectancy **below 0.10-0.15% of notional is unusable**: fees eat it
@@ -249,5 +255,39 @@ of them).
 
 `pipeline/detect.py`'s `no_listing_data` flag is deliberately named after what it can
 prove — the listing row is missing, so `mdd`/`roi`/`startTime` are unknown — and not
-"delisted", which would need this endpoint. Wiring `detail` into the scrape stage is
-the obvious next step; it costs one extra request per portfolio.
+"delisted", which would need this endpoint.
+
+### Wired in on 2026-09-23 — `pipeline.py detail`
+
+`detail` is now a pass of its own, between two analyzes:
+
+```bash
+python3 pipeline.py scrape  --date D          # listing + position history
+python3 pipeline.py analyze --date D          # metrics, flags, a first roster
+python3 pipeline.py detail  --date D          # detail for the ranked candidates
+python3 pipeline.py analyze --date D --force  # the copier gate can now fire
+python3 pipeline.py detail  --date D --all    # (calibration only: whole universe)
+```
+
+One request per portfolio, **>=1.5s apart**, exponential back-off on code `11012005`,
+resumable into `<snap>/binance_detail.jsonl` — the same write-only-on-success rule as
+the history scrape, so a network failure is retried instead of being recorded as an
+answer. `--all` over the 951-portfolio 2026-09-23 snapshot took ~25 minutes and hit no
+rate limit.
+
+`copierPnl`, `currentCopyCount`, `totalCopyCount`, `aumAmount`, `marginBalance`,
+`fixedAmountMinCopyUsd` and `retired` (code 11012028) land in `trader_snapshot`. A field
+the pass has not reached stays **NULL**, never 0.0: a fabricated zero reads as "the
+copiers broke even", and 0 is not < 0, so every unmeasured lead would walk through the
+gate. The default `detail` set is the ranked candidates plus the previous roster's
+incumbents — including the ones `copiers_losing` removed, because skipping those would
+let their copier record lapse to NULL and switch the gate off.
+
+⚠️ **`copierPnl` on the listing is a different number from `copierPnl` on `detail`.**
+The listing's is scoped to the request's `timeRange`: 汤普猫 (`4113397127009634560`)
+returns +$116 / +$147 / +$242 / +$273 for 7D / 30D / 90D / 180D, while `detail` returns
+**−$6,117** lifetime. Never gate on the listing field.
+
+What the pass found on 2026-09-23: **190 of the 950 ranked portfolios (20%) are retired**
+(code 11012028) — all of them already off the listing — and of the 760 that are alive and
+measurable, **45.5% have negative lifetime copier PnL**, median −$11.43 per copier.

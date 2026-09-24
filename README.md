@@ -55,6 +55,11 @@ the same unchanged pipelines say something else:
 - A new trap on OKX: its 100-row history cap is a *rolling* window, so a past month's
   benchmark shrinks and keeps only the traders who have since traded little. **Alpha is
   not comparable across two OKX snapshots.**
+- **The pipeline now enforces both lessons.** Realized lifetime copier PnL is scraped
+  per lead and disqualifies the ones whose copiers lost real money (`copiers_losing`),
+  and no single trader may hold more than **20%** of the book — the +617% lead above was
+  removed by the first rule, and a trader with 84 trades and a $2,001 account that had
+  been handed **70%** of the roster was removed by both.
 
 See [COMBINED_RANKING.md](analysis/COMBINED_RANKING.md) for the verdicts and the numbers.
 
@@ -97,14 +102,15 @@ dead code, "survivors" whose entire edge lived outside the visible data window.
 4. **History truncation** — every exchange caps or prunes what you can see; some traders' "track record" is their last 50 trades
 5. **Hidden drawdowns** — the pristine window you can see often hides the crash you can't
 6. **Uncopyable sizing** — a real edge expressed in $12 positions is not a real edge for you
-7. **The edge you can't buy** *(new, 2026-09-23)* — alpha is measured on the lead's fills, not yours. Of the 120 highest-scoring Binance portfolios, 51% of those with ≥5 lifetime copiers have net-negative *copier* PnL — including one at +617% ROI whose 1,862 copiers are down $322k
+7. **The edge you can't buy** *(new, 2026-09-23)* — alpha is measured on the lead's fills, not yours. Across the 760 measured Binance portfolios, **45.5% have net-negative lifetime *copier* PnL** — including one at +617% ROI whose 1,862 copiers are down $322k. Now a disqualifier (`copiers_losing`), and careful: the leaderboard listing publishes a `copierPnl` of its own that is scoped to the query's time range, not lifetime, and reads *positive* for leads whose copiers are deeply under water
+8. **Concentration by construction** *(new, 2026-09-23)* — a ranking that splits weight by score hands a thin-evidence winner the whole book. One lead, 84 trades, t=2.58, a $2,001 account: **70%** of the roster. Capped at 20%, with the excess left unallocated rather than pushed onto the next name
 
 Full checklist for auditing a new exchange: [docs/exchange-integration-checklist.md](docs/exchange-integration-checklist.md).
 
 ## Run it
 
 ```bash
-pip install -r requirements-dev.txt && pytest   # 405 tests
+pip install -r requirements-dev.txt && pytest   # 455 tests
 
 python3 scripts/scrape_okx_positions.py         # any exchange's scraper (resumable)
 python3 analysis/okx_flatten.py && python3 analysis/okx_top5.py
@@ -118,7 +124,7 @@ versioned; scrapes are cheap and resumable.
 
 - `analysis/` — flatten + ranking per exchange, the TOP5 reports, combined ranking
 - `scripts/` — one scraper per exchange + the repair/utility scripts
-- `pipeline/` — the permanent Binance/Phemex pipeline (scrape → SQLite → roster)
+- `pipeline/` — the permanent Binance/Phemex pipeline (scrape → detail → SQLite → roster)
 - [docs/exchange-integration-checklist.md](docs/exchange-integration-checklist.md) — every lesson we paid for
 - `SKILL.md` — the living endpoint reference
 
