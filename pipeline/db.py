@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS trader_snapshot (
   trader_id TEXT NOT NULL, nick TEXT,
   roi REAL, pnl REAL, aum REAL, win_rate REAL, mdd REAL,
   start_time INTEGER, listed INTEGER,
+  -- lead-portfolio/detail (NULL until the `detail` pass has run for the trader)
+  copier_pnl REAL, copier_count_current INTEGER, copier_count_total INTEGER,
+  aum_amount REAL, margin_balance REAL, min_copy_usd REAL, retired INTEGER,
   PRIMARY KEY (snapshot_date, exchange, trader_id));
 CREATE TABLE IF NOT EXISTS positions (
   snapshot_date TEXT NOT NULL, exchange TEXT NOT NULL,
@@ -47,6 +50,14 @@ TABLES = ["snapshots", "trader_snapshot", "positions",
 # (it needs the raw snapshots), so add them in place.
 _ADDED = [("trader_snapshot", "start_time", "INTEGER"),
           ("trader_snapshot", "listed", "INTEGER"),
+          # the lifetime copier record, from lead-portfolio/detail (2026-09-23)
+          ("trader_snapshot", "copier_pnl", "REAL"),
+          ("trader_snapshot", "copier_count_current", "INTEGER"),
+          ("trader_snapshot", "copier_count_total", "INTEGER"),
+          ("trader_snapshot", "aum_amount", "REAL"),
+          ("trader_snapshot", "margin_balance", "REAL"),
+          ("trader_snapshot", "min_copy_usd", "REAL"),
+          ("trader_snapshot", "retired", "INTEGER"),
           ("trader_metrics", "n_alpha_dropped_self_dominated", "INTEGER"),
           ("trader_metrics", "max_cell_share", "REAL")]
 

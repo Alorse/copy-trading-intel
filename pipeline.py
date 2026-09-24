@@ -2,6 +2,9 @@
 # pipeline.py — entrypoint for the copy-trading-refresh pipeline
 """Usage:
   python3 pipeline.py scrape  [--date YYYY-MM-DD] [--exchange all|binance|phemex]
+  python3 pipeline.py detail  [--date YYYY-MM-DD] [--all]
+     (lead-portfolio/detail for the ranked candidates -> the copier record;
+      run it between two analyzes: analyze -> detail -> analyze --force)
   python3 pipeline.py analyze [--date YYYY-MM-DD] [--force]
   python3 pipeline.py publish --date YYYY-MM-DD     (the only one that writes analysis/roster.json)
   python3 pipeline.py metrics|detect|trend|rank|report --date YYYY-MM-DD
@@ -86,16 +89,50 @@ def _known_ids(con, snap_dir):
     return tuple(sorted(hist - done))
 
 
+def _detail_ids(con, date, prev_roster):
+    """The portfolios worth spending a `lead-portfolio/detail` request on.
+
+    Everything that survives the disqualifiers (a trader already out on
+    `ruin_risk` does not become copyable because its copiers made money), plus
+    the incumbents of the previous roster, which have to stay measurable after
+    they stop qualifying so that `removed` can say why. Selecting on `flags`
+    means `detect` must have run for the date.
+    """
+    other = detect.DISQUALIFYING
+    ids = [r['trader_id'] for r in con.execute(
+        "SELECT trader_id, flags, score FROM trader_metrics "
+        "WHERE snapshot_date=? AND exchange='binance' "
+        "AND (score IS NULL OR score > 0)", (date,))
+        if not (set(json.loads(r['flags'] or '[]')) & other)]
+    ids += [t['portfolio_id'] for t in (prev_roster or {}).get('traders', [])
+            if t.get('exchange', 'binance') == 'binance']
+    return sorted(set(ids))
+
+
+def _prev_roster(con, root, date, exchange='binance'):
+    """The roster of the newest snapshot before `date`, or None."""
+    prev = con.execute(
+        "SELECT MAX(snapshot_date) FROM snapshots "
+        "WHERE exchange=? AND snapshot_date<?", (exchange, date)).fetchone()[0]
+    if not prev:
+        return None
+    path = os.path.join(root, 'analysis', 'runs', prev, 'roster.json')
+    return json.load(open(path)) if os.path.exists(path) else None
+
+
 def main(argv=None, project_root=None):
     root = project_root or os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser(
         epilog='Order of the granular subcommands: metrics -> detect -> trend -> '
                'rank -> report (metrics resets flags/trend_bonus).')
-    ap.add_argument('cmd', choices=['scrape', 'analyze', 'publish', 'metrics',
-                                    'detect', 'trend', 'rank', 'report'])
+    ap.add_argument('cmd', choices=['scrape', 'detail', 'analyze', 'publish',
+                                    'metrics', 'detect', 'trend', 'rank', 'report'])
     ap.add_argument('--date', default=dt.date.today().isoformat())
     ap.add_argument('--exchange', default='all')
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--all', action='store_true',
+                    help='detail: every trader in the snapshot, not just the '
+                         'ranked candidates (universe calibration)')
     a = ap.parse_args(argv)
     P = _paths(root, a.date)
 
@@ -117,6 +154,21 @@ def main(argv=None, project_root=None):
             extra = _known_ids(con, P['snap']) if 'binance' in ex else ()
             print(scrape_mod.run(P['snap'], exchanges=ex, extra_ids_binance=extra))
             return 0
+        if a.cmd == 'detail':
+            if a.all:
+                ids = [r[0] for r in con.execute(
+                    "SELECT trader_id FROM trader_snapshot WHERE snapshot_date=? "
+                    "AND exchange='binance' ORDER BY trader_id", (a.date,))]
+            else:
+                ids = _detail_ids(con, a.date,
+                                  _prev_roster(con, root, a.date))
+            if not ids:
+                print(f'detail: no candidates for {a.date} — run analyze first',
+                      file=sys.stderr)
+                return 1
+            print('detail:', scrape_mod.run_detail(P['snap'], ids))
+            print('now re-run: analyze --date', a.date, '--force')
+            return 0
         if a.cmd == 'analyze':
             print('flatten:', flatten.flatten_snapshot(P['snap'])
                   if os.path.isdir(P['snap']) else 'snapshot dir does not exist')
@@ -125,15 +177,7 @@ def main(argv=None, project_root=None):
             print('ingest:', ingest.ingest_snapshot(con, P['snap'], a.date))
             print('metrics:', metrics.compute(con, a.date))
             detect.run(con, a.date)
-            prev_roster = None
-            prev = con.execute(
-                "SELECT MAX(snapshot_date) FROM snapshots "
-                "WHERE exchange='binance' AND snapshot_date<?",
-                (a.date,)).fetchone()[0]
-            if prev:
-                pr = os.path.join(root, 'analysis', 'runs', prev, 'roster.json')
-                if os.path.exists(pr):
-                    prev_roster = json.load(open(pr))
+            prev_roster = _prev_roster(con, root, a.date)
             diff = trend.run(con, a.date, prev_roster=prev_roster)
             roster = rank.run(con, a.date, diff=diff, prev_roster=prev_roster)
             os.makedirs(P['run'], exist_ok=True)

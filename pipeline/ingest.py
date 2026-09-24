@@ -57,6 +57,43 @@ def _listing_index(snap_dir, exchange):
             set(rows))
 
 
+# trader_snapshot column <- binance_detail.jsonl key. Everything here is NULL
+# when the `detail` pass has not run for that trader: `detail` is a second,
+# paced pass over the ranked candidates, not part of the universe sweep, so
+# "not fetched" is the normal state for most of the snapshot and must never be
+# confused with "measured at zero".
+_DETAIL_COLS = (('copier_pnl', 'copierPnl'),
+                ('copier_count_current', 'currentCopyCount'),
+                ('copier_count_total', 'totalCopyCount'),
+                ('aum_amount', 'aumAmount'),
+                ('margin_balance', 'marginBalance'),
+                ('min_copy_usd', 'fixedAmountMinCopyUsd'))
+
+
+def _detail_index(snap_dir, exchange):
+    """portfolio_id -> the detail row's DB values, from <exchange>_detail.jsonl.
+
+    Only Binance publishes `lead-portfolio/detail`; for any other exchange, and
+    for a snapshot taken before the detail pass existed, the index is empty and
+    every column stays NULL.
+    """
+    path = os.path.join(snap_dir, f'{exchange}_detail.jsonl')
+    if not os.path.exists(path):
+        return {}
+    out = {}
+    for line in open(path):
+        try:
+            rec = json.loads(line)
+        except ValueError:
+            continue
+        pid = rec.get('portfolioId')
+        if pid is None:
+            continue
+        out[str(pid)] = (*(rec.get(k) for _, k in _DETAIL_COLS),
+                         int(bool(rec.get('retired'))))
+    return out
+
+
 def ingest_snapshot(con, snap_dir, snapshot_date):
     snap_dir = str(snap_dir)
     counts = {}
@@ -69,6 +106,8 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             counts[ex] = 0
             continue
         starts, listed = _listing_index(snap_dir, ex)
+        detail = _detail_index(snap_dir, ex)
+        no_detail = (None,) * (len(_DETAIL_COLS) + 1)
         traders, pos_rows, trader_rows = set(), [], {}
         for r in csv.DictReader(open(path)):
             if ex == 'binance':
@@ -104,9 +143,11 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             "avg_cost,avg_close) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", pos_rows)
         con.executemany(
             "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-            "roi,pnl,aum,win_rate,mdd,start_time,listed) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            [(*row, None if listed is None else int(tid in listed))
+            "roi,pnl,aum,win_rate,mdd,start_time,listed,"
+            + ",".join(c for c, _ in _DETAIL_COLS) + ",retired) "
+            "VALUES (" + ",".join("?" * (11 + len(_DETAIL_COLS) + 1)) + ")",
+            [(*row, None if listed is None else int(tid in listed),
+              *detail.get(tid, no_detail))
              for tid, row in trader_rows.items()])
         con.execute("INSERT INTO snapshots VALUES (?,?,?,?,'')",
                     (snapshot_date, ex, len(traders), len(pos_rows)))

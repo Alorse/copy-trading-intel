@@ -36,3 +36,22 @@ def test_migration_adds_column_to_an_existing_db(tmp_path):
     row = con.execute("SELECT nick, start_time FROM trader_snapshot").fetchone()
     assert row["nick"] == "x" and row["start_time"] is None   # data preserved
     con.close()
+
+
+def test_migration_adds_the_copier_columns(tmp_path):
+    """The 2026-09-23 copier gate reads columns that did not exist when the
+    production DB was built, and the DB is derived but expensive to rebuild."""
+    import sqlite3
+    path = tmp_path / "old.sqlite"
+    old = sqlite3.connect(str(path))
+    old.execute("CREATE TABLE trader_snapshot (snapshot_date TEXT NOT NULL, "
+                "exchange TEXT NOT NULL, trader_id TEXT NOT NULL, nick TEXT, "
+                "roi REAL, pnl REAL, aum REAL, win_rate REAL, mdd REAL, "
+                "PRIMARY KEY (snapshot_date, exchange, trader_id))")
+    old.commit()
+    old.close()
+    con = dbmod.connect(path)
+    cols = {r[1] for r in con.execute("PRAGMA table_info(trader_snapshot)")}
+    assert {"copier_pnl", "copier_count_current", "copier_count_total",
+            "aum_amount", "margin_balance", "min_copy_usd", "retired"} <= cols
+    con.close()

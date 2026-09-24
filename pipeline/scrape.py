@@ -10,10 +10,51 @@ PUA = {'User-Agent': BUA['User-Agent'], 'Accept': 'application/json',
        'Origin': 'https://phemex.com', 'Referer': 'https://phemex.com/'}
 LIST_URL = 'https://www.binance.com/bapi/futures/v1/friendly/future/copy-trade/home-page/query-list'
 HIST_URL = 'https://www.binance.com/bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/position-history'
+DETAIL_URL = ('https://www.binance.com/bapi/futures/v1/friendly/future/copy-trade/'
+              'lead-portfolio/detail?portfolioId={}')
 PH_REC = ('https://api.phemex.com/phemex-lb/public/data/v3/user/recommend'
           '?hideFullyCopied=false&keyword=&pageNum={}&pageSize=50&showChart=false'
           '&sortBy=PnlRate30d')
 PH_POS = 'https://api.phemex.com/phemex-lb/public/data/position/closed/v2'
+
+
+# --- lead-portfolio/detail (added 2026-09-23) -------------------------------
+# The only endpoint that publishes the LIFETIME copier record. The listing row
+# carries a `copierPnl` too and it is NOT the same number: it is scoped to the
+# request's `timeRange`, so 汤普猫 reads +116 / +147 / +242 / +273 USDT for
+# 7D/30D/90D/180D while `detail` reads **-6,117** lifetime. Gating on the
+# listing figure would have passed exactly the lead the gate exists to stop.
+# It also separates a retired portfolio (code 11012028) from a merely unranked
+# one -- see SKILL.md.
+#
+# One request per portfolio and no pagination, so it is paced much more
+# conservatively than the listing: >= 1.5s between calls, exponential back-off
+# on 11012005 (the rate limit).
+DETAIL_SLEEP = 1.5
+DETAIL_RETIRED = '11012028'        # data=null: the portfolio no longer exists
+DETAIL_RATE_LIMITED = '11012005'
+# Every field the snapshot keeps, and how to read it. `detail` ships its money
+# fields as STRINGS, and an absent one must stay absent: see `_num`.
+DETAIL_FIELDS = (('status', str), ('copierPnl', float), ('currentCopyCount', int),
+                 ('totalCopyCount', int), ('aumAmount', float),
+                 ('marginBalance', float), ('fixedAmountMinCopyUsd', float),
+                 ('lastTradeTime', int), ('positionShow', bool))
+
+
+def _num(x, cast):
+    """`cast(x)` or None -- NEVER a 0.0 default.
+
+    flatten.py defaults its absent trader-level fields to 0.0 and that is the
+    mistake this project keeps paying for: a copierPnl of 0.0 reads as "the
+    copiers broke even", and 0 is not < 0, so a lead nobody ever measured would
+    walk straight through the `copiers_losing` gate.
+    """
+    if x is None or isinstance(x, str) and not x.strip():
+        return None
+    try:
+        return cast(float(x)) if cast is int else cast(x)
+    except (TypeError, ValueError):
+        return None
 
 
 def _post(url, body, tries=3):
@@ -29,17 +70,23 @@ def _post(url, body, tries=3):
             time.sleep(2 * (i + 1))
 
 
-def _get(url, tries=3):
+def _get(url, tries=3, headers=None):
     # identical to scripts/scrape_positions.py::get, PUA headers
     for i in range(tries):
         try:
-            req = urllib.request.Request(url, headers=PUA)
+            req = urllib.request.Request(url, headers=headers or PUA)
             with urllib.request.urlopen(req, timeout=20) as r:
                 return json.load(r)
         except Exception:
             if i == tries - 1:
                 return {'error': 'fail'}
             time.sleep(2 * (i + 1))
+
+
+def _bget(url, tries=3):
+    """GET against Binance: same transport as `_get`, Binance's browser headers
+    (the Phemex `PUA` set is rejected by bapi)."""
+    return _get(url, tries=tries, headers=BUA)
 
 
 def _done_ids(path, key):
@@ -201,6 +248,62 @@ def _scrape_phemex(snap_dir, pages, get):
         if fetched % 25 == 0:
             print(f'  {fetched} new traders', flush=True)
         time.sleep(0.4)
+    out.close()
+    return fetched
+
+
+def _fetch_detail(pid, get, tries=4):
+    """(record, ok) for one portfolio. ok=False -> the caller does NOT write it,
+    so the resume retries; a RETIRED portfolio is an answer, not a failure."""
+    for i in range(tries):
+        d = get(DETAIL_URL.format(pid))
+        code = d.get('code')
+        if code == DETAIL_RATE_LIMITED:
+            time.sleep(DETAIL_SLEEP * 2 ** (i + 1))
+            continue
+        rec = {'portfolioId': pid, 'code': code, 'retired': code == DETAIL_RETIRED}
+        rec.update({k: None for k, _ in DETAIL_FIELDS})
+        if code == DETAIL_RETIRED:
+            return rec, True
+        if code != '000000' or not d.get('data'):
+            return None, False
+        data = d['data']
+        rec.update({k: _num(data.get(k), cast) for k, cast in DETAIL_FIELDS})
+        return rec, True
+    return None, False
+
+
+def run_detail(snap_dir, ids, http_get_binance=None):
+    """`lead-portfolio/detail` for `ids` -> <snap_dir>/binance_detail.jsonl.
+
+    Resumable and idempotent like the history scrape: one line per portfolio,
+    already-fetched ids are skipped. Kept OUT of `run()` because it is a second
+    pass over a set the ranking picks (see `pipeline.py detail`), not part of
+    the universe sweep.
+    """
+    snap_dir = str(snap_dir)
+    os.makedirs(snap_dir, exist_ok=True)
+    get = http_get_binance or _bget
+    path = os.path.join(snap_dir, 'binance_detail.jsonl')
+    done = _done_ids(path, 'portfolioId')
+    todo = [str(i) for i in ids if str(i) not in done]
+    print(f'binance detail to fetch: {len(todo)} | already done: {len(done)}',
+          flush=True)
+    out = open(path, 'a')
+    fetched = 0
+    for pid in todo:
+        rec, ok = _fetch_detail(pid, get)
+        if not ok:
+            print(f'  ERR detail {pid} — will be retried on the next resume',
+                  flush=True)
+            time.sleep(DETAIL_SLEEP)
+            continue
+        out.write(json.dumps(rec, ensure_ascii=False) + '\n')
+        out.flush()
+        fetched += 1
+        if fetched % 50 == 0:
+            print(f'  {fetched}/{len(todo)} details', flush=True)
+        time.sleep(DETAIL_SLEEP)
     out.close()
     return fetched
 

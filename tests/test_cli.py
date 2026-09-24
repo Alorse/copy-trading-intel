@@ -61,3 +61,45 @@ def test_analyze_validation_blocks_partial_data(tmp_path, snap_dir):
     rc = cli.main(["analyze", "--date", "2026-10-01", "--force"],
                   project_root=str(root))
     assert rc == 0
+
+
+# --- the `detail` pass (2026-09-23) -----------------------------------------
+
+def test_detail_fetches_only_the_ranked_candidates(tmp_path, snap_dir, monkeypatch):
+    """`lead-portfolio/detail` is one request per portfolio at >=1.5s, so it runs
+    over the traders a roster could actually contain — everything that survives
+    every OTHER disqualifier — and not over the whole universe."""
+    root = _setup_project(tmp_path, snap_dir)
+    cli.main(["analyze", "--date", "2026-09-01"], project_root=str(root))
+    from pipeline import db as dbmod
+    con = dbmod.connect(root / "data" / "copytrade.sqlite")
+    for tid, flags in (("OK", "[]"), ("DISQ", '["loss_hider"]')):
+        con.execute("INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,"
+                    "nick,n,score,flags) VALUES ('2026-09-01','binance',?,?,"
+                    "100,5.0,?)", (tid, tid, flags))
+    con.commit()
+    con.close()
+    seen = []
+    monkeypatch.setattr(cli.scrape_mod, "run_detail",
+                        lambda snap, ids, **kw: seen.append(list(ids)) or len(ids))
+    rc = cli.main(["detail", "--date", "2026-09-01"], project_root=str(root))
+    assert rc == 0
+    # P1 is out too: one position, so `insufficient`
+    assert seen == [["OK"]]
+
+
+def test_detail_all_covers_the_whole_snapshot(tmp_path, snap_dir, monkeypatch):
+    root = _setup_project(tmp_path, snap_dir)
+    cli.main(["analyze", "--date", "2026-09-01"], project_root=str(root))
+    from pipeline import db as dbmod
+    con = dbmod.connect(root / "data" / "copytrade.sqlite")
+    con.execute("INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,"
+                "nick) VALUES ('2026-09-01','binance','OTHER','other')")
+    con.commit()
+    con.close()
+    seen = []
+    monkeypatch.setattr(cli.scrape_mod, "run_detail",
+                        lambda snap, ids, **kw: seen.append(list(ids)) or len(ids))
+    assert cli.main(["detail", "--date", "2026-09-01", "--all"],
+                    project_root=str(root)) == 0
+    assert set(seen[0]) == {"P1", "OTHER"}
