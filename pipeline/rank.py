@@ -10,47 +10,62 @@ def _round05(x):
     return round(x * 20) / 20
 
 
-def _weights(roster):
-    """A and B: 70/30 pools. A only: pool 1.0. B only: cap of 0.10 each and the
-    remainder stays UNALLOCATED (sums < 1.0) - never dumped onto a single one.
-    Returns the unallocated weight."""
-    A = [t for t in roster if t['tier'] == 'A']
-    B = [t for t in roster if t['tier'] == 'B']
-    poolA = 1.0 if (A and not B) else 0.70
-    poolB = 0.30 if A else 1.0
-    for grp, pool in ((A, poolA), (B, poolB)):
-        tot = sum(t['score'] for t in grp)
-        for t in grp:
-            t['weight'] = pool * t['score'] / tot if tot else 0.0
-    # iterative cap on B: the excess is spread within B among the uncapped ones
-    for _ in range(len(B)):
-        excess = sum(max(0.0, t['weight'] - 0.10) for t in B)
+# No single lead may hold more than this share of the book, whatever it scores.
+# The A pool is 70% of the book (100% when there is no B) split by score, so ONE
+# tier-A trader used to take all of it: on 2026-09-23 汤普猫 was handed 70% on 84
+# trades, t=2.58 and a $2,001 lead account. The failure mode this caps is not
+# a bad average, it is a single event -- 牛熊摆渡人 closed 14 positions for
+# -15,295 USDT in one second and stopped existing. 20% is the most the
+# 2026-08-28 hand ranking ever gave one trader (Mine13), it is the most a
+# roster of the engine's 5 slots can give everyone at once, and it is the level
+# at which one lead's total loss costs a fifth of the book rather than most of
+# it. The excess is NOT moved to anyone else: it stays unallocated, as B's
+# remainder already did.
+MAX_WEIGHT = 0.20
+# Tier B is "qualified but carrying a warning", and keeps its own stricter cap.
+MAX_WEIGHT_B = 0.10
+
+
+def _allocate(grp, pool, cap):
+    """Split `pool` among `grp` by score, with a per-trader `cap`.
+
+    The excess of a capped trader is redistributed WITHIN the group, by score,
+    to those still below the cap; once everyone is at the cap, whatever is left
+    of the pool stays unallocated rather than being piled onto one name.
+    """
+    tot = sum(t['score'] for t in grp)
+    for t in grp:
+        t['weight'] = pool * t['score'] / tot if tot else 0.0
+    for _ in range(len(grp)):
+        excess = sum(max(0.0, t['weight'] - cap) for t in grp)
         if excess < 1e-9:
             break
-        for t in B:
-            t['weight'] = min(t['weight'], 0.10)
-        free = [t for t in B if t['weight'] < 0.10 - 1e-9]
+        for t in grp:
+            t['weight'] = min(t['weight'], cap)
+        free = [t for t in grp if t['weight'] < cap - 1e-9]
         if not free:
             break
         tot = sum(t['score'] for t in free)
         for t in free:
             t['weight'] += excess * t['score'] / tot if tot else 0.0
-    for t in B:
-        t['weight'] = min(t['weight'], 0.10)
-    b_excess = poolB - sum(t['weight'] for t in B) if B else 0.0
-    if A and b_excess > 1e-9:                 # B's excess goes to A if A exists
-        totA = sum(t['weight'] for t in A)
-        for t in A:
-            t['weight'] += b_excess * t['weight'] / totA if totA else 0.0
-    for t in roster:
-        t['weight'] = _round05(t['weight'])
-    assigned = sum(t['weight'] for t in roster)
-    drift = 1.0 - assigned
-    if A and abs(drift) > 1e-9:               # rounding adjustment ONLY on A
-        mx = max(A, key=lambda t: t['weight'])
-        mx['weight'] = _round05(mx['weight'] + drift)
-        assigned = sum(t['weight'] for t in roster)
-    return max(0.0, round(1.0 - assigned, 2))  # unallocated (B-only leaves it >0)
+    for t in grp:
+        t['weight'] = min(t['weight'], cap)
+
+
+def _weights(roster):
+    """A and B: 70/30 pools, each split by score and capped per trader (A:
+    MAX_WEIGHT, B: MAX_WEIGHT_B). A only: pool 1.0. B only: pool 1.0.
+    Everything the caps leave over stays UNALLOCATED - never dumped onto
+    another trader, and never used to top the book up to 1.0.
+    Returns the unallocated weight."""
+    A = [t for t in roster if t['tier'] == 'A']
+    B = [t for t in roster if t['tier'] == 'B']
+    _allocate(A, 1.0 if (A and not B) else 0.70, MAX_WEIGHT)
+    _allocate(B, 0.30 if A else 1.0, MAX_WEIGHT_B)
+    for t in roster:                          # publishable multiples of 5%,
+        t['weight'] = min(_round05(t['weight']),   # and rounding may not lift
+                          MAX_WEIGHT if t['tier'] == 'A' else MAX_WEIGHT_B)
+    return max(0.0, round(1.0 - sum(t['weight'] for t in roster), 2))
 
 
 def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):

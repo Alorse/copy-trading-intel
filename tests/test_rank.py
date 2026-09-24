@@ -60,7 +60,11 @@ def test_tiers_and_weights(con):
     r = rank.run(con, D, EX)
     by = {t["nick"]: t for t in r["traders"]}
     assert by["vet"]["tier"] == "A" and by["rookie"]["tier"] == "B"
-    assert abs(sum(t["weight"] for t in r["traders"]) - 1.0) < 1e-9
+    # allocated + unallocated == 1.0: since the per-trader cap, the book is no
+    # longer fully allocated just because tier A exists (it was vet 0.90 +
+    # rookie 0.10 before the cap)
+    assert abs(sum(t["weight"] for t in r["traders"])
+               + r["unallocated"] - 1.0) < 1e-9
     assert by["rookie"]["weight"] <= 0.10 + 1e-9
     assert all(abs(t["weight"] * 20 - round(t["weight"] * 20)) < 1e-6
                for t in r["traders"])                # multiples of 0.05
@@ -124,3 +128,51 @@ def test_unscreenable_traders_go_to_watchlist_not_excluded(con):
     assert tiers["mixed"] == "X"          # a real defect still outranks the caveat
     # and neither reaches the roster either way
     assert {t["nick"] for t in rank.run(con, D, EX)["traders"]} == {"clean"}
+
+
+# --- the per-trader weight cap (2026-09-23) ---------------------------------
+# The A pool is 70% of the book (100% with no B), split by score, so a single
+# tier-A trader took ALL of it: on 2026-09-23 汤普猫 was handed 70% on 84 trades,
+# t=2.58 and a $2,001 lead account. One lead cannot be the book, whatever it
+# scores — 牛熊摆渡人 closed 14 positions for -15,295 USDT in one second.
+
+def test_no_trader_exceeds_the_cap(con):
+    _tm(con, "solo", n=400)                       # the only survivor, tier A
+    r = rank.run(con, D, EX)
+    assert r["traders"][0]["weight"] == rank.MAX_WEIGHT
+    assert rank.MAX_WEIGHT <= 0.20                # the 2026-08 hand ranking's max
+
+
+def test_cap_excess_stays_unallocated_instead_of_moving_to_others(con):
+    _tm(con, "vet", n=400)                             # A
+    _tm(con, "rookie", n=100, flags='["alpha_decay"]')  # B
+    r = rank.run(con, D, EX)
+    by = {t["nick"]: t["weight"] for t in r["traders"]}
+    assert by["vet"] == rank.MAX_WEIGHT                # not 0.70, not 0.90
+    assert by["rookie"] == 0.10                        # B's own cap is stricter
+    assert abs(r["unallocated"] - (1.0 - rank.MAX_WEIGHT - 0.10)) < 1e-9
+
+
+def test_cap_excess_within_the_a_pool_goes_to_the_other_a_traders(con):
+    # the excess is not dumped on the book, but inside a tier it still follows
+    # score — up to each trader's own cap
+    _tm(con, "big", t=9.0, n=400)
+    _tm(con, "small", t=3.0, n=400)
+    r = rank.run(con, D, EX)
+    by = {t["nick"]: t["weight"] for t in r["traders"]}
+    assert by["big"] == rank.MAX_WEIGHT
+    assert 0 < by["small"] <= rank.MAX_WEIGHT
+
+
+def test_the_2026_09_23_concentration_is_capped(con):
+    # the real shape of that run: one clean tier-A trader and four tier-B ones
+    _tm(con, "tangpu", t=2.58, alpha=0.029, payoff=1.41, tb=0.0, n=84)
+    con.execute("INSERT INTO trader_metrics (snapshot_date,exchange,trader_id,"
+                "nick,n) VALUES ('2026-08-28',?,'tangpu','tangpu',80)", (EX,))
+    con.commit()                                   # seen in 2 snapshots -> A
+    for i, nick in enumerate(("suoha", "cooma", "heipao", "zhsheng")):
+        _tm(con, nick, t=4.0 - i * 0.3, n=300, flags='["alpha_decay"]')
+    r = rank.run(con, D, EX)
+    by = {t["nick"]: t["weight"] for t in r["traders"]}
+    assert by["tangpu"] == rank.MAX_WEIGHT             # was 0.70
+    assert max(by.values()) <= rank.MAX_WEIGHT
