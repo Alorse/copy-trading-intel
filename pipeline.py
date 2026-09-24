@@ -99,10 +99,15 @@ def _detail_ids(con, date, prev_roster):
     the traders it removed would let their copier record lapse back to NULL and
     the gate would switch itself off. Selecting on `flags` means `detect` must
     have run for the date.
+
+    The set is `rank.BAD`, not `detect.DISQUALIFYING`: `rank` is what decides
+    who is seated, and it adds `decopy_2neg` on top of the battery. Reading the
+    battery instead would spend a paced request per run on leads the ranking
+    will never seat.
     """
-    other = detect.DISQUALIFYING - {detect.COPIERS_LOSING}
+    other = rank.BAD - {detect.COPIERS_LOSING}
     ids = [r['trader_id'] for r in con.execute(
-        "SELECT trader_id, flags, score FROM trader_metrics "
+        "SELECT trader_id, flags FROM trader_metrics "
         "WHERE snapshot_date=? AND exchange='binance' "
         "AND (score IS NULL OR score > 0)", (date,))
         if not (set(json.loads(r['flags'] or '[]')) & other)]

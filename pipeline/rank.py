@@ -32,6 +32,10 @@ def _allocate(grp, pool, cap):
     The excess of a capped trader is redistributed WITHIN the group, by score,
     to those still below the cap; once everyone is at the cap, whatever is left
     of the pool stays unallocated rather than being piled onto one name.
+
+    Weights come out rounded to publishable multiples of 5% and clamped ONCE:
+    `_round05` is monotone and both caps are multiples of 0.05, so rounding
+    after the cap can never lift a trader above it.
     """
     tot = sum(t['score'] for t in grp)
     for t in grp:
@@ -49,7 +53,7 @@ def _allocate(grp, pool, cap):
         for t in free:
             t['weight'] += excess * t['score'] / tot if tot else 0.0
     for t in grp:
-        t['weight'] = min(t['weight'], cap)
+        t['weight'] = min(_round05(t['weight']), cap)
 
 
 def _weights(roster):
@@ -62,9 +66,6 @@ def _weights(roster):
     B = [t for t in roster if t['tier'] == 'B']
     _allocate(A, 1.0 if (A and not B) else 0.70, MAX_WEIGHT)
     _allocate(B, 0.30 if A else 1.0, MAX_WEIGHT_B)
-    for t in roster:                          # publishable multiples of 5%,
-        t['weight'] = min(_round05(t['weight']),   # and rounding may not lift
-                          MAX_WEIGHT if t['tier'] == 'A' else MAX_WEIGHT_B)
     return max(0.0, round(1.0 - sum(t['weight'] for t in roster), 2))
 
 
@@ -83,6 +84,8 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     ts = {r['trader_id']: r for r in con.execute(
         "SELECT trader_id, roi, copier_pnl, copier_count_total FROM trader_snapshot "
         "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
+    # a trader with metrics but no trader_snapshot row reads as all-unknown
+    NO_TS = {'roi': None, 'copier_pnl': None, 'copier_count_total': None}
     prev_m = {}
     if prev_date:
         prev_m = {r['trader_id']: r for r in con.execute(
@@ -133,6 +136,7 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     out_traders = []
     for i, c in enumerate(roster):
         m = c['m']
+        t = ts.get(c['tid'], NO_TS)
         p = prev_m.get(c['tid'])
         out_traders.append({
             'exchange': exchange, 'portfolio_id': c['tid'], 'nick': c['nick'],
@@ -142,13 +146,11 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                         # the t rests on n_alpha (<= n): disclose it
                         'n_alpha': m['n_alpha'],
                         # headline ROI of the picked trader, not just the excluded one
-                        'roi': ts[c['tid']]['roi'] if c['tid'] in ts else None,
+                        'roi': t['roi'],
                         # the copier gate decides membership: publish what it
                         # read, NULL included (see detect.COPIERS_LOSING)
-                        'copier_pnl': (ts[c['tid']]['copier_pnl']
-                                       if c['tid'] in ts else None),
-                        'copier_count_total': (ts[c['tid']]['copier_count_total']
-                                               if c['tid'] in ts else None)},
+                        'copier_pnl': t['copier_pnl'],
+                        'copier_count_total': t['copier_count_total']},
             'warnings': sorted(c['warns']),
             'trend': {'rank_prev': prev_rank.get(c['tid']), 'rank_now': i + 1,
                       'alpha_delta': (round(m['alpha'] - p['alpha'], 6)

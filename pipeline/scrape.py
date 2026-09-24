@@ -262,9 +262,8 @@ def _fetch_detail(pid, get, tries=4):
             time.sleep(DETAIL_SLEEP * 2 ** (i + 1))
             continue
         rec = {'portfolioId': pid, 'code': code, 'retired': code == DETAIL_RETIRED}
-        rec.update({k: None for k, _ in DETAIL_FIELDS})
-        if code == DETAIL_RETIRED:
-            return rec, True
+        if code == DETAIL_RETIRED:      # gone: every field is NULL, on purpose
+            return {**rec, **{k: None for k, _ in DETAIL_FIELDS}}, True
         if code != '000000' or not d.get('data'):
             return None, False
         data = d['data']

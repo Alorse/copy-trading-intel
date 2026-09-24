@@ -67,19 +67,22 @@ MASS_CLOSE_LOSS_SHARE = 0.50
 # The third way a trader leaves: off the leaderboard we scrape. `no_listing_data`
 # says only that -- NOT that the portfolio is closed (verified 2026-09-23: of the
 # 398 such portfolios, 再也不做空了 is still ACTIVE and copyable, while the genuinely
-# retired 牛熊摆渡人 returns code 11012028 from lead-portfolio/detail; distinguishing
-# the two needs that endpoint, which the scrape stage does not yet call).
+# retired 牛熊摆渡人 returns code 11012028 from lead-portfolio/detail).
 # It is disqualifying anyway, because for these traders the listing-only fields
 # (roi, mdd, startTime) are absent, so `mdd_high`, `roi_artifact` and
 # `fresh_start` silently cannot fire -- 再也不做空了 reached tier A and 30% weight on
 # 2026-09-23 with an empty flag list and an unknown drawdown. The historical union
 # exists so de-copy can watch an incumbent decay after it drops out of the
 # ranking (see the design doc), not to recruit new picks out of it.
-# NOTE: `listed == 0` is a PROXY for "the listing-only fields are missing". The
-# day `scrape` starts calling lead-portfolio/detail, the two diverge and this
-# trigger needs revisiting; the honest fix underneath is for flatten.py to stop
-# defaulting the absent trader-level fields (roi, pnl, aum, winRate, mdd) to
-# 0.0, so "never measured" reaches SQL as NULL instead of a fabricated zero.
+# NOTE: `listed == 0` is still a PROXY for "the listing-only fields are missing",
+# and since 2026-09-23 the real signal is in the DB beside it: `detail` now runs
+# and `trader_snapshot.retired` records code 11012028 (190 of the 950 ranked
+# portfolios on that snapshot -- every one of them already off the listing, so
+# splitting this flag into "retired" and "unscreenable" would cost nothing
+# today and is the obvious next rule; it is NOT taken here). The honest fix
+# underneath is still for flatten.py to stop defaulting the absent trader-level
+# fields (roi, pnl, aum, winRate, mdd) to 0.0, so "never measured" reaches SQL
+# as NULL instead of a fabricated zero.
 
 
 # --- the copier gate (added 2026-09-23) -------------------------------------
@@ -167,6 +170,8 @@ def run(con, snapshot_date, exchange='binance'):
         "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
     roi = {k: v['roi'] for k, v in snap.items()}
     listed = {k: v['listed'] for k, v in snap.items()}
+    copier_pnl = {k: v['copier_pnl'] for k, v in snap.items()}
+    copier_n = {k: v['copier_count_total'] for k, v in snap.items()}
     snap_ms = dt.datetime.fromisoformat(snapshot_date).replace(
         tzinfo=dt.UTC).timestamp() * 1000
     # one pass over `positions` for every per-trader aggregate the rules need
@@ -231,10 +236,8 @@ def run(con, snapshot_date, exchange='binance'):
             f.append('mass_close_loss')
         if listed.get(tid) == 0:
             f.append('no_listing_data')
-        sr = snap.get(tid)
-        if sr is not None and _copiers_losing(sr['copier_pnl'],
-                                              sr['copier_count_total'],
-                                              realized.get(tid) or 0.0):
+        if _copiers_losing(copier_pnl.get(tid), copier_n.get(tid),
+                           realized.get(tid) or 0.0):
             f.append(COPIERS_LOSING)
         # the public record starts where the trader chose to start it, and what
         # came before is unverifiable: of 177 portfolios whose pre-startTime

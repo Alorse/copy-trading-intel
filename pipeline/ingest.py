@@ -68,6 +68,13 @@ _DETAIL_COLS = (('copier_pnl', 'copierPnl'),
                 ('aum_amount', 'aumAmount'),
                 ('margin_balance', 'marginBalance'),
                 ('min_copy_usd', 'fixedAmountMinCopyUsd'))
+# `retired` is derived (code 11012028), not copied, so it sits outside the
+# mapping - but the column list and the "nothing was fetched" tuple are built
+# from both halves here, so adding a detail column stays a one-line change.
+_TS_COLS = ('snapshot_date', 'exchange', 'trader_id', 'nick', 'roi', 'pnl',
+            'aum', 'win_rate', 'mdd', 'start_time', 'listed',
+            *(c for c, _ in _DETAIL_COLS), 'retired')
+_NO_DETAIL = (None,) * (len(_DETAIL_COLS) + 1)
 
 
 def _detail_index(snap_dir, exchange):
@@ -107,7 +114,6 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             continue
         starts, listed = _listing_index(snap_dir, ex)
         detail = _detail_index(snap_dir, ex)
-        no_detail = (None,) * (len(_DETAIL_COLS) + 1)
         traders, pos_rows, trader_rows = set(), [], {}
         for r in csv.DictReader(open(path)):
             if ex == 'binance':
@@ -142,12 +148,10 @@ def ingest_snapshot(con, snap_dir, snapshot_date):
             "opened_ms,closed_ms,dur_h,notional,leverage,margin,closing_pnl,partial,"
             "avg_cost,avg_close) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", pos_rows)
         con.executemany(
-            "INSERT INTO trader_snapshot (snapshot_date,exchange,trader_id,nick,"
-            "roi,pnl,aum,win_rate,mdd,start_time,listed,"
-            + ",".join(c for c, _ in _DETAIL_COLS) + ",retired) "
-            "VALUES (" + ",".join("?" * (11 + len(_DETAIL_COLS) + 1)) + ")",
+            f"INSERT INTO trader_snapshot ({','.join(_TS_COLS)}) "
+            f"VALUES ({','.join('?' * len(_TS_COLS))})",
             [(*row, None if listed is None else int(tid in listed),
-              *detail.get(tid, no_detail))
+              *detail.get(tid, _NO_DETAIL))
              for tid, row in trader_rows.items()])
         con.execute("INSERT INTO snapshots VALUES (?,?,?,?,'')",
                     (snapshot_date, ex, len(traders), len(pos_rows)))
