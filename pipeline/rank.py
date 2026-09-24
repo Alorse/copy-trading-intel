@@ -80,9 +80,9 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
     prev_date = con.execute(
         "SELECT MAX(snapshot_date) FROM snapshots WHERE exchange=? AND snapshot_date<?",
         (exchange, snapshot_date)).fetchone()[0]
-    roi = {r['trader_id']: r['roi'] for r in con.execute(
-        "SELECT trader_id, roi FROM trader_snapshot WHERE snapshot_date=? AND exchange=?",
-        (snapshot_date, exchange))}
+    ts = {r['trader_id']: r for r in con.execute(
+        "SELECT trader_id, roi, copier_pnl, copier_count_total FROM trader_snapshot "
+        "WHERE snapshot_date=? AND exchange=?", (snapshot_date, exchange))}
     prev_m = {}
     if prev_date:
         prev_m = {r['trader_id']: r for r in con.execute(
@@ -142,7 +142,13 @@ def run(con, snapshot_date, exchange='binance', diff=None, prev_roster=None):
                         # the t rests on n_alpha (<= n): disclose it
                         'n_alpha': m['n_alpha'],
                         # headline ROI of the picked trader, not just the excluded one
-                        'roi': roi.get(c['tid'])},
+                        'roi': ts[c['tid']]['roi'] if c['tid'] in ts else None,
+                        # the copier gate decides membership: publish what it
+                        # read, NULL included (see detect.COPIERS_LOSING)
+                        'copier_pnl': (ts[c['tid']]['copier_pnl']
+                                       if c['tid'] in ts else None),
+                        'copier_count_total': (ts[c['tid']]['copier_count_total']
+                                               if c['tid'] in ts else None)},
             'warnings': sorted(c['warns']),
             'trend': {'rank_prev': prev_rank.get(c['tid']), 'rank_now': i + 1,
                       'alpha_delta': (round(m['alpha'] - p['alpha'], 6)

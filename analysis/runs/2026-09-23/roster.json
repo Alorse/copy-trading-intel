@@ -2,7 +2,7 @@
  "generated": "2026-09-23",
  "snapshot": "2026-09-23",
  "engine": "v1.0",
- "unallocated": 0.0,
+ "unallocated": 0.6,
  "traders": [
   {
    "exchange": "binance",
@@ -19,7 +19,9 @@
     "mdd": 12.965532,
     "n": 331,
     "n_alpha": 231,
-    "roi": 224.73112119
+    "roi": 224.73112119,
+    "copier_pnl": 19426.23201855,
+    "copier_count_total": 112
    },
    "warnings": [
     "alpha_decay",
@@ -29,30 +31,6 @@
     "rank_prev": 72,
     "rank_now": 1,
     "alpha_delta": 0.00088
-   }
-  },
-  {
-   "exchange": "binance",
-   "portfolio_id": "4113397127009634560",
-   "nick": "汤普猫",
-   "tier": "A",
-   "weight": 0.7,
-   "score": 2.262,
-   "metrics": {
-    "alpha": 0.02896153637767269,
-    "t": 2.578381866590234,
-    "payoff": 1.4081927866873838,
-    "lev_med": 10.0,
-    "mdd": 23.796482,
-    "n": 84,
-    "n_alpha": 72,
-    "roi": 247.0176503
-   },
-   "warnings": [],
-   "trend": {
-    "rank_prev": 191,
-    "rank_now": 2,
-    "alpha_delta": 0.011897
    }
   },
   {
@@ -70,14 +48,16 @@
     "mdd": 31.916563,
     "n": 137,
     "n_alpha": 110,
-    "roi": 318.78807317
+    "roi": 318.78807317,
+    "copier_pnl": 1875.65502686,
+    "copier_count_total": 218
    },
    "warnings": [
     "alpha_decay"
    ],
    "trend": {
     "rank_prev": 94,
-    "rank_now": 3,
+    "rank_now": 2,
     "alpha_delta": -0.000907
    }
   },
@@ -86,7 +66,7 @@
    "portfolio_id": "5065357423393074433",
    "nick": "黑袍小分队",
    "tier": "B",
-   "weight": 0.05,
+   "weight": 0.1,
    "score": 1.536,
    "metrics": {
     "alpha": 0.016469978645707622,
@@ -96,7 +76,9 @@
     "mdd": 64.170327,
     "n": 158,
     "n_alpha": 99,
-    "roi": 165.69621738
+    "roi": 165.69621738,
+    "copier_pnl": -188.53800055,
+    "copier_count_total": 19
    },
    "warnings": [
     "fresh_start",
@@ -104,26 +86,28 @@
    ],
    "trend": {
     "rank_prev": 214,
-    "rank_now": 4,
+    "rank_now": 3,
     "alpha_delta": 0.0053
    }
   },
   {
    "exchange": "binance",
-   "portfolio_id": "5088110611707352576",
-   "nick": "重生之我在币圈捡垃圾-",
+   "portfolio_id": "5128593512194364417",
+   "nick": "狱萝",
    "tier": "B",
-   "weight": 0.05,
-   "score": 1.343,
+   "weight": 0.1,
+   "score": 1.272,
    "metrics": {
-    "alpha": 0.006033107353136959,
-    "t": 3.8461805292334876,
-    "payoff": 1.1023048883094428,
+    "alpha": 0.019435720329086675,
+    "t": 2.980898527297421,
+    "payoff": 0.7679261235591874,
     "lev_med": 5.0,
-    "mdd": 60.792937,
-    "n": 294,
-    "n_alpha": 292,
-    "roi": 616.93534582
+    "mdd": 41.429927,
+    "n": 186,
+    "n_alpha": 151,
+    "roi": 625.83397456,
+    "copier_pnl": 41.01603143,
+    "copier_count_total": 14
    },
    "warnings": [
     "alpha_decay",
@@ -131,11 +115,17 @@
     "mdd_high"
    ],
    "trend": {
-    "rank_prev": 151,
-    "rank_now": 5,
-    "alpha_delta": -0.000895
+    "rank_prev": 126,
+    "rank_now": 4,
+    "alpha_delta": -0.010783
    }
   }
  ],
- "removed": []
+ "removed": [
+  {
+   "portfolio_id": "5088110611707352576",
+   "nick": "重生之我在币圈捡垃圾-",
+   "reason": "copiers_losing"
+  }
+ ]
 }

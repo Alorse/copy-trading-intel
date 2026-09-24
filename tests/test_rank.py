@@ -176,3 +176,19 @@ def test_the_2026_09_23_concentration_is_capped(con):
     by = {t["nick"]: t["weight"] for t in r["traders"]}
     assert by["tangpu"] == rank.MAX_WEIGHT             # was 0.70
     assert max(by.values()) <= rank.MAX_WEIGHT
+
+
+def test_metrics_block_exposes_the_copier_record(con):
+    """The gate now decides membership, so the roster has to publish the number
+    it decided on — and the count that makes it a measurement."""
+    _tm(con, "lead")
+    insert_trader_snapshot(con, D, EX, "lead", copier_pnl=19426.23,
+                           copier_count_total=112)
+    m = rank.run(con, D, EX)["traders"][0]["metrics"]
+    assert m["copier_pnl"] == 19426.23 and m["copier_count_total"] == 112
+
+
+def test_metrics_block_copier_record_is_null_when_unmeasured(con):
+    _tm(con, "lead")
+    m = rank.run(con, D, EX)["traders"][0]["metrics"]
+    assert m["copier_pnl"] is None and m["copier_count_total"] is None
